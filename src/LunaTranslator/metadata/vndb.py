@@ -1,6 +1,5 @@
 import requests, re
 import time
-from qtsymbols import *
 from metadata.abstract import common
 from gui.usefulwidget import getsimpleswitch
 
@@ -167,22 +166,14 @@ def getinfosbyvid(proxy, vid, main=True):
         )
 
 
-class vndbsettings(QFormLayout):
-
-    def __init__(self, layout: QVBoxLayout, _ref: common, gameuid: str) -> None:
-        super().__init__(None)
-        layout.addLayout(self)
-        self.tm = None
-        self._ref = _ref
-        self.addRow(
-            "title - main", getsimpleswitch(_ref.config, "title-main", default=True)
-        )
-
-
 class searcher(common):
 
     def querysettingwindow(self, gameuid, layout):
-        vndbsettings(layout, self, gameuid)
+        # layout 为行式适配（gui/gamemanager/setting.py _MetaSettingRows）：
+        # addRow(标签, 控件) -> 折叠卡子项
+        layout.addRow(
+            "title - main", getsimpleswitch(self.config, "title-main", default=True)
+        )
 
     def refmainpage(self, _id):
         return "https://vndb.org/v{}".format(_id)

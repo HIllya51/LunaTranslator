@@ -955,5 +955,15 @@
     "下载/解压失败": "İndirme/çıkarma başarısız oldu",
     "请手动下载并解压到软件目录下": "Lütfen manuel olarak indirip yazılım dizinine çıkarın.",
     "未检测到Unity TMP字体文件。内嵌翻译修改游戏字体需要这些文件，请点击下载：": "Unity TMP yazı tipi dosyası algılanmadı. Gömülü çeviri, oyun yazı tipini değiştirmek için bu dosyalara ihtiyaç duyar. Lütfen indirmek için tıklayın:",
-    "插入": "Ekle"
+    "插入": "Ekle",
+    "收起设置": "Ayarları gizle",
+    "折叠/展开侧边栏": "Kenar çubuğunu daralt/genişlet",
+    "上一张": "Önceki",
+    "下一张": "Sonraki",
+    "展开/收起导航": "Gezinmeyi genişlet/daralt",
+    "界面语言": "Arayüz dili",
+    "应用主题": "Uygulama teması",
+    "隐藏目标": "Gizli hedef",
+    "隐藏延迟": "Gizli gecikme",
+    "编辑颜色": "Rengi düzenle"
 }

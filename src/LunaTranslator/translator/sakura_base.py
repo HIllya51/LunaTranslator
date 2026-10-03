@@ -1,9 +1,8 @@
 from translator.basetranslator import basetrans, GptTextWithDict, GptDict
 import requests
-import time
 from urllib.parse import urlsplit, urlunsplit
-from translator.gptcommon import list_models
-from myutils.utils import APIType
+from myutils.utils import APIType, common_list_models
+from myutils.proxy import getproxy
 from translator.gptcommon import (
     createheaders,
     common_create_gpt_data,
@@ -38,6 +37,20 @@ def _maybe_override_local_llama_port(url: str):
     netloc = "{}{}:{}".format(userinfo, hostpart, port)
     return urlunsplit(
         (parsed.scheme, netloc, parsed.path, parsed.query, parsed.fragment)
+    )
+
+
+def list_models(typename, regist: dict):
+    """同 gptcommon.list_models，但本类翻译时会用
+    _maybe_override_local_llama_port 猜测本地 llama-server 的实际
+    端口——模型列表也要走同样的地址，否则本地部署时列表拉取失败。"""
+
+    return common_list_models(
+        getproxy(("fanyi", typename)),
+        APIType(
+            _maybe_override_local_llama_port(regist["API接口地址"]())
+        ),
+        regist.get("SECRET_KEY", lambda: "")().split("|")[0],
     )
 
 
@@ -184,6 +197,35 @@ class TS(basetrans):
             messages.append({"role": "user", "content": content})
         return messages
 
+    def index_make_messages(self, query, gpt_dict: GptDict = None):
+        src = self.srclang_1.zhsname
+        tgt = self.tgtlang_1.zhsname
+        pairs = "、".join(
+            "{}→{}".format(
+                item.src, self.checklangzhconv(self.srclang, item.dst))
+            for item in gpt_dict or []
+            if item.src and item.dst
+        )
+        if not (pairs):
+            content = (
+                "请将以下{}文本翻译为{}，直接输出翻译结果，"
+                "不要进行任何解释。\n\n{}".format(src, tgt, query)
+            )
+        else:
+            constraints = []
+            constraints.append(
+                    "1. 【硬性要求】专名/术语对照: " + pairs)
+            constraints.append(
+                    " 2. 【注意】保持流畅通顺的日本轻小说的风格")   
+            content = (
+                "请将以下{}{}翻译成{}，并且严格遵循所有约束要求。\n\n"
+                "【源文】\n{}\n\n"
+                "【约束要求】\n{}\n\n"
+                "只输出译文，不要有任何额外说明。".format(
+                    src, "文本", tgt, query, "\n".join(constraints))
+            )
+        return [{"role": "user", "content": content}]
+
     def hymt2_make_messages(self, contextnum, query, gpt_dict: GptDict = None):
         if not gpt_dict:
             if self.tgtlang_1 in (Languages.Chinese, Languages.TradChinese):
@@ -223,9 +265,12 @@ class TS(basetrans):
                     {
                         "role": "user",
                         "content": """Reference the following translations:
-{self.make_gpt_dict_text(gpt_dict, False, ' translates to ')}
+{}
 Translate the following text into {}. Note that you must ONLY output the translated result without any additional explanation:\n\n{}""".format(
-                            self.tgtlang_1.engname, query
+                            self.make_gpt_dict_text(
+                                gpt_dict, False, " translates to "),
+                            self.tgtlang_1.engname,
+                            query,
                         ),
                     }
                 ]
@@ -251,6 +296,9 @@ Translate the following text into {}. Note that you must ONLY output the transla
         elif prompt_version == "Hy-MT2":
             messages = self.hymt2_make_messages(contextnum, query, gpt_dict)
             self.needzhconv = False
+        elif prompt_version == "Index-Translate":
+            messages = self.index_make_messages(query, gpt_dict)
+            self.needzhconv = False
         return messages
 
     def maybedetectprompttype(self, prompt_version):
@@ -262,6 +310,8 @@ Translate the following text into {}. Note that you must ONLY output the transla
             mlow = m.lower()
             if "hy-mt2" in mlow:
                 return "Hy-MT2"
+            if "index-translate" in mlow:
+                return "Index-Translate"
             if "galtransl" in mlow:
                 return "GalTransl"
             if "sakura" in mlow:

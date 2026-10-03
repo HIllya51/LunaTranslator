@@ -1,4 +1,5 @@
 from qtsymbols import *
+from gui.fluent.messagebox import ExMessageBox
 import time, functools, threading, os, shutil, uuid
 from traceback import print_exc
 import windows, qtawesome, gobject, NativeUtils
@@ -16,7 +17,6 @@ from myutils.config import (
 from textio.textsource.texthook import texthook
 from gui.setting.about import get_about_info
 from myutils.magpie_builtin import MagpieBuiltin, AdapterService
-from gui.gamemanager.dialog import dialog_setting_game
 from myutils.ocrutil import ocr_run, imageCut
 from myutils.mecab import WordSegResult
 from myutils.utils import (
@@ -40,7 +40,10 @@ from gui.usefulwidget import (
     qwidget_screen,
 )
 from gui.edittext import edittrans
-from gui.gamemanager.dialog import dialog_savedgame_integrated
+from gui.gamemanager.dialog import (
+    dialog_savedgame_integrated,
+    opengamesettings,
+)
 from gui.gamemanager.common import startgame
 from gui.dynalang import LAction
 from gui.buttonbar import buttonfunctions, IconLabelX, ButtonBar
@@ -575,9 +578,7 @@ class TranslatorWindow(resizableframeless):
             ),
             (
                 "open_game_setting",
-                lambda: dialog_setting_game(
-                    gobject.base.commonstylebase, gobject.base.gameuid, 1
-                ),
+                lambda: opengamesettings(gobject.base.gameuid, 1),
             ),
             ("ocr_once", self.ocr_once_signal.emit),
             (
@@ -904,7 +905,6 @@ class TranslatorWindow(resizableframeless):
         t.start()
         self.adjustbuttons = self.titlebar.adjustbuttons
         self.verticalhorizontal(globalconfig.get("verticalhorizontal", False))
-        self.screengeochanged.connect(self.checksettop)
 
     def showmenu(self, _):
         child = self.titlebar.childAt(_)
@@ -1651,7 +1651,7 @@ class TranslatorWindow(resizableframeless):
                 errors = saveallconfig()
                 if errors:
                     errors = [f + "\n\t" + stringfyerror(e) for e, f in errors]
-                    QMessageBox.critical(
+                    ExMessageBox.critical(
                         gobject.base.commonstylebase,
                         _TR("错误"),
                         "\n\n".join(errors),

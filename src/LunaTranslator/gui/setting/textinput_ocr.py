@@ -21,12 +21,13 @@ from gui.usefulwidget import (
     pixmapviewer,
     LStandardItemModel,
     SuperCombo,
-    NQGroupBox,
+    GroupCardWidget,
     getsmalllabel,
     manybuttonlayout,
     makesubtab_lazy,
     create_centered_rect,
     makescrollgrid,
+    maketabholder,
 )
 from gui.specialwidget import KeyPressDetector
 from traceback import print_exc
@@ -333,8 +334,9 @@ def _ocrparam_create(self, f):
 
 
 def _ocrparam(self):
-    self._ocrparam = NQGroupBox()
-    self._ocrparaml = LFormLayout(self._ocrparam)
+    self._ocrparam = GroupCardWidget()
+    self._ocrparaml = LFormLayout(self._ocrparam.contentWidget())
+    self._ocrparam.setContentLayout(self._ocrparaml)
     _ocrparam_create(self, globalconfig.get("ocr_auto_method_v2", "period"))
     return self._ocrparam
 
@@ -571,15 +573,15 @@ def internal(self):
         [dict(title="自动化执行", grid=autorun, widget=D_getdoclink("ocrparam.html"))],
     ]
 
-    return makesubtab_lazy(
+    tab, dotab = makesubtab_lazy(
         ["OCR引擎", "其他设置"],
         [
             lambda l: makescrollgrid(engines, l),
             lambda l: makescrollgrid(allothers, l),
         ],
         delay=True,
-        padding=True,
     )
+    return tab, dotab
 
 
 def getocrgrid_table(self, basel: QVBoxLayout):
@@ -587,5 +589,5 @@ def getocrgrid_table(self, basel: QVBoxLayout):
     self.ocrswitchs = {}
 
     gridlayoutwidget, do = internal(self)
-    basel.addWidget(gridlayoutwidget)
+    basel.addWidget(maketabholder(gridlayoutwidget))
     do()

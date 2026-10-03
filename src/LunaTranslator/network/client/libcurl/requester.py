@@ -124,7 +124,11 @@ class Requester(Requester_common):
 
         curl_easy_reset(curl)
         # curl_easy_setopt(curl, CURLoption.VERBOSE, 1)
-        curl_easy_setopt(curl, CURLoption.COOKIEJAR, "")
+        # 启用 cookie 引擎（重定向内保持 Set-Cookie）。注意不能用空串
+        # COOKIEJAR——它会让 libcurl 在 easy 句柄清理时向当前目录写
+        # 随机名 .tmp cookie 文件再删除（每次请求一个，磁盘/杀软扫描
+        # 开销造成卡顿）。空串 COOKIEFILE 同样启用引擎且无任何文件 IO。
+        curl_easy_setopt(curl, CURLoption.COOKIEFILE, "")
         if timeout[0]:
             curl_easy_setopt(curl, CURLoption.CONNECTTIMEOUT_MS, timeout[0])
         if timeout[1]:

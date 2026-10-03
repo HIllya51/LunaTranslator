@@ -1,5 +1,7 @@
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | PCSG01157 | 遙かなる時空の中で Ultimate |
+|  | PCSG00992 | 遙かなる時空の中で３ Ultimate |
 |  | PCSG00401 | ソラユメ |
 |  | PCSG00271 | Princess Arthur |
 |  | PCSG00543 | 冴えない彼女の育てかた -blessing flowers- |

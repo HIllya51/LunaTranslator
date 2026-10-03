@@ -1,6 +1,7 @@
 import functools, os, hashlib, uuid
 import requests, gobject, qtawesome
 from qtsymbols import *
+from gui.fluent.messagebox import ExMessageBox
 from language import Languages
 from myutils.config import _TR, dynamiclink, globalconfig
 from myutils.utils import makehtml, stringfyerror
@@ -264,4 +265,4 @@ class CommunityCishuDialog(LDialog):
         else:
             if 0 <= row < len(self._entries):
                 self._set_download_cell(row, self._entries[row])
-            QMessageBox.critical(self, _TR("下载失败"), _TR("错误") + "\n" + failreason)
+            ExMessageBox.critical(self, _TR("下载失败"), _TR("错误") + "\n" + failreason)

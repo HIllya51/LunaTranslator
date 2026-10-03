@@ -1,4 +1,5 @@
 from qtsymbols import *
+from gui.fluent.messagebox import ExMessageBox
 import gobject, qtawesome, os, json, functools, uuid
 import NativeUtils, re, shutil, threading
 from myutils.config import globalconfig, get_launchpath, savehook_new_data, relpath
@@ -380,7 +381,7 @@ class dialog_memory(saveposwindow):
                 self.destroyed.connect(functools.partial(safestop, self.recorders))
             except Exception as e:
                 self.recorders = None
-                QMessageBox.critical(
+                ExMessageBox.critical(
                     self, _TR("错误"), _TR("系统不支持环回录制")
                 )  # str(e))
                 self.insertaudiobtn.setIconStr("fa.music")
@@ -571,7 +572,14 @@ class dialog_memory(saveposwindow):
 
     @property
     def editororview(self) -> editswitchTextBrowserEx:
-        return self.tab.currentWidget().layout().itemAt(0).widget()
+        # 页签页外层的包裹层随容器实现而变（FluentPaneTabWidget 的
+        # 直角面板 / tabadd_lazy 的 FluentPageCard / _plus 手动加页无
+        # 包裹）——按类型直接找视图控件，不再逐层手工解包
+        w = self.tab.currentWidget()
+        found = w.findChildren(editswitchTextBrowserEx)
+        if found:
+            return found[0]
+        return w
 
     def switchreadonly(self, i):
         self.editororview.delayload(1 - i)

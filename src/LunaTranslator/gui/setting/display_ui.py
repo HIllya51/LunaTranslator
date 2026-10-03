@@ -1,25 +1,25 @@
 from qtsymbols import *
-import functools, importlib
-from traceback import print_exc
+import functools
 import gobject
-from myutils.config import globalconfig, static_data, ui_settings
-from myutils.utils import nowisdark, getimagefilefilter
+from myutils.config import globalconfig, ui_settings
+from myutils.utils import getimagefilefilter
 from gui.flowsearchword import createsomecontrols
 from gui.qevent import DarkLightSettingChangedEvent
 from gui.usefulwidget import (
     D_getsimplecombobox,
     D_getspinbox,
     D_getcolorbutton,
-    getIconButton,
-    FocusFontCombo,
     D_getsimpleswitch,
     getsimpleswitch,
     getsmalllabel,
     getboxlayout,
+    getboxwidget,
+    makecardrow,
     getsimplepatheditor,
-    createfoldgrid,
     D_getIconSwitch,
 )
+from gui.fluent.expander import ExExpander
+from gui.dynalang import LLabel
 
 
 def changeHorizontal_pic(
@@ -153,69 +153,6 @@ def createhorizontal_slider_tool():
     return getboxlayout([horizontal_slider_tool, horizontal_slider_tool_label])
 
 
-def createfontcombo():
-
-    sfont_comboBox = FocusFontCombo()
-
-    def callback(x):
-        ui_settings.__setitem__("settingfonttype", x)
-        gobject.base.setcommonstylesheet()
-
-    sfont_comboBox.setCurrentFont(
-        QFont(
-            ui_settings.get(
-                "settingfonttype", gobject.tempconfig.get("settingfonttype", "")
-            )
-        )
-    )
-    sfont_comboBox.currentTextChanged.connect(callback)
-    return sfont_comboBox
-
-
-def getget_setting_window():
-    try:
-        name = ui_settings.get("theme3", "PyQtDarkTheme")
-        _fn = None
-        for n in static_data["themes"]:
-            if n["name"] == name:
-                _fn = n["file"].get("setting")
-                break
-
-        if not _fn:
-            return None
-        try:
-            return importlib.import_module(
-                "files.LunaTranslator_qss." + _fn[:-3].replace("/", ".")
-            ).get_setting_window
-        except:
-            return None
-    except:
-        print_exc()
-        return None
-
-
-def opensettingwindow(self):
-    get_setting_window = getget_setting_window()
-    try:
-        get_setting_window(self, gobject.base.setcommonstylesheet, nowisdark())
-    except:
-        print_exc()
-
-
-def createbtnthemelight(self):
-    self.btnthemelight = getIconButton(functools.partial(opensettingwindow, self))
-    lightsetting = getget_setting_window()
-    if not bool(lightsetting):
-        self.btnthemelight.hide()
-    return self.btnthemelight
-
-
-def checkthemesettingvisandapply(self, _):
-    lightsetting = getget_setting_window()
-    self.btnthemelight.setVisible(bool(lightsetting))
-    gobject.base.setcommonstylesheet()
-
-
 def __rs():
     spin, lay = createsomecontrols(
         gobject.base.translation_ui.set_color_transparency,
@@ -236,14 +173,6 @@ def __rs():
             "",
             getsmalllabel("圆角"),
             spin,
-            "",
-            getsmalllabel("任务栏中显示"),
-            D_getsimpleswitch(
-                globalconfig,
-                "showintab",
-                callback=lambda _: gobject.base.setshowintab(),
-                default=True,
-            ),
         ]
     )
 
@@ -255,138 +184,90 @@ def switch_darklight():
 
 
 def uisetting(self):
-    windoweffects = [
-        getsmalllabel("窗口特效"),
-        D_getsimplecombobox(
-            [
-                "Solid",
-                "Acrylic",
-                "Mica",
-                "MicaAlt",
-            ],
-            ui_settings,
-            "WindowBackdrop",
-            callback=lambda _: gobject.base.setcommonstylesheet(),
-            static=True,
-            default=3,
-        ),
-        "",
-        getsmalllabel("强制直角"),
-        D_getsimpleswitch(
-            ui_settings,
-            "force_rect",
-            callback=lambda _: gobject.base.cornerornot(),
-            default=True,
-        ),
-        "",
-        "",
-        "",
-    ]
-    if not gobject.sys_ge_win_11:
-        list(windoweffects.append(("", windoweffects.pop(3))[0]) for _ in range(3))
+    # 自动隐藏：折叠卡（子项 = 隐藏目标/隐藏延迟）。先建延迟控件——
+    # 隐藏目标下拉的初值回调会引用 self.disappear_delay
+    delay = createdynamicdelay(self)
+    target = createdynamicswitch(self)
+    autohideexp = ExExpander()
+    header = QWidget()
+    hlay = QHBoxLayout(header)
+    hlay.setContentsMargins(0, 12, 0, 12)
+    hlay.setSpacing(8)
+    titlelabel = LLabel("自动隐藏")
+    titlefont = titlelabel.font()
+    titlefont.setPixelSize(15)
+    titlelabel.setFont(titlefont)
+    hlay.addWidget(titlelabel)
+    hlay.addStretch(1)
+    hlay.addWidget(D_getsimpleswitch(globalconfig, "autodisappear", default=False)())
+    autohideexp.setHeaderWidget(header)
+    autohideexp.addContentWidget(getboxwidget(["隐藏目标", 1, target]))
+    autohideexp.addContentWidget(getboxwidget(["隐藏延迟_(s)", 1, delay]))
+
     __ = mainuisetting(self) + [
         [
             dict(
                 type="grid",
+                card=True,
                 grid=([__rs],),
             )
         ],
         [
-            dict(
-                type="grid",
-                grid=(
-                    [
-                        "游戏窗口移动时同步移动",
-                        D_getsimpleswitch(
-                            globalconfig,
-                            "movefollow",
-                            default=True,
-                        ),
-                        "",
-                        "自动隐藏",
-                        D_getsimpleswitch(globalconfig, "autodisappear", default=False),
-                        lambda: createdynamicswitch(self),
-                        getboxlayout([lambda: createdynamicdelay(self), "(s)"]),
-                    ],
-                    [
-                        "游戏失去焦点时取消置顶",
-                        D_getsimpleswitch(
-                            globalconfig,
-                            "focusnotop",
-                            default=False,
-                        ),
-                        "",
-                        "自动调整高度",
-                        D_getsimpleswitch(
-                            globalconfig, "adaptive_height", default=True
-                        ),
-                        getboxlayout(
-                            [
-                                "最小高度",
-                                D_getspinbox(
-                                    0, 9999, globalconfig, "min_auto_height", default=0
-                                ),
-                                "px",
-                            ]
-                        ),
-                    ],
+            (
+                makecardrow(
+                    "任务栏中显示",
+                    D_getsimpleswitch(
+                        globalconfig,
+                        "showintab",
+                        callback=lambda _: gobject.base.setshowintab(),
+                        default=True,
+                    ),
                 ),
-            ),
+                0,
+            )
         ],
         [
-            functools.partial(
-                createfoldgrid,
-                (
-                    [
-                        dict(
-                            type="grid",
-                            grid=[
-                                [
-                                    getsmalllabel("字体"),
-                                    createfontcombo,
-                                    "",
-                                    getsmalllabel("大小"),
-                                    D_getspinbox(
-                                        5,
-                                        100,
-                                        ui_settings,
-                                        "settingfontsize",
-                                        double=True,
-                                        callback=lambda _: gobject.base.setcommonstylesheet(),
-                                        default=12,
-                                    ),
-                                ]
-                            ],
-                        )
-                    ],
-                    [
-                        dict(
-                            type="grid",
-                            grid=[windoweffects],
-                        )
-                    ],
-                    [
-                        dict(
-                            grid=[
-                                [
-                                    "明暗",
-                                    D_getsimplecombobox(
-                                        ["跟随系统", "明亮", "黑暗"],
-                                        ui_settings,
-                                        "darklight2",
-                                        lambda _: (
-                                            gobject.base.setcommonstylesheet(),
-                                            switch_darklight(),
-                                        ),
-                                        default=0,
-                                    ),
-                                    functools.partial(createbtnthemelight, self),
-                                ],
-                            ],
-                        )
-                    ],
+            (
+                makecardrow(
+                    "游戏窗口移动时同步移动",
+                    D_getsimpleswitch(globalconfig, "movefollow", default=True),
                 ),
-                "其他界面",
+                0,
+            )
+        ],
+        [
+            (
+                makecardrow(
+                    "游戏失去焦点时取消置顶",
+                    D_getsimpleswitch(globalconfig, "focusnotop", default=False),
+                ),
+                0,
+            )
+        ],
+        [(autohideexp, 0)],
+        [
+            (
+                makecardrow(
+                    "自动调整高度",
+                    D_getsimpleswitch(globalconfig, "adaptive_height", default=True),
+                ),
+                0,
+            )
+        ],
+        [
+            (
+                makecardrow(
+                    "最小高度_(px)",
+                    D_getspinbox(
+                        0,
+                        9999,
+                        ui_settings,
+                        "min_auto_height",
+                        default=0,
+                        callback=lambda _: gobject.base.translation_ui.titlebar.adjustminwidth(),
+                    ),
+                ),
+                0,
             )
         ],
     ]
@@ -508,7 +389,3 @@ def mainuisetting(self):
             ),
         ],
     ]
-
-
-def themelist():
-    return [_["name"] for _ in static_data["themes"]]

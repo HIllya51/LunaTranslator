@@ -22,6 +22,9 @@ from myutils.wrapper import tryprint
 import sqlite3
 from gui.dialog_memory import dialog_memory
 from myutils.localetools import getgamecamptools, maycreatesettings
+from gui.fluent.expander import ExExpander
+from gui.fluent.pillbar import ExPillBar
+from gui.fluent.settingtree import FluentSettingTree, wrap_setting_tree
 from myutils.hwnd import getExeIcon
 from myutils.wrapper import Singleton
 from myutils.utils import (
@@ -43,32 +46,31 @@ from gui.inputdialog import (
 )
 from gui.setting.textinput import gethookgrid_em, gethookgrid
 from gui.specialwidget import chartwidget
+from gui.gamemanager.common import tagitem
 from gui.usefulwidget import (
+    makecardrow,
+    makescroll,
     DarkLightAutoResetIconHelper,
     clearlayout,
     makescrollgrid,
     automakegrid,
-    TableViewW,
     getsimpleswitch,
+    maketabholder,
     getsimplepatheditor,
     getboxlayout,
-    NQGroupBox,
-    clearlayout,
     IconButton,
     getsimplecombobox,
     D_getIconButton,
     D_getsimpleswitch,
     getspinbox,
-    ClickableLabel,
+    FocusCombo,
+    request_delete_ok,
     getIconButton,
     makesubtab_lazy,
-    getsimpleswitch,
     manybuttonlayout,
-    getspinbox,
-    CollapsibleBox,
+    GroupCardWidget,
     getsmalllabel,
     listediterline,
-    FocusCombo,
     VisGridLayout,
 )
 from gui.dynalang import (
@@ -78,11 +80,50 @@ from gui.dynalang import (
     LAction,
     LLabel,
     LDialog,
-    LGroupBox,
+    LTableView,
 )
-from gui.gamemanager.common import tagitem
-from gui.inputdialog import postconfigdialog_
 
+
+class _MetaSettingRows:
+    """元数据源 querysettingwindow(gameuid, layout) 的行式适配：
+    addRow(标签, 控件) -> 折叠卡子项（同 语言/启动方式 的行式子项）。
+    QLayout 控件（含输入框的组）与 fill=True 的控件填满标签右侧；
+    其余 QWidget 控件右对齐，右缘与头部开关/按钮一致（ExExpander
+    content_pad 让位）。addDynamicRow 为初始隐藏的动态子项（内容
+    到达后经返回句柄显示）。"""
+
+    def __init__(self, expander):
+        self._expander = expander
+
+    def addRow(self, label, widget, fill=False):
+        row = QWidget()
+        lay = QHBoxLayout(row)
+        lay.setContentsMargins(0, 0, 0, 0)
+        lay.addWidget(LLabel(label) if isinstance(label, str) else label)
+        if isinstance(widget, QLayout):
+            lay.addLayout(widget, 1)
+        elif fill:
+            lay.addWidget(widget, 1)
+        else:
+            lay.addStretch(1)
+            lay.addWidget(widget)
+        self._expander.addContentWidget(row)
+        return row
+
+    def addDynamicRow(self, widget):
+        """动态子项：整块放一个控件，初始隐藏（连同卡片底）；返回
+        show(vis) 句柄——内容到达后显示、清空后隐藏。"""
+        row = QWidget()
+        lay = QHBoxLayout(row)
+        lay.setContentsMargins(0, 0, 0, 0)
+        lay.addWidget(widget)
+        self._expander.addContentWidget(row)
+        self._expander.setContentPanelVisible(row, False)
+
+        def _show(vis):
+            self._expander.setContentPanelVisible(row, vis)
+
+        return _show
 
 def maybehavebutton(self, gameuid, post):
     save_text_process_info = savehook_new_data[gameuid]["save_text_process_info"]
@@ -136,66 +177,183 @@ def maybehavebutton(self, gameuid, post):
             return None
 
 
-class FlowWidget(QWidget):
-    def __init__(self, parent=None, groups=3):
-        super().__init__(parent)
-        self.margin = QMargins(5, 5, 5, 5)
-        self.spacing = 5
-        self._item_list: "list[list[QWidget]]" = [[] for _ in range(groups)]
-
-    def insertWidget(self, group: int, index, w: QWidget):
-        w.setParent(self)
-        w.show()
-        self._item_list[group].insert(index, w)
-        self.doresize()
-
-    def addWidget(self, group, w: QWidget):
-        self.insertWidget(group, len(self._item_list[group]), w)
-
-    def removeWidget(self, w: QWidget):
-        for _ in self._item_list:
-            if w in _:
-                _.remove(w)
-                w.deleteLater()
-                self.doresize()
-                break
-
-    def doresize(self):
-        line_height = 0
-        spacing = self.spacing
-        y = self.margin.left()
-        for listi in self._item_list:
-            x = self.margin.top()
-            for i, item in enumerate(listi):
-
-                next_x = x + item.sizeHint().width() + spacing
-                if (
-                    next_x - spacing + self.margin.right() > self.width()
-                    and line_height > 0
-                ):
-                    x = self.margin.top()
-                    y = y + line_height + spacing
-                    next_x = x + item.sizeHint().width() + spacing
-
-                size = item.sizeHint()
-                item.setGeometry(QRect(QPoint(x, y), size))
-                line_height = max(line_height, size.height())
-                x = next_x
-            y = y + line_height + spacing
-        self.setFixedHeight(y + self.margin.bottom() - spacing)
-
-    def resizeEvent(self, a0):
-        self.doresize()
-
-
-def userlabelset(key="usertags"):
+def userlabelset(key):
     s = set()
     for gameuid in savehook_new_data:
-        s = s.union(savehook_new_data[gameuid][key])
+        s = s.union(savehook_new_data[gameuid].get(key, []))
     return sorted(list(s))
 
 
-@Singleton
+class _GameTextProcTree(FluentSettingTree):
+    """游戏设置-文本处理 列表（原 TableViewW 改树）：使用 / 设置（无标题列）
+    /预处理方法 / 移动（末列），拖拽或上下移按钮排序（循环）。无文档链接。
+    行内容写 save_text_process_info（rank 序 + 每方法私有配置）。"""
+
+    def __init__(self, host, gameuid, parent=None):
+        super().__init__(
+            parent,
+            titles=["使用", "", "预处理方法", ""],
+            draggable=True,
+        )
+        self._host = host
+        self._gameuid = gameuid
+        hdr = self.header()
+        for c in (0, 1, 3):
+            hdr.setSectionResizeMode(
+                c, QHeaderView.ResizeMode.ResizeToContents)
+        hdr.setSectionResizeMode(2, QHeaderView.ResizeMode.Stretch)
+        self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        self.customContextMenuRequested.connect(self._showmenu)
+        self.rebuild()
+
+    # ---- 数据 ----
+    def _rank(self):
+        return savehook_new_data[self._gameuid][
+            "save_text_process_info"]["rank"]
+
+    def _pconf(self):
+        return savehook_new_data[self._gameuid][
+            "save_text_process_info"]["postprocessconfig"]
+
+    def _ensureconf(self, k):
+        """该游戏的私有配置副本（原 __checkaddnewmethod 的初始化）。"""
+        pconf = self._pconf()
+        if k not in pconf:
+            if k == "stringreplace":
+                pconf[k] = copy.deepcopy(defaultpost[k])
+            else:
+                pconf[k] = copy.deepcopy(postprocessconfig[k])
+            pconf[k]["use"] = True
+        return pconf[k]
+
+    # ---- 行构建 ----
+    def rebuild(self):
+        self.clear()
+        for k in self._rank():
+            if k not in postprocessconfig:
+                continue
+            conf = self._ensureconf(k)
+            item = QTreeWidgetItem()
+            item.setData(0, Qt.ItemDataRole.UserRole, k)
+            self.addTopLevelItem(item)
+            self.setItemWidget(item, 0, self._cell(
+                getsimpleswitch(conf, "use"), center=True))
+            btn = maybehavebutton(self._host, self._gameuid, k)
+            if btn is not None:
+                self.setItemWidget(item, 1, self._cell(btn, center=True))
+            self.setItemWidget(item, 2, self._cell(
+                LLabel(_TR(postprocessconfig[k]["name"]))))
+            self.setItemWidget(
+                item, 3, self._movecell(functools.partial(self._move, k)))
+
+    # ---- 排序（拖拽 / 上下移按钮共用）----
+    def _applymove(self, idx1, idx2):
+        rank = self._rank()
+        k = rank.pop(idx1)
+        rank.insert(idx2, k)
+        self.rebuild()
+
+    def _ondrop(self, idx1, idx2):
+        self._applymove(idx1, idx2)
+
+    def _move(self, k, up, tomax):
+        """循环移一位（首行再上移到末尾、末行再下移到开头），
+        右键（tomax）置顶/置底。"""
+        rank = self._rank()
+        idx1 = rank.index(k)
+        if tomax:
+            idx2 = 0 if up else len(rank) - 1
+        else:
+            idx2 = (idx1 + (-1 if up else 1)) % len(rank)
+        if idx2 == idx1:
+            return
+        self._applymove(idx1, idx2)
+
+    # ---- 增删 ----
+    def addmethod(self, k):
+        """添加行回调：新方法插到最前（同旧版）。"""
+        rank = self._rank()
+        if k not in rank:
+            rank.insert(0, k)
+        self._ensureconf(k)
+        self.rebuild()
+
+    def removecurrent(self):
+        item = self.currentItem()
+        if item is None:
+            return
+        k = item.data(0, Qt.ItemDataRole.UserRole)
+        rank = self._rank()
+        if k in rank:
+            rank.remove(k)
+        pconf = self._pconf()
+        if k in pconf:
+            pconf.pop(k)
+        self.rebuild()
+
+    def _showmenu(self, p):
+        item = self.itemAt(p)
+        if item is None:
+            return
+        self.setCurrentItem(item)
+        menu = QMenu(self)
+        remove = LAction("删除", menu)
+        menu.addAction(remove)
+        action = menu.exec(QCursor.pos())
+        if action == remove:
+            self.removecurrent()
+
+
+class _GameTransOptimiTree(FluentSettingTree):
+    """游戏设置-翻译优化 列表：使用 / 设置（无标题列）/ 名称（静态，
+    无排序、无文档链接）。开关写 savehook_new_data[gameuid][name_use]，
+    设置按钮为该游戏的私有设置窗口（仅有私有设置项的行）。"""
+
+    def __init__(self, host, gameuid, parent=None):
+        super().__init__(parent, titles=["使用", "", "名称"])
+        self._host = host
+        self._gameuid = gameuid
+        hdr = self.header()
+        for c in (0, 1):
+            hdr.setSectionResizeMode(
+                c, QHeaderView.ResizeMode.ResizeToContents)
+        hdr.setSectionResizeMode(2, QHeaderView.ResizeMode.Stretch)
+        self.rebuild()
+
+    def rebuild(self):
+        self.clear()
+        for item_ in static_data["transoptimi"]:
+            name = item_["name"]
+            visname = item_["visname"]
+            if not checkpostlangmatch(name):
+                continue
+            setting = loadpostsettingwindowmethod_private(name)
+            if not setting:
+                continue
+            item = QTreeWidgetItem()
+            item.setData(0, Qt.ItemDataRole.UserRole, name)
+            self.addTopLevelItem(item)
+
+            def __(f, host, gameuid):
+                return f(host, gameuid)
+
+            self.setItemWidget(item, 0, self._cell(
+                getsimpleswitch(
+                    savehook_new_data[self._gameuid],
+                    name + "_use",
+                    default=False,
+                ),
+                center=True,
+            ))
+            self.setItemWidget(item, 1, self._cell(
+                getIconButton(
+                    callback=functools.partial(
+                        __, setting, self._host, self._gameuid)),
+                center=True,
+            ))
+            self.setItemWidget(item, 2, self._cell(LLabel(visname)))
+
+
 class timelistediter(LDialog, DarkLightAutoResetIconHelper):
 
     def __init__(
@@ -214,7 +372,7 @@ class timelistediter(LDialog, DarkLightAutoResetIconHelper):
         model = LStandardItemModel()
         model.setHorizontalHeaderLabels(["开始", "结束", "删除"])
         self.hcmodel = model
-        table = QTableView()
+        table = LTableView()
         table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         table.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
@@ -338,27 +496,23 @@ class dialog_setting_game_internal(QWidget):
         super().__init__(parent)
         self.__quanju_wc = False
         self.keepindexobject = keepindexobject
-        vbox = QVBoxLayout(self)
         self.lauchpath = None
-        formLayout = LFormLayout()
         self.gameuid = gameuid
-        formLayout.addRow(
-            "路径",
-            getboxlayout(
-                [
-                    getsimplepatheditor(
-                        uid2gamepath[gameuid],
-                        callback=self.selectexe,
-                        clearable=False,
-                        icons=("fa.gear",),
-                    ),
-                    getIconButton(
-                        lambda: dialog_memory(self, gameuid=gameuid),
-                        icon="fa.list-ul",
-                    ),
-                ]
-            ),
-        )
+
+    def toplevelpages(self):
+        """游戏设置/游戏数据 两页的构建器——原 L2 methodtab 已上提，
+        页直接挂到宿主 tab（游戏管理 righttop / 独立设置窗口）。
+        本控件只作状态宿主（对话框 parent / keepindexobject / lauchpath
+        等），自身无 UI。构建器经 doaddtab 调用：wfunct(gameuid) ->
+        (页 QWidget, do)。"""
+        return [
+            ("游戏设置", functools.partial(self.___tabf3, self.makegamesettings)),
+            ("游戏数据", functools.partial(self.___tabf3, self.makegamedata)),
+        ]
+
+    def _addtitlerow(self, vbox: QVBoxLayout, gameuid):
+        """标题卡：标题编辑 + 搜索 + 记忆列表按钮（游戏数据页顶部，
+        统计/元数据 之上）。"""
         titleedit = QLineEdit(savehook_new_data[gameuid]["title"])
 
         def _titlechange():
@@ -373,41 +527,44 @@ class dialog_setting_game_internal(QWidget):
         __list = [
             titleedit,
             getIconButton(_titlechange, icon="fa.search"),
+            getIconButton(
+                lambda: dialog_memory(self, gameuid=gameuid),
+                icon="fa.list-ul",
+            ),
         ]
         if savehook_new_data[gameuid].get("emugameid"):
             __list.insert(1, getsmalllabel(savehook_new_data[gameuid].get("emugameid")))
-        formLayout.addRow("标题", getboxlayout(__list))
-
-        functs = [
-            ("游戏设置", functools.partial(self.___tabf3, self.makegamesettings)),
-            ("游戏数据", functools.partial(self.___tabf3, self.makegamedata)),
-        ]
-        methodtab, do = makesubtab_lazy(
-            [_[0] for _ in functs],
-            [functools.partial(self.doaddtab, _[1], gameuid) for _ in functs],
-            delay=True,
-            initial=(
-                (self.keepindexobject, "p1")
-                if (self.keepindexobject is not None)
-                else None
-            ),
-            fast=True,
-        )
-        vbox.addLayout(formLayout)
-        vbox.addWidget(methodtab)
-        do()
+        # 卡片 16 内缩（与 L3 页内表单同缩进），下接 统计/元数据 bar
+        vbox.addWidget(makecardrow("标题", getboxlayout(__list), fill=True))
 
     def ___tabf(self, function, gameuid):
-        _w = QWidget()
+        # 滚动内容控件同 makegrid 的 gridwidget 用 QSS 类做透明（否则被
+        # autofill 以 Window(243) 盖掉页面卡底色，见 gethooktab 注释）；
+        # 表单 0 边距——页内缩由 dgi 顶层 vbox 的 16px 统一提供
+        class formscrollcontent(QWidget):
+            pass
+
+        _w = formscrollcontent()
+        _w.setStyleSheet("formscrollcontent{background-color:transparent;}")
         formLayout = LFormLayout(_w)
+        formLayout.setContentsMargins(16, 16, 16, 12 )
         do = functools.partial(function, formLayout, gameuid)
-        return _w, do
+        scroll = makescroll()
+        scroll.setWidget(_w)
+        return scroll, do
 
     def ___tabf2(self, function, gameuid):
-        _w = QWidget()
+        class formscrollcontent2(QWidget):
+            pass
+
+        _w = formscrollcontent2()
+        _w.setStyleSheet("formscrollcontent2{background-color:transparent;}")
         formLayout = QVBoxLayout(_w)
+        formLayout.setContentsMargins(16, 16, 16, 12 )
         do = functools.partial(function, formLayout, gameuid)
-        return _w, do
+        scroll = makescroll()
+        scroll.setWidget(_w)
+        return scroll, do
 
     def ___tabf3(self, function, gameuid):
         _w = QWidget()
@@ -417,7 +574,10 @@ class dialog_setting_game_internal(QWidget):
         return _w, do
 
     def makegamedata(self, vbox: QVBoxLayout, gameuid):
-
+        # 标题行在 统计/元数据 之上（游戏数据 tab 内容顶部）
+        self._addtitlerow(vbox, gameuid)
+        vbox.setContentsMargins(16, 16, 16, 12)
+        vbox.setSpacing(0)
         functs = [
             ("统计", functools.partial(self.___tabf2, self.getstatistic)),
             ("元数据", functools.partial(self.___tabf, self.metadataorigin)),
@@ -442,9 +602,7 @@ class dialog_setting_game_internal(QWidget):
         functs = [
             ("启动", functools.partial(self.___tabf, self.starttab)),
             ("HOOK", self.gethooktab),
-            ("语言", functools.partial(self.___tabf, self.getlangtab)),
-            ("文本处理", functools.partial(self.___tabf, self.gettextproc)),
-            ("翻译优化", functools.partial(self.___tabf, self.gettransoptimi)),
+            ("文本处理", functools.partial(self.___tabf, self.gettextproctab)),
             ("语音", functools.partial(self.___tabf, self.getttssetting)),
             ("预翻译", functools.partial(self.___tabf, self.getpretranstab)),
             ("窗口缩放", functools.partial(self.___tabf, self.getmagpietab)),
@@ -462,7 +620,7 @@ class dialog_setting_game_internal(QWidget):
         )
 
         self.methodtab = methodtab
-        vbox.addWidget(methodtab)
+        vbox.addWidget(maketabholder(methodtab))
         do()
 
     def openrefmainpage(self, key, idname, gameuid):
@@ -471,19 +629,46 @@ class dialog_setting_game_internal(QWidget):
         except:
             print_exc()
 
+    def _metaheader(self, name, labelw, edit, switch, btns):
+        """元数据卡头行（折叠卡头部，所有源均为折叠卡）：标签列定宽
+        （各卡控件几何一致：开关/输入框/按钮的总长度与位置对齐），
+        其后 [自动开关][ID 输入框(伸展)][跳转/搜索按钮]。
+        ExExpander 头部自带左 16/右 60(chevron) 让位。"""
+        row = QWidget()
+        lay = QHBoxLayout(row)
+        lay.setContentsMargins(0, 12, 0, 12)
+        lay.setSpacing(8)
+        label = LLabel(name)
+        font = label.font()
+        font.setPixelSize(15)
+        label.setFont(font)
+        label.setFixedWidth(labelw)
+        lay.addWidget(label)
+        lay.addWidget(switch)
+        lay.addWidget(edit, 1)
+        for b in btns:
+            lay.addWidget(b)
+        return row
+
     def metadataorigin(self, formLayout: LFormLayout, gameuid):
-        vislf = VisGridLayout()
-        formLayout.addRow(vislf)
-        vislf.setColumnStretch(0, 0)
-        vislf.setColumnStretch(1, 1)
-
-        linei = 0
-        notvislineis = []
-        for i, key in enumerate(targetmod):
+        # 每源一张折叠卡：第一子项 = 使用代理（原名称点击菜单移除，
+        # 设置挪进折叠），其后为该源的设置项（querysettingwindow，
+        # 行式子项）。标签列按全部源名计算定宽（名字可被用户改），
+        # 各卡控件对齐。
+        srcs = []
+        for key in targetmod:
             try:
-                idname = targetmod[key].idname
-                name = targetmod[key].name
+                srcs.append((key, targetmod[key].idname, targetmod[key].name))
+            except:
+                print_exc()
+                continue
+        font = self.font()
+        font.setPixelSize(15)
+        fm = QFontMetrics(font)
+        labelw = min(240, max([80] + [fm.horizontalAdvance(_[2]) for _ in srcs]) + 16)
 
+        for key, idname, name in srcs:
+            try:
                 vndbid = QLineEdit()
                 vndbid.setText(str(savehook_new_data[gameuid].get(idname, "")))
                 vndbid.setSizePolicy(
@@ -496,12 +681,11 @@ class dialog_setting_game_internal(QWidget):
                 vndbid.returnPressed.connect(
                     functools.partial(gamdidchangedtask, key, idname, gameuid)
                 )
-                _vbox_internal = [
-                    getsimpleswitch(
-                        globalconfig["metadata"][key],
-                        "auto",
-                    ),
-                    vndbid,
+                switch = getsimpleswitch(
+                    globalconfig["metadata"][key],
+                    "auto",
+                )
+                btns = [
                     getIconButton(
                         functools.partial(self.openrefmainpage, key, idname, gameuid),
                         icon="fa.chrome",
@@ -514,56 +698,109 @@ class dialog_setting_game_internal(QWidget):
             except:
                 print_exc()
                 continue
+            exp = ExExpander(content_pad=True)
+            exp.setHeaderWidget(
+                self._metaheader(name, labelw, vndbid, switch, btns)
+            )
+            rows = _MetaSettingRows(exp)
+            # 第一子项：使用代理（getproxy 按此决定该源是否走代理）
+            rows.addRow(
+                "使用代理",
+                getsimpleswitch(
+                    globalconfig["metadata"][key], "useproxy", default=True
+                ),
+            )
             try:
                 __settting = targetmod[key].querysettingwindow
-                coll = CollapsibleBox(
-                    functools.partial(__settting, gameuid), self, margin0=False
-                )
-
-                def _revert(c: CollapsibleBox, li):
-                    vis = c.isVisible()
-                    vislf.setRowVisible(li, not vis)
-                    c.toggle(not vis)
-
-                _vbox_internal.insert(
-                    2,
-                    getIconButton(functools.partial(_revert, coll, linei + 1)),
-                )
-                vislf.addWidget(self.getrenameablellabel(key, name), linei, 0)
-                vislf.addLayout(getboxlayout(_vbox_internal), linei, 1)
-                vislf.addWidget(coll, linei + 1, 0, 1, 2)
-                notvislineis.append(linei + 1)
-                linei += 2
             except:
-                vislf.addWidget(self.getrenameablellabel(key, name), linei, 0)
-                vislf.addLayout(getboxlayout(_vbox_internal), linei, 1)
-                linei += 1
-        for _ in notvislineis:
-            vislf.setRowVisible(_, False)
+                __settting = None
+            if __settting is not None:
+                try:
+                    __settting(gameuid, rows)
+                except:
+                    print_exc()
+            formLayout.addRow(exp)
 
-    def renameapi(self, qlabel: QLabel, apiuid):
-        menu = QMenu(qlabel)
-        useproxy = LAction("使用代理", menu)
-        useproxy.setCheckable(True)
+    def _tagbarclicked(self, _type, key, index):
+        """点击 pill = 按该标签过滤网格（_matches_tags 的类型化分支，
+        经 gridpage._addtagfilter）。"""
+        try:
+            from gui.gamemanager.v3 import dialog_savedgame_v3
 
-        menu.addAction(useproxy)
-        useproxy.setChecked(globalconfig["metadata"][apiuid].get("useproxy", True))
-        pos = QCursor.pos()
-        action = menu.exec(pos)
+            ref = dialog_savedgame_v3.reference
+            if ref is not None:
+                ref.gridpage._addtagfilter(
+                    self._tagbars[key].tabText(index), _type)
+        except:
+            print_exc()
 
-        if action == useproxy:
-            globalconfig["metadata"][apiuid]["useproxy"] = useproxy.isChecked()
+    def _tagbarclose(self, gameuid, key, index):
+        """关闭 pill = 确认后从该游戏删除标签（数据 + tab）。
+        cache：勾选"本次运行期间不再询问"后本会话不再弹确认。"""
+        bar = self._tagbars[key]
+        tag = bar.tabText(index)
+        if not request_delete_ok(self, cache="gamemanager_tagdel"):
+            return
+        try:
+            savehook_new_data[gameuid][key].remove(tag)
+        except ValueError:
+            pass
+        bar.removeTab(index)
 
-    def getrenameablellabel(self, key, name):
+    def getlabelsetting(self, formLayout: QVBoxLayout, gameuid):
+        """游戏数据-标签：开发商/标签(源站 webtags) 两组 pill bar
+        （ExPillBar，FluentUI PillTabs 配方，多行换行 + 可关闭）。
+        点击 pill = 按该标签过滤网格，× = 确认后删除该标签；
+        底部行 = 添加标签（类型选择 + 补全）。"""
+        self._tagbars = {}
+        self.tagtypes = ["developers", "webtags"]
+        self.tagtypes_zh = ["开发商", "标签"]
+        self.tagtypes_1 = [
+            tagitem.TYPE_DEVELOPER,
+            tagitem.TYPE_TAG,
+        ]
+        for key, zh, _t in zip(
+            self.tagtypes, self.tagtypes_zh, self.tagtypes_1
+        ):
+            bar = ExPillBar()
+            for tag in savehook_new_data[gameuid].get(key, []):
+                bar.addTab(tag)
+            bar.tabClicked.connect(
+                functools.partial(self._tagbarclicked, _t, key))
+            bar.tabCloseRequested.connect(
+                functools.partial(self._tagbarclose, gameuid, key))
+            self._tagbars[key] = bar
+            formLayout.addWidget(LLabel(zh))
+            formLayout.addWidget(bar)
 
-        def checkclickable(name: ClickableLabel):
-            name.setClickable(globalconfig.get("useproxy", True))
+        button = LPushButton("添加")
+        typecombo = getsimplecombobox(self.tagtypes_zh, default=1)
+        combo = FocusCombo()
+        combo.setEditable(True)
 
-        name = ClickableLabel(name)
-        fn = functools.partial(self.renameapi, name, key)
-        name.clicked.connect(fn)
-        name.beforeEnter.connect(functools.partial(checkclickable, name))
-        return name
+        def __(idx):
+            t = combo.currentText()
+            combo.clear()
+            combo.addItems(userlabelset(self.tagtypes[idx]))
+            combo.setCurrentText(t)
+
+        typecombo.currentIndexChanged.connect(__)
+        __(1)
+
+        def _add(_):
+            tag = combo.currentText()
+            tp = self.tagtypes[typecombo.currentIndex()]
+            if (not tag) or (tag in savehook_new_data[gameuid][tp]):
+                return
+            savehook_new_data[gameuid][tp].insert(0, tag)
+            self._tagbars[tp].insertTab(0, tag)
+            combo.clearEditText()
+
+        button.clicked.connect(_add)
+
+        formLayout.addLayout(
+            getboxlayout([combo, typecombo, button])
+        )
 
     def doaddtab(self, wfunct, exe, layout: QLayout):
         w, do = wfunct(exe)
@@ -578,25 +815,37 @@ class dialog_setting_game_internal(QWidget):
         self.setWindowIcon(_icon)
 
     def starttab(self, formLayout: LFormLayout, gameuid):
-        box = NQGroupBox()
-        settinglayout = LFormLayout(box)
+        # 每项一张卡；启动方式为折叠卡，子项随方式切换（无设置时收起）。
+        # 方式的每行设置经 _MethodRows 转为折叠卡的一个子项。
+        tools = getgamecamptools(get_launchpath(gameuid))
 
-        def __(box, layout, config, uid):
-            clearlayout(layout)
-            maycreatesettings(layout, config, uid)
-            if layout.count() == 0:
-                box.hide()
-            else:
-                box.show()
+        class _MethodRows:
+            """launcher.setting(layout, config) 的 layout 适配：
+            每行 addRow(标签, 控件) -> 折叠卡子项（同设置窗口
+            ExExpander 的行式子项），不再走平铺表单。"""
+
+            def __init__(self, expander):
+                self._expander = expander
+
+            def addRow(self, label, widget):
+                row = QWidget()
+                lay = QHBoxLayout(row)
+                lay.setContentsMargins(0, 0, 0, 0)
+                lay.addWidget(LLabel(label) if isinstance(label, str) else label)
+                lay.addStretch(1)
+                # 控件伸展：更长，且各行控件同宽对齐（setting() 可能传
+                # QWidget 或 QLayout）
+                if isinstance(widget, QLayout):
+                    lay.addLayout(widget, 1)
+                else:
+                    lay.addWidget(widget, 1)
+                self._expander.addContentWidget(row)
 
         __launch_method = getsimplecombobox(
-            [_.name for _ in getgamecamptools(get_launchpath(gameuid))],
+            [_.name for _ in tools],
             savehook_new_data[gameuid],
             "launch_method",
-            internal=[_.id for _ in getgamecamptools(get_launchpath(gameuid))],
-            callback=functools.partial(
-                __, box, settinglayout, savehook_new_data[gameuid]
-            ),
+            internal=[_.id for _ in tools],
         )
         self.lauchpath = getsimplepatheditor(
             get_launchpath(gameuid),
@@ -604,21 +853,64 @@ class dialog_setting_game_internal(QWidget):
             icons=("fa.gear", "fa.undo"),
             clearset=lambda: uid2gamepath[gameuid],
         )
-        formLayout.addRow("启动程序", self.lauchpath)
-        formLayout.addRow("启动方式", __launch_method)
-        formLayout.addRow(box)
-
-        formLayout.addRow(
-            "自动切换到模式",
-            getsimplecombobox(
-                ["不切换", "HOOK", "剪贴板", "OCR"],
-                savehook_new_data[gameuid],
-                "onloadautochangemode2",
-                default=0,
+        # 路径（游戏本体路径；记忆列表按钮随标题行走）——与 启动程序 相邻成组
+        formLayout.addRow(makecardrow(
+            "路径",
+            getsimplepatheditor(
+                uid2gamepath[gameuid],
+                callback=self.selectexe,
+                clearable=False,
+                icons=("fa.gear",),
             ),
-        )
+            fill=True,
+        ))
+        exp = ExExpander(content_pad=True)
+        rows = _MethodRows(exp)
+        header = QWidget()
+        hlay = QHBoxLayout(header)
+        hlay.setContentsMargins(0, 12, 0, 12)
+        hlay.setSpacing(8)
+        titlelabel = LLabel("启动方式")
+        titlefont = titlelabel.font()
+        titlefont.setPixelSize(15)
+        titlelabel.setFont(titlefont)
+        hlay.addWidget(titlelabel)
+        hlay.addStretch(1)
+        hlay.addWidget(__launch_method)
+        exp.setHeaderWidget(header)
 
-        __launch_method.currentIndexChanged.emit(__launch_method.currentIndex())
+        def __(idx):
+            exp.clearContentWidgets()
+            try:
+                maycreatesettings(
+                    rows,
+                    savehook_new_data[gameuid],
+                    tools[idx].id,
+                )
+            except:
+                print_exc()
+            # 当前方式无设置项（如 直接启动）时退化为普通卡；
+            # 有设置为折叠卡。不触碰展开态：默认折叠（ExExpander 初始
+            # 态），切换方式保留用户当前的展开/折叠
+            exp.setFoldable(exp.hasContentWidgets())
+
+        __launch_method.currentIndexChanged.connect(__)
+        formLayout.addRow(makecardrow("启动程序", self.lauchpath, fill=True))
+        formLayout.addRow(exp)
+        # 语言（原独立 tab）：启动方式之下的跟随默认折叠卡
+        self.getlangcard(formLayout, gameuid)
+        formLayout.addRow(
+            makecardrow(
+                "自动切换到模式",
+                getsimplecombobox(
+                    ["不切换", "HOOK", "剪贴板", "OCR"],
+                    savehook_new_data[gameuid],
+                    "onloadautochangemode2",
+                    default=0,
+                ),
+            )
+        )
+        __( __launch_method.currentIndex() )
 
     @tryprint
     def __refresh(self):
@@ -841,38 +1133,11 @@ class dialog_setting_game_internal(QWidget):
             string = "0"
         return string
 
-    def tagenewitem(
-        self,
-        gameuid,
-        text,
-        refkey,
-        first=False,
-        _type=tagitem.TYPE_SEARCH,
-    ):
-        qw = tagitem(
-            (
-                globalconfig["tagNameRemap"].get(text, text)
-                if _type == tagitem.TYPE_TAG
-                else text
-            ),
-            True,
-            _type,
-        )
-
-        def __(text, gameuid, _qw, refkey, _):
-            try:
-                savehook_new_data[gameuid][refkey].remove(text)
-                self.flowwidget.removeWidget(_qw)
-            except:
-                print_exc()
-
-        qw.removesignal.connect(functools.partial(__, text, gameuid, qw, refkey))
-
         def safeaddtags(_):
             try:
-                from gui.gamemanager.dialog import dialog_savedgame_new
+                from gui.gamemanager.v3 import dialog_savedgame_v3
 
-                dialog_savedgame_new.reference.tagswidget.addTag(*_)
+                dialog_savedgame_v3.reference.gridpage.tagswidget.addTag(*_)
             except:
                 NativeUtils.ClipBoard.text = _[0]
                 QToolTip.showText(QCursor.pos(), _TR("已复制到剪贴板"), self)
@@ -882,91 +1147,6 @@ class dialog_setting_game_internal(QWidget):
             self.flowwidget.insertWidget(self.labelflowmap[refkey], 1, qw)
         else:
             self.flowwidget.addWidget(self.labelflowmap[refkey], qw)
-
-    def getlabelsetting(self, formLayout: QVBoxLayout, gameuid):
-        self.labelflowmap = {}
-        flowwidget = FlowWidget(groups=4)
-        tagitem.setstyles(flowwidget)
-        self.flowwidget = flowwidget
-        scroll = QScrollArea()
-        scroll.setWidgetResizable(True)
-        scroll.setWidget(flowwidget)
-        formLayout.addWidget(scroll)
-        self.tagtypes = ["developers", "webtags", "usertags"]
-        self.tagtypes_zh = ["开发商", "标签", "自定义"]
-        self.tagtypes_1 = [
-            tagitem.TYPE_DEVELOPER,
-            tagitem.TYPE_TAG,
-            tagitem.TYPE_USERTAG,
-        ]
-
-        def createflows(label, key, _t, index):
-            self.labelflowmap[key] = index
-            flowwidget.addWidget(index, LLabel(label))
-            for tag in savehook_new_data[gameuid][key]:
-                self.tagenewitem(gameuid, tag, key, _type=_t)
-
-        for i in range(len(self.tagtypes)):
-            createflows(self.tagtypes_zh[i], self.tagtypes[i], self.tagtypes_1[i], i)
-
-        button = LPushButton("添加")
-        typecombo = getsimplecombobox(self.tagtypes_zh, default=2)
-        combo = FocusCombo()
-        combo.setEditable(True)
-        self.fuckcombo = combo
-
-        def closeEventFucker(origin, e):
-            try:
-                combo.setEditable(False)
-            except:
-                pass
-            return origin(e)
-
-        origin = self.window().closeEvent
-        if not isqt5:
-            self.window().closeEvent = functools.partial(closeEventFucker, origin)
-
-        def __(idx):
-            t = combo.currentText()
-            combo.clear()
-            combo.addItems(userlabelset(self.tagtypes[idx]))
-            combo.setCurrentText(t)
-
-        typecombo.currentIndexChanged.connect(__)
-        __(2)
-
-        def _add(_):
-            tag = combo.currentText()
-            tp = self.tagtypes[typecombo.currentIndex()]
-            if (not tag) or (tag in savehook_new_data[gameuid][tp]):
-                return
-            savehook_new_data[gameuid][tp].insert(0, tag)
-            self.tagenewitem(
-                gameuid,
-                tag,
-                tp,
-                first=True,
-                _type=self.tagtypes_1[typecombo.currentIndex()],
-            )
-            combo.clearEditText()
-
-        button.clicked.connect(_add)
-
-        formLayout.addLayout(
-            getboxlayout(
-                [
-                    combo,
-                    typecombo,
-                    button,
-                    getIconButton(callback=self.edittagremap),
-                ]
-            )
-        )
-
-    def edittagremap(self):
-        postconfigdialog_(
-            self, globalconfig["tagNameRemap"], "标签映射", ["From", "To"]
-        )
 
     def createfollowdefault(
         self,
@@ -1001,6 +1181,48 @@ class dialog_setting_game_internal(QWidget):
         formLayout2 = klass(__extraw)
         formLayout2.setContentsMargins(0, 0, 0, 0)
         return formLayout2
+
+    def createfollowdefaultfold(self, dic: dict, key: str, callback=None,
+                                title="跟随默认"):
+        """跟随默认折叠卡：头部标题 + [跟随默认]开关（文字在开关旁），
+        内容为各设置行子项（开关开启=跟随默认时内容禁用）。
+        返回 (折叠卡, 内容网格)——调用方填充网格后 addRow 并 setExpanded。"""
+        exp = ExExpander()
+        header = QWidget()
+        hlay = QHBoxLayout(header)
+        hlay.setContentsMargins(0, 12, 0, 12)
+        hlay.setSpacing(8)
+        titlelabel = LLabel(title)
+        titlefont = titlelabel.font()
+        titlefont.setPixelSize(15)
+        titlelabel.setFont(titlefont)
+        hlay.addWidget(titlelabel)
+        hlay.addStretch(1)
+        content = QWidget()
+        grid = VisGridLayout(content)
+        grid.setContentsMargins(0, 0, 0, 0)
+
+        def __function(content, callback, _):
+            content.setEnabled(not _)
+            if callback:
+                try:
+                    callback()
+                except:
+                    print_exc()
+
+        hlay.addWidget(getsmalllabel("跟随默认")())
+        hlay.addWidget(
+            getsimpleswitch(
+                dic,
+                key,
+                callback=functools.partial(__function, content, callback),
+                default=True,
+            )
+        )
+        exp.setHeaderWidget(header)
+        exp.addContentWidget(content)
+        content.setEnabled(not dic.get(key, True))
+        return exp, grid
 
     def getttssetting(self, formLayout: LFormLayout, gameuid):
         formLayout2 = self.createfollowdefault(
@@ -1068,20 +1290,24 @@ class dialog_setting_game_internal(QWidget):
             if x:
                 MagpieConfig.remove(gameuid)
             else:
+                # 取消跟随时创建的全部设置项包一张内容卡
+                card = GroupCardWidget()
+                hostlay = QVBoxLayout(card.contentWidget())
+                hostlay.setContentsMargins(0, 0, 0, 0)
                 makescrollgrid(
                     makescalew(MagpieConfig.find(gameuid, notexitscreate=True)),
-                    internal,
+                    hostlay,
                 )
+                internal.addWidget(card)
 
         internal = QGridLayout()
         internal.setContentsMargins(0, 0, 0, 0)
         btn = getsimpleswitch(
             {}, None, default=not MagpieConfig.find(gameuid), callback=__
         )
-        formLayout.setContentsMargins(0, 0, 0, 0)
-        formLayout.setSpacing(0)
         _w = QWidget()
         btnline = LFormLayout(_w)
+        btnline.setContentsMargins(0, 0, 0, 0)
         btnline.addRow("跟随默认", btn)
         formLayout.addRow(_w)
         formLayout.addRow(internal)
@@ -1120,185 +1346,46 @@ class dialog_setting_game_internal(QWidget):
             ),
         )
 
-    def gettransoptimi(self, formLayout: LFormLayout, gameuid):
-
-        vbox: QGridLayout = self.createfollowdefault(
+    def gettextproctab(self, formLayout: LFormLayout, gameuid):
+        """文本处理 tab（原 文本处理/翻译优化 两 tab 合并）：各一张
+        跟随默认折叠卡（头部右侧 跟随默认 + 开关，开启跟随时内容禁用），
+        卡内为对应的树列表。"""
+        # 文本预处理
+        exp, grid = self.createfollowdefaultfold(
+            savehook_new_data[gameuid],
+            "textproc_follow_default",
+            title="文本预处理",
+        )
+        tree = _GameTextProcTree(self, gameuid)
+        tree.setMinimumHeight(120)
+        self.__textproctree = tree
+        grid.addWidget(wrap_setting_tree(tree), 0, 0)
+        # 排序由树的移动按钮/拖拽承担，这里只留增删
+        grid.addLayout(
+            manybuttonlayout(
+                [
+                    ("添加行", self.__privatetextproc_btn1),
+                    ("删除行", self.__privatetextproc_btn2),
+                ]
+            ),
+            1, 0,
+        )
+        exp.setExpanded(True)
+        formLayout.addRow(exp)
+        # 翻译优化
+        exp2, grid2 = self.createfollowdefaultfold(
             savehook_new_data[gameuid],
             "transoptimi_followdefault",
-            formLayout,
-            klass=QGridLayout,
+            title="翻译优化",
         )
-        objects = [["", "", "", ""]]
-
-        for item in static_data["transoptimi"]:
-
-            name = item["name"]
-            visname = item["visname"]
-            if not checkpostlangmatch(name):
-                continue
-
-            setting = loadpostsettingwindowmethod_private(name)
-            if not setting:
-                continue
-
-            def __(_f, _1, gameuid):
-                return _f(_1, gameuid)
-
-            obj = [
-                getsmalllabel(visname),
-                getsimpleswitch(
-                    savehook_new_data[gameuid],
-                    name + "_use",
-                    default=False,
-                ),
-                getIconButton(callback=functools.partial(__, setting, self, gameuid)),
-            ]
-            objects.append(obj)
-        automakegrid(vbox, objects)
-
-    def gettextproc(self, formLayout: LFormLayout, gameuid):
-
-        vbox = self.createfollowdefault(
-            savehook_new_data[gameuid], "textproc_follow_default", formLayout
-        )
-
-        model = LStandardItemModel()
-        model.setHorizontalHeaderLabels(["预处理方法", "使用", "设置"])
-
-        table = TableViewW()
-
-        table.setModel(model)
-        table.horizontalHeader().setSectionResizeMode(
-            2, QHeaderView.ResizeMode.ResizeToContents
-        )
-        table.horizontalHeader().setSectionResizeMode(
-            1, QHeaderView.ResizeMode.ResizeToContents
-        )
-        table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
-        table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
-        table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
-        table.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
-        table.setWordWrap(False)
-
-        table.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
-        table.customContextMenuRequested.connect(self.__privatetextproc_showmenu)
-        self.__textprocinternaltable = table
-        self.__textprocinternalmodel = model
-        self.__privatetextproc_gameuid = gameuid
-        for row, k in enumerate(
-            savehook_new_data[gameuid]["save_text_process_info"]["rank"]
-        ):
-            self.__checkaddnewmethod(row, k)
-        vbox.addWidget(table)
-        button = manybuttonlayout(
-            [
-                ("添加行", self.__privatetextproc_btn1),
-                ("删除行", self.removerows),
-                ("上移", functools.partial(self.__privatetextproc_moverank, -1)),
-                ("下移", functools.partial(self.__privatetextproc_moverank, 1)),
-            ]
-        )
-        vbox.addRow(button)
-
-    def __privatetextproc_showmenu(self, p):
-        r = self.__textprocinternaltable.currentIndex().row()
-        if r < 0:
-            return
-        menu = QMenu(self.__textprocinternaltable)
-        remove = LAction("删除", menu)
-        up = LAction("上移", menu)
-        down = LAction("下移", menu)
-        menu.addAction(remove)
-        menu.addAction(up)
-        menu.addAction(down)
-        action = menu.exec(self.__textprocinternaltable.cursor().pos())
-
-        if action == remove:
-            self.__privatetextproc_btn2()
-        elif action == up:
-            self.__privatetextproc_moverank(-1)
-        elif action == down:
-            self.__privatetextproc_moverank(1)
-
-    def __privatetextproc_moverank(self, dy):
-        __row = self.__textprocinternaltable.currentIndex().row()
-
-        __list = savehook_new_data[self.__privatetextproc_gameuid][
-            "save_text_process_info"
-        ]["rank"]
-        game = __list[__row]
-        idx1 = __list.index(game)
-        idx2 = (idx1 + dy) % len(__list)
-        __list.insert(idx2, __list.pop(idx1))
-        self.__textprocinternalmodel.removeRow(idx1)
-        self.__checkaddnewmethod(idx2, game)
-        self.__textprocinternaltable.setCurrentIndex(
-            self.__textprocinternalmodel.index(__row, 0)
-        )
-
-    def __checkaddnewmethod(self, row, _internal):
-        if _internal not in postprocessconfig:
-            return
-        self.__textprocinternalmodel.insertRow(
-            row,
-            [
-                QStandardItem(_TR(postprocessconfig[_internal]["name"])),
-                QStandardItem(),
-                QStandardItem(),
-            ],
-        )
-        __dict = savehook_new_data[self.__privatetextproc_gameuid][
-            "save_text_process_info"
-        ]["postprocessconfig"]
-        if _internal not in __dict:
-            if _internal == "stringreplace":
-                __dict[_internal] = copy.deepcopy(defaultpost[_internal])
-            else:
-                __dict[_internal] = copy.deepcopy(postprocessconfig[_internal])
-            __dict[_internal]["use"] = True
-        btn = maybehavebutton(self, self.__privatetextproc_gameuid, _internal)
-
-        self.__textprocinternaltable.setIndexWidget(
-            self.__textprocinternalmodel.index(row, 1),
-            getsimpleswitch(__dict[_internal], "use"),
-        )
-        if btn:
-            self.__textprocinternaltable.setIndexWidget(
-                self.__textprocinternalmodel.index(row, 2),
-                btn,
-            )
-
-    def removerows(self):
-
-        skip = []
-        for index in self.__textprocinternaltable.selectedIndexes():
-            if index.row() in skip:
-                continue
-            skip.append(index.row())
-        skip = reversed(sorted(skip))
-
-        for row in skip:
-            self.__textprocinternalmodel.removeRow(row)
-            _dict = savehook_new_data[self.__privatetextproc_gameuid][
-                "save_text_process_info"
-            ]
-            post = _dict["rank"][row]
-            _dict["rank"].pop(row)
-            if post in _dict["postprocessconfig"]:
-                _dict["postprocessconfig"].pop(post)
+        tree2 = _GameTransOptimiTree(self, gameuid)
+        tree2.setMinimumHeight(120)
+        grid2.addWidget(wrap_setting_tree(tree2), 0, 0)
+        exp2.setExpanded(True)
+        formLayout.addRow(exp2)
 
     def __privatetextproc_btn2(self):
-        row = self.__textprocinternaltable.currentIndex().row()
-        if row < 0:
-            return
-        self.__textprocinternalmodel.removeRow(row)
-        _dict = savehook_new_data[self.__privatetextproc_gameuid][
-            "save_text_process_info"
-        ]
-        post = _dict["rank"][row]
-        _dict["rank"].pop(row)
-        if post in _dict["postprocessconfig"]:
-            _dict["postprocessconfig"].pop(post)
+        self.__textproctree.removecurrent()
 
     def __privatetextproc_btn1(self):
 
@@ -1307,9 +1394,7 @@ class dialog_setting_game_internal(QWidget):
         for xx in postprocessconfig:
             if xx not in processfunctions:
                 continue
-            __list = savehook_new_data[self.__privatetextproc_gameuid][
-                "save_text_process_info"
-            ]["rank"]
+            __list = self.__textproctree._rank()
             if xx in __list:
                 continue
             __viss.append(postprocessconfig[xx]["name"])
@@ -1317,8 +1402,7 @@ class dialog_setting_game_internal(QWidget):
 
         def __callback(_internal, d):
             __ = _internal[d["k"]]
-            __list.insert(0, __)
-            self.__checkaddnewmethod(0, __)
+            self.__textproctree.addmethod(__)
 
         __d = {"k": 0}
         autoinitdialog(
@@ -1333,168 +1417,188 @@ class dialog_setting_game_internal(QWidget):
                     "k": "k",
                     "list": __viss,
                 },
-                {
-                    "type": "okcancel",
-                    "callback": functools.partial(__callback, _internal, __d),
-                },
             ],
             exec_=True,
+            callback=functools.partial(__callback, _internal, __d),
         )
 
-    def getlangtab(self, formLayout: LFormLayout, gameuid):
+    def getlangcard(self, formLayout: LFormLayout, gameuid):
+        """语言（原独立 tab，并入 启动-启动方式 之下）：跟随默认折叠卡，
+        源语言/目标语言各为一个子项（独立内容面板）。"""
+        # content_pad：子项右缘与头部跟随默认开关右缘对齐
+        exp = ExExpander(content_pad=True)
+        header = QWidget()
+        hlay = QHBoxLayout(header)
+        hlay.setContentsMargins(0, 12, 0, 12)
+        hlay.setSpacing(8)
+        titlelabel = LLabel("语言")
+        titlefont = titlelabel.font()
+        titlefont.setPixelSize(15)
+        titlelabel.setFont(titlefont)
+        hlay.addWidget(titlelabel)
+        hlay.addStretch(1)
+        rows = []
 
-        formLayout2 = self.createfollowdefault(
-            savehook_new_data[gameuid], "lang_follow_default", formLayout
-        )
-        formLayout2.addRow(
-            "源语言",
-            getsimplecombobox(
-                all_langs()[0],
+        def __use(v):
+            for r in rows:
+                r.setEnabled(not v)
+
+        hlay.addWidget(getsmalllabel("跟随默认")())
+        hlay.addWidget(
+            getsimpleswitch(
                 savehook_new_data[gameuid],
-                "private_srclang_2",
-                internal=all_langs()[1],
-                default=globalconfig.get("srclang4", "auto"),
-            ),
+                "lang_follow_default",
+                callback=__use,
+                default=True,
+            )
         )
-        formLayout2.addRow(
-            "目标语言",
-            getsimplecombobox(
-                all_langs(False)[0],
-                savehook_new_data[gameuid],
-                "private_tgtlang_2",
-                internal=all_langs(False)[1],
-                default=globalconfig.get("tgtlang4", "zh"),
-            ),
-        )
+        exp.setHeaderWidget(header)
+
+        def _langrow(label, key, langs, dflt):
+            row = QWidget()
+            lay = QHBoxLayout(row)
+            lay.setContentsMargins(0, 0, 0, 0)
+            lay.addWidget(LLabel(label))
+            lay.addStretch(1)
+            lay.addWidget(
+                getsimplecombobox(
+                    langs[0],
+                    savehook_new_data[gameuid],
+                    key,
+                    internal=langs[1],
+                    default=dflt,
+                )
+            )
+            rows.append(row)
+            exp.addContentWidget(row)
+
+        _langrow("源语言", "private_srclang_2", all_langs(),
+                 globalconfig.get("srclang4", "auto"))
+        _langrow("目标语言", "private_tgtlang_2", all_langs(False),
+                 globalconfig.get("tgtlang4", "zh"))
+        __use(savehook_new_data[gameuid].get("lang_follow_default", True))
+        formLayout.addRow(exp)
 
     def getembedtab(self, formLayout: LFormLayout, gameuid):
 
-        formLayout2 = self.createfollowdefault(
+        # 跟随默认 → 折叠卡（各设置行为子项）
+        exp, grid = self.createfollowdefaultfold(
             savehook_new_data[gameuid],
             "embed_follow_default",
-            formLayout,
             callback=lambda: gobject.base.textsource.set_settings_ex(),
-            klass=VisGridLayout,
+            title="内嵌翻译",
         )
         automakegrid(
-            formLayout2,
+            grid,
             gethookgrid_em(savehook_new_data[gameuid]["embed_setting_private"]),
         )
+        formLayout.addRow(exp)
         if savehook_new_data[gameuid].get("embedablehook"):
-            box = NQGroupBox()
-            settinglayout = LFormLayout(box)
-
-            settinglayout.addRow(
-                "已激活的",
-                listediterline(
+            formLayout.addRow(
+                makecardrow(
                     "已激活的",
-                    savehook_new_data[gameuid]["embedablehook"],
-                    specialklass=embeddisabler,
-                ),
+                    listediterline(
+                        "已激活的",
+                        savehook_new_data[gameuid]["embedablehook"],
+                        specialklass=embeddisabler,
+                    ),
+                )
             )
-            formLayout.addRow(box)
 
     def gethooktab_internal(self, formLayout: LFormLayout, gameuid):
 
-        box = NQGroupBox()
-        settinglayout = LFormLayout(box)
-        formLayout.addRow(box)
         __label = getsmalllabel("重新启动后生效")()
         __label.hide()
-        settinglayout.addRow(
-            "延迟注入_(ms)",
-            getboxlayout(
-                [
-                    getspinbox(
-                        0,
-                        1000000,
-                        savehook_new_data[gameuid],
-                        "inserthooktimeout",
-                        default=500,
-                        callback=lambda _: __label.show(),
-                    ),
-                    __label,
-                ]
-            ),
+        formLayout.addRow(
+            makecardrow(
+                "延迟注入_(ms)",
+                getspinbox(
+                    0,
+                    1000000,
+                    savehook_new_data[gameuid],
+                    "inserthooktimeout",
+                    default=500,
+                    callback=lambda _: __label.show(),
+                ),
+                __label,
+            )
         )
         __label2 = getsmalllabel("重新启动后生效")()
         __label2.hide()
-        settinglayout.addRow(
-            "Win32通用钩子",
-            getboxlayout(
-                [
-                    getsimpleswitch(
-                        savehook_new_data[gameuid],
-                        "insertpchooks_string",
-                        callback=lambda _: (
-                            (
-                                gobject.base.textsource.InsertPCHooks()
-                                if _
-                                else __label2.show()
-                            )
-                        ),
-                        default=False,
+        formLayout.addRow(
+            makecardrow(
+                "Win32通用钩子",
+                getsimpleswitch(
+                    savehook_new_data[gameuid],
+                    "insertpchooks_string",
+                    callback=lambda _: (
+                        (
+                            gobject.base.textsource.InsertPCHooks()
+                            if _
+                            else __label2.show()
+                        )
                     ),
-                    "",
-                    __label2,
-                ]
-            ),
+                    default=False,
+                ),
+                __label2,
+            )
         )
         if "needinserthookcode" not in savehook_new_data[gameuid]:
             savehook_new_data[gameuid]["needinserthookcode"] = []
-        settinglayout.addRow(
-            "特殊码",
-            listediterline(
+        formLayout.addRow(
+            makecardrow(
                 "特殊码",
-                savehook_new_data[gameuid]["needinserthookcode"],
-            ),
-        )
-        if savehook_new_data[gameuid].get("removeforeverhook"):
-
-            settinglayout.addRow(
-                "移除且总是移除",
                 listediterline(
-                    "移除且总是移除",
-                    savehook_new_data[gameuid]["removeforeverhook"],
-                    specialklass=embeddisabler,
+                    "特殊码",
+                    savehook_new_data[gameuid]["needinserthookcode"],
                 ),
             )
-        box = NQGroupBox()
-        settinglayout = LFormLayout(box)
-        formLayout.addRow(box)
+        )
+        if savehook_new_data[gameuid].get("removeforeverhook"):
+            formLayout.addRow(
+                makecardrow(
+                    "移除且总是移除",
+                    listediterline(
+                        "移除且总是移除",
+                        savehook_new_data[gameuid]["removeforeverhook"],
+                        specialklass=embeddisabler,
+                    ),
+                )
+            )
 
-        formLayout2 = self.createfollowdefault(
+        # 跟随默认 → 折叠卡（各设置行为子项）
+        exp, grid = self.createfollowdefaultfold(
             savehook_new_data[gameuid],
             "hooksetting_follow_default",
-            settinglayout,
-            lambda: gobject.base.textsource.setsettings(),
-            klass=VisGridLayout,
+            callback=lambda: gobject.base.textsource.setsettings(),
+            title="HOOK设置",
         )
         automakegrid(
-            formLayout2,
+            grid,
             gethookgrid(savehook_new_data[gameuid]["hooksetting_private"]),
         )
+        formLayout.addRow(exp)
 
     def gethooktab(self, gameuid):
-        _w = QWidget()
-        formLayout = QVBoxLayout(_w)
-        formLayout.setContentsMargins(0, 0, 0, 0)
-        functs = [
-            ("HOOK设置", functools.partial(self.___tabf, self.gethooktab_internal)),
-            ("内嵌翻译", functools.partial(self.___tabf, self.getembedtab)),
-        ]
-        methodtab, do = makesubtab_lazy(
-            [_[0] for _ in functs],
-            [functools.partial(self.doaddtab, _[1], gameuid) for _ in functs],
-            delay=True,
-            initial=(
-                (self.keepindexobject, "gamesettinghook")
-                if (self.keepindexobject is not None)
-                else None
-            ),
-        )
-        formLayout.addWidget(methodtab)
-        return _w, do
+        # 滚动区内容控件必须同 makegrid 的 gridwidget 一样用 QSS 类做透明：
+        # 否则会被设上 autofill，以 Window(243) 盖掉页面卡底色(249)
+        # （见 makegrid/makescroll 的配套注释）
+        class hookscrollcontent(QWidget):
+            pass
+
+        _w = hookscrollcontent()
+        _w.setStyleSheet("hookscrollcontent{background-color:transparent;}")
+        formLayout = LFormLayout(_w)
+        formLayout.setContentsMargins(16, 16, 16, 12 )
+
+        def __():
+            self.gethooktab_internal(formLayout, gameuid)
+            self.getembedtab(formLayout, gameuid)
+
+        # 两个折叠卡全展开时内容过长——包滚动区
+        scroll = makescroll()
+        scroll.setWidget(_w)
+        return scroll, __
 
 
 @Singleton
@@ -1518,7 +1622,7 @@ class embeddisabler(LDialog):
         self.setWindowTitle(name)
         model = QStandardItemModel()
         self.hcmodel = model
-        table = QTableView()
+        table = LTableView()
         table.horizontalHeader().setVisible(False)
         table.horizontalHeader().setStretchLastSection(True)
         table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
@@ -1550,24 +1654,3 @@ class embeddisabler(LDialog):
 
     def closeEvent(self, _):
         self.closecallback(self.changed)
-
-
-@Singleton
-class dialog_setting_game(QDialog):
-    reference: "dialog_setting_game" = None
-
-    def __init__(self, parent, gameuid, setindexhook=0) -> None:
-        super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
-        dialog_setting_game.reference = self
-
-        self.setWindowTitle(savehook_new_data[gameuid]["title"])
-
-        self.setWindowIcon(getExeIcon(get_launchpath(gameuid), cache=True))
-        _ = dialog_setting_game_internal(
-            self, gameuid, keepindexobject={"gamesetting": setindexhook}
-        )
-        _.setMinimumWidth(600)
-        l = QHBoxLayout(self)
-        l.addWidget(_)
-        l.setContentsMargins(0, 0, 0, 0)
-        self.show()

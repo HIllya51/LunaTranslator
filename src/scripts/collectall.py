@@ -1,5 +1,6 @@
 import shutil, os, base64
 import sys, re, json
+import zipfile
 from importanalysis import importanalysis
 import urllib.request
 import urllib.error
@@ -53,6 +54,47 @@ else:
 os.makedirs(targetdir, exist_ok=True)
 
 
+def downloadfluentstyleplugin(arch, target, targetdir):
+    """FluentUI3 样式插件：按构建目标取 HIllya51/FluentUIStyle 的
+    common release 对应资产（win10 为完整 SDK zip，win7/xp 为纯插件
+    zip——dll 在 zip 根），并入 files/plugins/styles（运行时 gui.fluent
+    以 addLibraryPath(files/plugins) 挂载，app.setStyle("FluentUI3")
+    生效；缺失时自动回退基础样式）。插件自包含——导入表仅 Qt5*/VCRT/
+    dwmapi，无需 SDK bin 下其它 dll。"""
+    variant = {
+        # (arch, target): (资产名, zip 内插件路径)
+        ("x64", "win10"): (
+            "FluentUI3-SDK-common-Windows-Qt5.15.2-x64.zip",
+            "plugins/styles/FluentUI3StylePlugin.dll",
+        ),
+        ("x64", "win7"): (
+            "FluentUI3StylePlugin-common-Windows-Qt5.15.2-x64-Win7.zip",
+            "FluentUI3StylePlugin.dll",
+        ),
+        ("x86", "winxp"): (
+            "FluentUI3StylePlugin-common-Windows-Qt5.15.2-x86-XP.zip",
+            "FluentUI3StylePlugin.dll",
+        ),
+    }.get((arch, target))
+    if variant is None:
+        return
+    fname, inner = variant
+    url = (
+        "https://github.com/HIllya51/FluentUIStyle/releases/download/"
+        "common/" + fname
+    )
+    os.makedirs("scripts/temp", exist_ok=True)
+    zipp = os.path.join("scripts/temp", fname)
+    if not os.path.exists(zipp):
+        urllib.request.urlretrieve(url, zipp)
+    with zipfile.ZipFile(zipp) as zipf:
+        dst = os.path.join(targetdir, "files/plugins/styles")
+        os.makedirs(dst, exist_ok=True)
+        with zipf.open(inner) as src, \
+                open(os.path.join(dst, "FluentUI3StylePlugin.dll"), "wb") as ff:
+            ff.write(src.read())
+
+
 def copycheck(src, tgt):
     print(src, tgt, os.path.exists(src))
     if not os.path.exists(src):
@@ -93,6 +135,7 @@ try:
     shutil.rmtree(rf"{targetdir}\files\{baddll}")
 except:
     pass
+downloadfluentstyleplugin(arch, target, targetdir)
 
 os.makedirs(os.path.join(targetdir, "LICENSES"))
 shutil.copy(

@@ -1,4 +1,5 @@
 from qtsymbols import *
+from gui.fluent.messagebox import ExMessageBox
 
 # 这个可能在加载c++环境之前被调用，所以必须不能有那些复杂的依赖
 
@@ -6,7 +7,6 @@ from qtsymbols import *
 def RichMessageBox(
     parent, title, text: str, iserror=True, iswarning=False, isQuestion=False
 ):
-    b = QMessageBox(parent)
     icon = (
         QMessageBox.Icon.Critical
         if iserror
@@ -20,12 +20,11 @@ def RichMessageBox(
             )
         )
     )
-    if isQuestion:
-        b.setStandardButtons(
-            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
-        )
-    b.setIcon(icon)
-    b.setWindowTitle(title)
-    b.setText(text.replace("\n", "<br>"))
+    buttons = (
+        QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
+        if isQuestion
+        else QMessageBox.StandardButton.Ok
+    )
+    b = ExMessageBox(icon, title, text.replace("\n", "<br>"), buttons, parent)
     b.setTextFormat(Qt.TextFormat.RichText)
     return b.exec()

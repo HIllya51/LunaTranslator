@@ -3004,6 +3004,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // Sullyland Nursery Rhyme
+    {0x8001B580, {FULL_STRING | CODEC_UTF8, 0, 0, 0, F0100BDD01AAE4000, 0x01005E5023A0A000ull, "1.0.0"}},
     // Le Mirage Mystique
     {0x81D08180, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, f0100D2A02101C000, 0x0100E81024F40000ull, "1.0.0"}},
     {0x81D081B0, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, f0100D2A02101C000, 0x0100E81024F40000ull, "1.0.1"}},
@@ -4416,8 +4418,8 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x80045918, {0, 0, 0, 0, F01008BA00F172000, 0x01008BA00F172000ull, "1.0.2"}},
     {0x80045798, {0, 0, 0, 0, F01008BA00F172000, 0x01008BA00F172000ull, "1.0.3"}},
     // EVE ghost enemies
-    {0x80053900, {0, 1, 0, 0, F01008BA00F172000, 0x01007BE0160D6000ull, "1.0.0"}},
-    {0x80052440, {0, 1, 0, 0, F01008BA00F172000, 0x01007BE0160D6000ull, "1.0.1"}},
+    {0x80053900, {FULL_STRING, 1, 0, 0, F01008BA00F172000, 0x01007BE0160D6000ull, "1.0.0"}},
+    {0x80052440, {FULL_STRING, 1, 0, 0, F01008BA00F172000, 0x01007BE0160D6000ull, nullptr}}, // 1.0.1 & 1.0.2
     // ニル・アドミラリの天秤 色ドリ撫子 //二合一，其一
     {0x8000BDD0, {0, 8, 0, 0, F01002BB00A662000, 0x01002BB00A662000ull, "1.0.0"}}, // text
     {0x80019260, {0, 0, 0, 0, F01002BB00A662000, 0x01002BB00A662000ull, "1.0.0"}}, // name+text

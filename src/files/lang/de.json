@@ -955,5 +955,15 @@
     "下载/解压失败": "Download/Entpacken fehlgeschlagen",
     "请手动下载并解压到软件目录下": "Bitte manuell herunterladen und in das Softwareverzeichnis entpacken.",
     "未检测到Unity TMP字体文件。内嵌翻译修改游戏字体需要这些文件，请点击下载：": "Unity-TMP-Schriftdatei nicht erkannt. Für die Änderung der Spielschriftart durch eingebettete Übersetzung werden diese Dateien benötigt. Bitte zum Herunterladen klicken:",
-    "插入": "Einfügen"
+    "插入": "Einfügen",
+    "收起设置": "Einstellungen ausblenden",
+    "折叠/展开侧边栏": "Seitenleiste ein-/ausklappen",
+    "上一张": "Zurück",
+    "下一张": "Weiter",
+    "展开/收起导航": "Navigation ein-/ausklappen",
+    "界面语言": "Sprache der Benutzeroberfläche",
+    "应用主题": "Anwendungsthema",
+    "隐藏目标": "Verstecktes Ziel",
+    "隐藏延迟": "Versteckte Latenz",
+    "编辑颜色": "Farbe bearbeiten"
 }

@@ -51,6 +51,7 @@ from textio.textsource.mssr import mssr
 from gui.selecthook import hookselect
 from gui.translatorUI import TranslatorWindow
 import functools, gobject
+import gui.fluent
 from gui.transhist import transhist
 from gui.edittext import edittext
 from gui.flowsearchword import WordViewTooltip
@@ -276,7 +277,6 @@ class BASEOBJECT(QObject):
         self.willshutdown = False
         self.history = HistoryHelper()
         self.currentisdark = None
-        self.currentmica = None
         self.update_avalable = False
         self.translators: "dict[str, basetrans]" = {}
         self.cishus: "dict[str, cishubase]" = {}
@@ -1328,16 +1328,10 @@ class BASEOBJECT(QObject):
         if ((not ismenulist)) and self.__dontshowintaborsetbackdrop(widget):
             return
         if ismenulist:
-            name = ui_settings.get("theme3", "PyQtDarkTheme")
-            NativeUtils.SetCornerNotRound(int(widget.winId()), False, name == "QTWin11")
-            if name == "QTWin11":
-                NativeUtils.setAcrylicEffect(
-                    int(widget.winId()), True, [0x40F7F7FA, 0x40212121][dark]
-                )
-            else:
-                NativeUtils.clearEffect(int(widget.winId()))
+            pass
         else:
-            NativeUtils.SetTheme(int(widget.winId()), dark, self.currentmica)
+            # 原"窗口特效"设置（其他界面）已删除，固定 MicaAlt（TABBEDWINDOW）
+            NativeUtils.SetTheme(int(widget.winId()), dark, 3)
 
     def checkkeypresssatisfy(self, key, df=False):
         if not globalconfig["wordclickkbtriggerneed"].get(key, df):
@@ -1596,82 +1590,19 @@ class BASEOBJECT(QObject):
         for widget in QApplication.topLevelWidgets():
             self.giveupfocus_checked(widget)
 
-    def ismenulistframeless(self, widget: QWidget):
-        ismenulist = isinstance(widget, (QMenu, PopupWidget)) or (
-            type(widget) == QFrame
-        )
-        return ismenulist or self.__dontshowintaborsetbackdrop(widget)
-
-    def cornerornot(self, w=None):
-        __ = [w] if w else QApplication.topLevelWidgets()
-        for widget in __:
-            if self.ismenulistframeless(widget):
-                continue
-            NativeUtils.SetCornerNotRound(
-                int(widget.winId()), ui_settings.get("force_rect", True), False
-            )
-
     def setcommonstylesheet(self):
-
+        # 只负责明暗切换：qtawesome 图标翻转 + 广播 DarkLightChangedEvent
+        # + FluentUI3 明暗重扫。UI 字体在 loadui 设置、语言切换时由
+        # changeUIlanguage 重设，与此无关。
         dark = nowisdark()
         qtawesome.isdark = dark
-        __curr = (dark, ui_settings.get("WindowBackdrop", 3))
-        if (self.currentisdark, self.currentmica) != __curr:
-            self.currentisdark, self.currentmica = __curr
+        if self.currentisdark != dark:
+            self.currentisdark = dark
             for widget in QApplication.allWidgets():
                 QApplication.postEvent(widget, DarkLightChangedEvent(dark))
             for widget in QApplication.topLevelWidgets():
                 self.setdarkandbackdrop(widget, dark)
-        darklight = ["light", "dark"][dark]
-
-        style = ""
-        for _ in (0,):
-            try:
-                name = ui_settings.get("theme3", "PyQtDarkTheme")
-                _fn = None
-                for n in static_data["themes"]:
-                    if n["name"] == name:
-                        _fn = n["file"][darklight]
-                        break
-
-                if not _fn:
-                    break
-
-                if _fn.endswith(".py"):
-                    style = importlib.import_module(
-                        "files.LunaTranslator_qss." + _fn[:-3].replace("/", ".")
-                    ).stylesheet()
-                elif _fn.endswith(".qss"):
-                    with open(
-                        "files/LunaTranslator_qss/{}".format(_fn),
-                        "r",
-                    ) as ff:
-                        style = ff.read()
-            except:
-                print_exc()
-        fontstr = lambda fsize: "font:{fontsize}pt  {fonttype};".format(
-            fontsize=fsize,
-            fonttype=ui_settings.get(
-                "settingfonttype", gobject.tempconfig.get("settingfonttype", "")
-            ),
-        )
-        style += "*{{  {}  }}".format(fontstr(ui_settings.get("settingfontsize", 12)))
-        style += "QListWidget {{ {} }}".format(
-            fontstr(ui_settings.get("settingfontsize", 12) + 2)
-        )
-        style += "QGroupBox{ background:transparent; } QGroupBox#notitle{ margin-top:0px;} QGroupBox#notitle:title {margin-top: 0px;}"
-        style += "#NOBORDER{border:0;margin:0;padding:0;}"
-        if self.commonstylebase.styleSheet() != style:
-            self.commonstylebase.setStyleSheet(style)
-        font = QFont()
-        font.setFamily(
-            ui_settings.get(
-                "settingfonttype", gobject.tempconfig.get("settingfonttype", "")
-            )
-        )
-        font.setPointSizeF(ui_settings.get("settingfontsize", 12))
-        if QApplication.instance().font() != font:
-            QApplication.instance().setFont(font)
+        gui.fluent.apply_fluent_style(dark)
 
     def get_font_default(self, lang: Languages, issetting: bool) -> str:
 
@@ -1697,12 +1628,10 @@ class BASEOBJECT(QObject):
         return font_default
 
     def parsedefaultfont(self):
-        for k in ["fonttype", "fonttype2", "settingfonttype"]:
+        for k in ["fonttype", "fonttype2"]:
             if not ui_settings.get(k, ""):
                 l = Languages.Japanese if k == "fonttype" else getlanguse()
-                gobject.tempconfig[k] = self.get_font_default(
-                    l, True if k == "settingfonttype" else False
-                )
+                gobject.tempconfig[k] = self.get_font_default(l, False)
 
     def loadui(self, startwithgameuid):
         QApplication.instance().installEventFilter(self)
@@ -1757,6 +1686,11 @@ class BASEOBJECT(QObject):
         self.serviceinit()
         versioncheckthread()
         autostartllamacpp()
+
+        font = QFont()
+        font.setFamily(self.get_font_default(getlanguse(), True))
+        font.setPixelSize(13)
+        QApplication.instance().setFont(font)
 
     @property
     def focusWindow(self):
@@ -1827,16 +1761,18 @@ class BASEOBJECT(QObject):
             self.RichMessageBox.emit((_TR(title if title else "错误"), _TR(msg)))
 
     def _dowhenwndcreate(self, obj):
+        # 同 Gallery：FluentUI3 插件全权接管窗口外观，不做任何 DWM
+        # 窗口处理（旧的 SetWindowExtendFrame/SetTheme/SetCornerNotRound
+        # 是旧 QSS 主题的遗留，会给菜单/窗口制造系统边框与灰底）。
+        # 只保留功能性处理：Magpie 标记、任务栏显示、焦点让渡。
         if not isinstance(obj, QWidget):
             return
         hwnd = obj.winId()
         if not hwnd:  # window create/destroy,when destroy winId is None
             return
         windows.SetProp(int(obj.winId()), "Magpie.ToolWindow", windows.HANDLE(1))
-        self.cornerornot(obj)
         self.setshowintab_checked(obj)
         self.giveupfocus_checked(obj)
-        NativeUtils.SetWindowExtendFrame(int(hwnd))
         if self.currentisdark is not None:
             self.setdarkandbackdrop(obj, self.currentisdark)
 

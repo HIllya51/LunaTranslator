@@ -1,4 +1,5 @@
 from qtsymbols import *
+from gui.fluent.messagebox import ExMessageBox
 import os, functools
 import windows, qtawesome, gobject
 from NativeUtils import GetProcessFirstWindow
@@ -26,7 +27,7 @@ class AttachProcessDialog(saveposwindow):
         self.button.setText("点击此按钮后点击游戏窗口"),
         name = windows.GetProcessFileName(pid)
         if not name:
-            QMessageBox.critical(
+            ExMessageBox.critical(
                 self, _TR("错误"), _TR("权限不足，请以管理员权限运行！")
             )
             return
@@ -245,7 +246,7 @@ class AttachProcessDialog(saveposwindow):
             self.close()
         else:
             if self.selectedp[1] is None:
-                QMessageBox.critical(
+                ExMessageBox.critical(
                     self, _TR("错误"), _TR("权限不足，请以管理员权限运行！")
                 )
                 return
