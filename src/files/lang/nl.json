@@ -955,5 +955,15 @@
     "下载/解压失败": "Download/uitpakken mislukt",
     "请手动下载并解压到软件目录下": "Download en pak handmatig uit naar de softwaremap.",
     "未检测到Unity TMP字体文件。内嵌翻译修改游戏字体需要这些文件，请点击下载：": "Unity TMP-lettertypebestand niet gedetecteerd. Ingebouwde vertaling vereist deze bestanden om het spellettertype te wijzigen. Klik om te downloaden:",
-    "插入": "Invoegen"
+    "插入": "Invoegen",
+    "收起设置": "Instellingen verbergen",
+    "折叠/展开侧边栏": "Zijbalk samenvouwen/uitvouwen",
+    "上一张": "Vorige",
+    "下一张": "Volgende",
+    "展开/收起导航": "Navigatie uit-/samenvouwen",
+    "界面语言": "Interface taal",
+    "应用主题": "Thema toepassen",
+    "隐藏目标": "Verborgen doel",
+    "隐藏延迟": "Verborgen latentie",
+    "编辑颜色": "Kleur bewerken"
 }

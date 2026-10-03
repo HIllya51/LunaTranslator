@@ -1,4 +1,5 @@
 from qtsymbols import *
+from gui.fluent.messagebox import ExMessageBox
 import os
 import functools
 import hashlib
@@ -27,15 +28,24 @@ from gui.dynalang import (
     LLabel,
     LPushButton,
     LAction,
-    LGroupBox,
     LFormLayout,
     LTabWidget,
     LStandardItemModel,
     LDialog,
     LTableView,
     LMainWindow,
-    LToolButton,
 )
+from gui.fluent.tabwidget import (
+    make_lazy_page,
+    FluentPaneTabWidget,
+)
+from gui.fluent.colorpicker import (
+    ColorPickerButton,
+    FluentColorDialog,
+    paint_fluent_flyout_surface,
+)
+from gui.fluent.icons import ICON_CHEVRON_DOWN_MED
+from gui.fluent.expander import _exp_chevron_button_background
 
 
 def load_specific_icon_size(ico_path):
@@ -54,11 +64,39 @@ class FocusCombo(QComboBox):
     def __init__(self, parent: QWidget = None, sizeX=False) -> None:
         super().__init__(parent)
         self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
+        # Gallery 修复：默认内部视图在弹出列表的选中项上下会画黑线
+        self.setView(QListView(self))
+        # 宽度自适应内容（AdjustToContents：条目显示后增删也会重算，
+        # 宽度不足以容纳文字时自动扩展），并给最小宽度避免短文本过窄
+        self.setSizeAdjustPolicy(QComboBox.SizeAdjustPolicy.AdjustToContents)
+        self.setMinimumWidth(120)
+        # 同 gallery make_combo：combo 最小高 32
+        self.setMinimumHeight(32)
         if sizeX:
             self.setSizeAdjustPolicy(
                 QComboBox.SizeAdjustPolicy.AdjustToMinimumContentsLengthWithIcon
             )
             self.view().setTextElideMode(Qt.TextElideMode.ElideRight)
+
+    def showPopup(self):
+        # 样式重建/明暗切换后，弹出视图的字体会被重置为系统默认(9pt)，
+        # 且 _restore_combo_view_fonts 只覆盖切换时刻已存在的 combo——
+        # 弹出前显式跟随本体字体。注意必须用构造式 QFont(family, size)：
+        # QFont(font) 拷贝会带上空的 resolve mask，setFont 等于清除显式
+        # 字体（回落继承），无法覆盖重置
+        vf, cf = self.view().font(), self.font()
+        if (vf.family(), vf.pointSize(), vf.pixelSize()) != (
+            cf.family(),
+            cf.pointSize(),
+            cf.pixelSize(),
+        ):
+            if cf.pointSize() > 0:
+                self.view().setFont(QFont(cf.family(), cf.pointSize()))
+            else:
+                _f = QFont(cf.family())
+                _f.setPixelSize(max(1, cf.pixelSize()))
+                self.view().setFont(_f)
+        super().showPopup()
 
     def wheelEvent(self, e: QWheelEvent) -> None:
 
@@ -206,11 +244,20 @@ class FocusSpinBase(QAbstractSpinBox):
 
 
 class FocusSpin(QSpinBox, FocusSpinBase):
-    pass
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        # 最小高 32（gallery make_combo 同款防压缩）：约束布局
+        # （VisGridLayout 行高 25 等）会把无最小高的控件压到 23px
+        self.setMinimumHeight(32)
+        # 插件的上下按钮区占 ~64px，minimumSizeHint 太窄时文本框会被挤没
+        self.setMinimumWidth(120)
 
 
 class FocusDoubleSpin(QDoubleSpinBox, FocusSpinBase):
-    pass
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setMinimumHeight(32)
+        self.setMinimumWidth(120)
 
 
 class DelayLoadScrollArea(QAbstractScrollArea):
@@ -280,7 +327,10 @@ class DelayLoadTableView(QTableView, DelayLoadScrollArea):
 
     def __init__(self, *a, **k):
         QTableView.__init__(self)
+        # DelayLoadScrollArea.__init__ 会重新初始化基类段，覆盖链中间设置的
+        # 属性——fluent 表格配置（定义在 LTableView）必须在链尾调用
         DelayLoadScrollArea.__init__(self)
+        LTableView.apply_fluent_table(self)
         self.isstartObserveInserted = False
 
     def setIndexWidget_1(self, index: QModelIndex, w: QWidget):
@@ -454,7 +504,7 @@ class TableViewW(DelayLoadTableView, LTableView):
             row, [QStandardItem() for _ in range(self.model().columnCount())]
         )
 
-    def dedumpmodel(self, col):
+    def dedumpmodel(self, col, removeblank=False):
 
         rows = self.model().rowCount()
         dedump = set()
@@ -464,7 +514,7 @@ class TableViewW(DelayLoadTableView, LTableView):
                 k = self.getdata(row, col)
             elif callable(col):
                 k = col(row)
-            if k is None or k in dedump:
+            if k is None or k in dedump or (removeblank and not k):
                 needremoves.append(row)
                 continue
             dedump.add(k)
@@ -627,7 +677,6 @@ class TableViewW(DelayLoadTableView, LTableView):
 
 
 class saveposwindow_1(LMainWindow):
-    screengeochanged = pyqtSignal()
 
     def __gettitlewithversion(self, t):
         version = NativeUtils.QueryVersion(getcurrexe())
@@ -658,31 +707,6 @@ class saveposwindow_1(LMainWindow):
         if self.posinit:
             self.setGeometry(QRect(*self.posinit))
         self.adjust_window_to_screen_bounds(qwidget_screen(self).geometry())
-        self.___firstshow = True
-
-    def showEvent(self, a0):
-        if self.___firstshow:
-            self.___firstshow = False
-            self.windowHandle().screenChanged.connect(self.__screenChanged)
-            self.__screenChanged(qwidget_screen(self))
-        return super().showEvent(a0)
-
-    @tryprint
-    def _changed(self, _id: str, geo: QRect):
-        try:
-            if _id != qwidget_screen(self).serialNumber():
-                return
-        except:
-            pass
-        self.adjust_window_to_screen_bounds(geo)
-        self.screengeochanged.emit()
-
-    def __screenChanged(self, screen: QScreen):
-        try:
-            _id = screen.serialNumber()
-        except:
-            return
-        screen.geometryChanged.connect(functools.partial(self._changed, _id))
 
     @tryprint
     def adjust_window_to_screen_bounds(self, screen_rect: QRect):
@@ -775,143 +799,38 @@ class closeashidewindow(saveposwindow):
         super().closeEvent(event)
 
 
-class MySwitch(QAbstractButton):
+class MySwitch(QCheckBox):
+    """FluentUI3 原生开关：QCheckBox + 插件 isSwitchButton 属性，
+    由样式插件渲染为 WinUI ToggleSwitch（滑块动画、悬停缩放、按压拉伸、
+    拖拽切换全部内建）。保留旧 MySwitch 的调用面（sign/enable/clicksignal）。"""
+
     clicksignal = pyqtSignal()
-
-    def event(self, a0: QEvent) -> bool:
-        if a0.type() == QEvent.Type.MouseButtonDblClick:
-            return True
-        elif a0.type() == QEvent.Type.FontChange:
-            self.__loadsize()
-        return super().event(a0)
-
-    def __loadsize(self):
-        h = QFontMetricsF(self.font(), self).height()
-        sz = QSizeF(1.62 * h * gobject.Consts.btnscale, h * gobject.Consts.btnscale)
-        self.setFixedSize(sz.toSize())
 
     def __init__(self, parent=None, sign=True, enable=True):
         super().__init__(parent)
+        self.setProperty("isSwitchButton", True)
         self.setCheckable(True)
-        super().setChecked(sign)
-        super().setEnabled(enable)
-        self.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.setFixedSize(
+            44, 20
+        )  # 插件 PM 40x20 + SE_CheckBoxIndicator 右移的 contentItemHMargin(4)
         self.clicksignal.connect(self.click)
-        self.__currv = 0
-        if sign:
-            self.__currv = 20
-
-        self.animation = QVariantAnimation()
-        self.animation.setDuration(80)
-        self.animation.setStartValue(0)
-        self.animation.setEndValue(20)
-        self.animation.valueChanged.connect(self.update11)
-        self.animation.finished.connect(self.onAnimationFinished)
-        self.__loadsize()
-
-    def click(self):
-        super().click()
-        self.runanime()
+        super().setEnabled(enable)
+        self.setChecked(sign)
 
     def setChecked(self, check):
         if check == self.isChecked():
             return
         super().setChecked(check)
-        self.runanime()
+        if not self.isVisible():
+            # 显示前同步插件的状态跟踪属性：否则首帧绘制会当作 off→on 状态
+            # 变化，播放 150ms 切换动画（初始化为 On 的开关每次显示都闪一下）
+            state = int(QStyle.State_Enabled) | (int(QStyle.State_On) if check else 0)
+            self.setProperty("_q_stylestate", state)
 
-    def update11(self):
-        self.__currv = self.animation.currentValue()
-        self.update()
-
-    def runanime(self):
-        self.animation.setDirection(
-            QVariantAnimation.Direction.Forward
-            if self.isChecked()
-            else QVariantAnimation.Direction.Backward
-        )
-        self.animation.start()
-
-    def paintanime(self, painter: QPainter):
-        if qtawesome.isdark:
-            backcolor = QColor(
-                [
-                    gobject.Consts.btncolor.dark.disabled.back,
-                    gobject.Consts.btncolor.dark.enabled.back,
-                ][self.isChecked()]
-            )
-            centercolor = QColor(
-                [
-                    gobject.Consts.btncolor.dark.disabled.center,
-                    gobject.Consts.btncolor.dark.enabled.center,
-                ][self.isChecked()]
-            )
-        else:
-            backcolor = QColor(
-                [
-                    gobject.Consts.btncolor.light.disabled.back,
-                    gobject.Consts.btncolor.light.enabled.back,
-                ][self.isChecked()]
-            )
-            centercolor = QColor(
-                [
-                    gobject.Consts.btncolor.light.disabled.center,
-                    gobject.Consts.btncolor.light.enabled.center,
-                ][self.isChecked()]
-            )
-        checkdisabled = lambda c: c if self.isEnabled() else qtawesome.disablecolor(c)
-        wb = self.width() * 0.1
-        hb = self.height() * 0.125
-        if not self.isChecked():
-            painter.setBrush(Qt.BrushStyle.NoBrush)
-            pen = QPen(checkdisabled(centercolor))
-            pen.setWidth(1)
-            painter.setPen(pen)
-        else:
-            painter.setBrush(checkdisabled(backcolor))
-        painter.drawRoundedRect(
-            QRectF(
-                wb,
-                hb,
-                self.width() - 2 * wb,
-                self.height() - 2 * hb,
-            ),
-            self.height() / 2 - hb,
-            self.height() / 2 - hb,
-        )
-        r = self.height() * 0.275 - 1
-        rb = self.height() / 2 - hb - r
-        offset = self.__currv * (self.width() - 2 * wb - 2 * r - 2 * rb) / 20
-        painter.setBrush(checkdisabled(centercolor))
-        painter.drawEllipse(
-            QPointF(
-                (wb + r + rb) + offset,
-                (self.height() / 2),
-            ),
-            r,
-            r,
-        )
-
-    def paintEvent(self, _):
-        painter = QPainter(self)
-        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
-        painter.setPen(Qt.PenStyle.NoPen)
-        self.paintanime(painter)
-
-    def mouseReleaseEvent(self, event: QMouseEvent) -> None:
-        if not self.isEnabled():
-            return
-        if event.button() != Qt.MouseButton.LeftButton:
-            return
-        try:
-            super().setChecked(not self.isChecked())
-            self.clicked.emit(self.isChecked())
-            self.runanime()
-            # 父窗口deletelater
-        except:
-            pass
-
-    def onAnimationFinished(self):
-        pass
+    def event(self, a0: QEvent) -> bool:
+        if a0.type() == QEvent.Type.MouseButtonDblClick:
+            return True  # 双击不重复切换（沿用旧行为）
+        return super().event(a0)
 
 
 class resizableframeless(saveposwindow_1):
@@ -1197,6 +1116,8 @@ def getlineedit(d: dict, key, callback=None, readonly=False, default=""):
     s = QLineEdit()
     s.setText(d.get(key, default))
     s.setReadOnly(readonly)
+    # 最小高 32：防止约束布局把 lineedit 压扁（同 spin/combo）
+    s.setMinimumHeight(32)
     s.textChanged.connect(functools.partial(callbackwrap, d, key, callback))
     return s
 
@@ -1458,63 +1379,17 @@ def D_getsimpleswitch(
 
 
 def getColor(color, parent, alpha=False, title=None):
+    # Fluent 取色器（WinUI3 CommunityToolkit ColorPicker 移植，
+    # 见 gui/fluent/colorpicker.py），替换原 QColorDialog 魔改
 
-    color_dialog = QColorDialog(parent)
+    color_dialog = FluentColorDialog(parent)
     if title:
         color_dialog.setWindowTitle(_TR(title))
-    if alpha:
-        color_dialog.setOption(QColorDialog.ColorDialogOption.ShowAlphaChannel, True)
-    color_dialog.setCurrentColor(QColor(color))
-
-    layout = color_dialog.layout()
-    colorpicker = layout.itemAt(0).layout().itemAt(0).takeAt(2)
-    clearlayout(layout.itemAt(0).layout().takeAt(0))
-    layout = layout.itemAt(0).layout().itemAt(0).layout().itemAt(2).widget().layout()
-    layout.takeAt(1).widget().hide()
-    layout.takeAt(1).widget().hide()
-    layout.takeAt(1).widget().hide()
-    layout.takeAt(1).widget().hide()
-    layout.takeAt(1).widget().hide()
-    layout.takeAt(1).widget().hide()
-
-    if alpha:
-        layout.takeAt(layout.count() - 1).widget().hide()
-        layout.takeAt(layout.count() - 1).widget().hide()
-    color_dialog.layout().insertItem(0, colorpicker)
-    color_dialog.layout().itemAt(color_dialog.layout().count() - 1).widget().setFocus()
-
-    if color_dialog.exec() != QColorDialog.DialogCode.Accepted:
+    color_dialog.setAlphaEnabled(alpha)
+    color_dialog.setColor(QColor(color))
+    if color_dialog.exec() != QDialog.DialogCode.Accepted:
         return QColor()
-    return color_dialog.selectedColor()
-
-
-def _selectcolor(
-    parent: QWidget,
-    button: QPushButton,
-    configdict: dict,
-    configkey,
-    callback=None,
-    alpha=False,
-    cantzeroalpha=False,
-    default=None,
-    title=None,
-):
-
-    color = getColor(
-        QColor(configdict.get(configkey, default)), parent, alpha, title=title
-    )
-    if not color.isValid():
-        return
-    if alpha and cantzeroalpha and (color.alpha() == 0):
-        color.setAlpha(1)
-    colorname = color.name(QColor.NameFormat.HexArgb) if alpha else color.name()
-    button.setIcon(qtawesome.icon("fa.paint-brush", color=colorname))
-    configdict[configkey] = colorname
-    if callback:
-        try:
-            callback(colorname)
-        except:
-            print_exc()
+    return color_dialog.color()
 
 
 def __getboxlayout(widgets, lc=QHBoxLayout, makewidget=False, delay=False):
@@ -1947,7 +1822,7 @@ class Exteditor(LDialog):
         try:
             func(*args)
         except Exception as e:
-            QMessageBox.critical(self, _TR("错误"), str(e))
+            ExMessageBox.critical(self, _TR("错误"), str(e))
 
 
 class WebviewWidget(AbstractWebviewWidget):
@@ -2136,8 +2011,8 @@ _request_delete_ok_cache = {}
 def request_delete_ok(parent: QWidget = None, cache=None, title="确认删除"):
     if cache and cache in _request_delete_ok_cache:
         return True
-    msg_box = QMessageBox(parent)
-    msg_box.setIcon(QMessageBox.Icon.Warning)
+    msg_box = ExMessageBox(parent)
+    msg_box.setIcon(QMessageBox.Icon.Question)
     msg_box.setWindowTitle(_TR(title))
     msg_box.setText(_TR(title))
     msg_box.setStandardButtons(
@@ -2159,8 +2034,8 @@ def request_delete_ok(parent: QWidget = None, cache=None, title="确认删除"):
 def request_for_something(parent: QWidget = None, cache=None, title="确认删除"):
     if cache and cache in _request_delete_ok_cache:
         return _request_delete_ok_cache.get(cache)
-    msg_box = QMessageBox(parent)
-    msg_box.setIcon(QMessageBox.Icon.Warning)
+    msg_box = ExMessageBox(parent)
+    msg_box.setIcon(QMessageBox.Icon.Question)
     msg_box.setWindowTitle(_TR(title))
     msg_box.setText(_TR(title))
     msg_box.setStandardButtons(
@@ -2391,11 +2266,16 @@ def manybuttonlayout(textandfunctions: list):
     return layout
 
 
-def tabadd_lazy(tab, title, getrealwidgetfunction):
-    q = QWidget()
-    v = QVBoxLayout(q)
-    v.setContentsMargins(0, 0, 0, 0)
-    q.lazyfunction = functools.partial(getrealwidgetfunction, v)
+def tabadd_lazy(tab, title, getrealwidgetfunction, bare=True):
+    # tab 页统一工厂：默认 -> FluentPageCard 满铺；bare=True -> 透明
+    # 不包卡（FluentPaneTabWidget 的页由其 addTab 自行包直角面板）
+    if bare:
+        q = QWidget()
+        v = QVBoxLayout(q)
+        v.setContentsMargins(0, 0, 0, 0)
+        q.lazyfunction = functools.partial(getrealwidgetfunction, v)
+    else:
+        q = make_lazy_page(getrealwidgetfunction, main=not isinstance(tab, QTabWidget))
     tab.addTab(q, title)
 
 
@@ -2479,24 +2359,80 @@ class NQGroupBox(QGroupBox):
         self.setObjectName("notitle")
 
 
-class WGroupBox(LGroupBox):
-    def __init__(self, *a, **k):
-        super().__init__(*a, **k)
+class GroupCardWidget(QWidget):
+    """WinUI 分组卡片（Gallery addCardSection 同款）：
+    isCard + 加粗标题（右侧可挂 doclink 等控件）+ 内容。
+    layout() 返回内容网格/表单，供 <name>.layout().setRowVisible 等旧用法使用。"""
 
-        self.widget: QWidget = None
+    def __init__(self, title="", widget=None, parent=None):
+        super().__init__(parent)
+        self.setAttribute(Qt.WA_StyledBackground, True)
+        self.setProperty("isCard", True)
+        self._vlay = QVBoxLayout(self)
+        self._vlay.setContentsMargins(12, 12, 12, 12)
+        self._vlay.setSpacing(10)
+        if title or widget:
+            # 标题行：加粗标题 + 紧随其后的挂件（doclink 等）+ stretch
+            # （无标题时不生成，纯内容卡片）
+            titlerow = QHBoxLayout()
+            titlerow.setContentsMargins(0, 0, 0, 0)
+            if title:
+                titlelabel = LLabel(title)
+                titlefont = titlelabel.font()
+                titlefont.setBold(True)
+                titlefont.setPixelSize(14)
+                titlelabel.setFont(titlefont)
+                titlerow.addWidget(titlelabel)
+            if widget is not None:
+                if callable(widget):
+                    widget = widget()
+                if widget is not None:
+                    titlerow.addWidget(widget)
+            titlerow.addStretch(1)
+            self._vlay.addLayout(titlerow)
+        self._contentlayout = None
 
-    def resizeEvent(self, event):
-        opt = QStyleOptionGroupBox()
-        self.initStyleOption(opt)
-        text_rect = self.style().subControlRect(
-            QStyle.ComplexControl.CC_GroupBox,
-            opt,
-            QStyle.SubControl.SC_GroupBoxLabel,
-            self,
-        )
-        if self.widget:
-            self.widget.move(text_rect.right() + 5, text_rect.top())
-        super().resizeEvent(event)
+    def contentWidget(self):
+        w = QWidget()
+        self._vlay.addWidget(w)
+        return w
+
+    def addContentWidget(self, w):
+        self._vlay.addWidget(w)
+
+    def setContentLayout(self, lay):
+        self._contentlayout = lay
+
+    def layout(self):
+        if self._contentlayout is not None:
+            return self._contentlayout
+        return super().layout()
+
+
+def makecardrow(label, *controls, fill=False):
+    """单行设置卡片（WinUI SettingsCard 形式）：标题在左、控件靠右。
+    controls 遵循 getboxwidget 约定（callable 会调用、int 为 stretch）。
+    fill=True 时控件区横向填满卡片（路径编辑等宽输入框用）。
+    返回卡片 QWidget，可直接作为网格项使用。"""
+    card = QWidget()
+    card.setAttribute(Qt.WA_StyledBackground, True)
+    card.setProperty("isCard", True)
+    card.setMinimumHeight(48)
+    lay = QHBoxLayout(card)
+    lay.setContentsMargins(18, 8, 8, 8)
+    lay.setSpacing(8)
+    titlelabel = LLabel(label)
+    titlefont = titlelabel.font()
+    titlefont.setPixelSize(15)
+    titlelabel.setFont(titlefont)
+    lay.addWidget(titlelabel)
+    if controls and fill:
+        lay.addWidget(getboxwidget(list(controls)), 1)
+    else:
+        lay.addStretch(1)
+        if controls:
+            lay.addWidget(getboxwidget(list(controls)))
+    return card
 
 
 def makegroupingrid(args: dict):
@@ -2509,16 +2445,15 @@ def makegroupingrid(args: dict):
     enable = args.get("enable", True)
     internallayoutname = args.get("internallayoutname", None)
     hiderows = args.get("hiderows", [])
-    if widget:
-        group = WGroupBox()
-        group.setTitle(title)
-        group.widget = widget()
-        group.widget.setParent(group)
-    elif title:
-        group = LGroupBox()
-        group.setTitle(title)
+    card = args.get("card", False)
+    # 有标题（或显式 card=True）的分组 → WinUI 卡片；无标题容器用普通 QWidget
+    # （插件会给无 isCard 的 QGroupBox 画边框，看起来仍是 groupbox）
+    if title or widget or card:
+        group = GroupCardWidget(title, widget)
+        host = group.contentWidget()
     else:
-        group = NQGroupBox()
+        group = QWidget()
+        host = group
     if not enable:
         group.setEnabled(False)
     if groupname and (parent is not None):
@@ -2528,15 +2463,19 @@ def makegroupingrid(args: dict):
             setattr(parent, groupname, group)
     if _type == "grid":
         if hiderows:
-            grid = VisGridLayout(group)
+            grid = VisGridLayout(host)
         else:
-            grid = QGridLayout(group)
+            grid = QGridLayout(host)
         automakegrid(grid, lis, hiderows=hiderows)
+        if host is not group:
+            group.setContentLayout(grid)
         if internallayoutname:
             setattr(parent, internallayoutname, grid)
     elif _type == "form":
-        lay = VisLFormLayout(group)
+        lay = VisLFormLayout(host)
         makeforms(lay, lis, hiderows)
+        if host is not group:
+            group.setContentLayout(lay)
         if internallayoutname:
             setattr(parent, internallayoutname, lay)
     return group
@@ -2569,6 +2508,7 @@ def automakegrid(grid: "VisGridLayout", lis, savelist=None, hiderows=None):
         nowc = 0
         if save:
             ll = []
+        rowwids = []
         for item in line:
             if type(item) == str:
                 cols = 1
@@ -2607,15 +2547,69 @@ def automakegrid(grid: "VisGridLayout", lis, savelist=None, hiderows=None):
                 do()
             if save:
                 ll.append(wid)
+            rowwids.append(wid)
             nowc += cols
         if save:
             savelist.append(ll)
-        grid.setRowMinimumHeight(nowr, 25)
+        # 整行均为显式隐藏的控件时不设行最小高——隐藏时整行完全收起
+        # （如 关于软件 的下载进度条行；显示时控件自身高度生效）
+        if not (
+            rowwids and all(isinstance(w, QWidget) and w.isHidden() for w in rowwids)
+        ):
+            grid.setRowMinimumHeight(nowr, 25)
         if nowr in hiderows if hiderows else []:
             grid.setRowVisible(nowr, False)
 
 
-def makegrid(grid=None, savelist=None, savelay=None, delay=False, hiderows=None):
+def makegroupcard(title, grid, savelist=None, savelay=None, hiderows=None):
+    """标题分组卡片：GroupCardWidget + makegrid 内容（内部网格零边距）。"""
+    card = GroupCardWidget(title)
+    content = makegrid(grid, savelist, savelay, hiderows=hiderows)
+    content.layout().setContentsMargins(0, 0, 0, 0)
+    card.addContentWidget(content)
+    return card
+
+
+def makecardcontainer(lay, sidemargin=16, topmargin=16, bottommargin=12):
+    """页面内容整体包一张内容卡（GroupCardWidget 无标题形态）：默认页边距
+    (16,16,16,12)；bare 页签页（外层 maketabholder 已提供页边距）传
+    sidemargin=0/bottommargin=0，让内容卡与页签 bar 对齐。返回卡内零边距
+    布局供 makescrollgrid 等构建——卡内网格需自行清零 makegrid 的默认边距
+    （同 makegroupcard）。"""
+    card = GroupCardWidget()
+    host = card.contentWidget()
+    hostlay = QVBoxLayout(host)
+    hostlay.setContentsMargins(0, 0, 0, 0)
+    hostlay.setSpacing(8)
+    holder = QWidget()
+    holderlay = QVBoxLayout(holder)
+    holderlay.setContentsMargins(sidemargin, topmargin, sidemargin, bottommargin)
+    holderlay.addWidget(card)
+    lay.addWidget(holder)
+    return hostlay
+
+
+def maketabholder(tab, top=0):
+    """给子页签 QTabWidget 加页边距（tabwidget 本体不包卡片，
+    页内容各自用紧邻 tabbar 的卡片包裹）。"""
+    holder = QWidget()
+    lay = QVBoxLayout(holder)
+    lay.setContentsMargins(16, top, 16, 12)
+    lay.addWidget(tab)
+    return holder
+
+
+def makegrid(
+    grid=None,
+    savelist=None,
+    savelay=None,
+    delay=False,
+    hiderows=None,
+    toptouch=False,
+    topmargin=None,
+    sidemargin=16,
+    bottommargin=12,
+):
 
     class gridwidget(QWidget):
         pass
@@ -2626,6 +2620,19 @@ def makegrid(grid=None, savelist=None, savelay=None, delay=False, hiderows=None)
     else:
         gridlay = QGridLayout(gridlayoutwidget)
     gridlay.setAlignment(Qt.AlignmentFlag.AlignTop)
+    # FluentUI3：页面级网格留边距（卡片不贴窗口边），卡片行间距 8；
+    # toptouch=True 时仅顶部不留边距（首卡紧贴 tabbar，其余间隔保留）；
+    # topmargin 显式指定时覆盖默认顶边距（卡内网格与左边距统一）
+    if toptouch:
+        _top = 0
+    elif topmargin is not None:
+        _top = topmargin
+    else:
+        _top = 8
+    gridlay.setContentsMargins(sidemargin, _top, sidemargin, bottommargin)
+    gridlay.setVerticalSpacing(8)
+    # 该 QSS 与 makescroll 的 QSS 配套：去掉后页面卡底色会被盖掉（见
+    # makescroll 注释）
     gridlayoutwidget.setStyleSheet("gridwidget{background-color:transparent;}")
 
     def do(gridlay, grid, savelist, savelay, hiderows):
@@ -2642,6 +2649,10 @@ def makegrid(grid=None, savelist=None, savelay=None, delay=False, hiderows=None)
 
 
 def makescroll():
+    # 注意：这里的 QSS 不能去掉——不用 QSS 时（属性方式做透明），插件的
+    # polish 会让 viewport 以 PE_Widget 画背景色（Window 243），把页面卡
+    # 的底色(249)盖掉。QSS 的 QAbstractScrollArea 背景规则作用于 viewport，
+    # 是唯一可靠的透明途径。
     scroll = QScrollArea()
     scroll.setStyleSheet("""QScrollArea{background-color:transparent;border:0px}""")
     scroll.setWidgetResizable(True)
@@ -2649,7 +2660,20 @@ def makescroll():
 
 
 def makescrollgrid(grid, lay: QLayout, savelist=None, savelay=None, hiderows=None):
-    wid, do = makegrid(grid, savelist, savelay, delay=True, hiderows=hiderows)
+    # 子页签页（tabadd_lazy 标记）的网格顶部紧贴 tabbar；
+    # 卡内网格（pagecard / 主页卡）顶边距统一为 16（与左边距一致）
+    flush = bool(getattr(lay, "property", lambda *_: None)("_fluent_tabbar_page"))
+    incard = bool(getattr(lay, "property", lambda *_: None)("_fluent_card_grid"))
+    mainpg = bool(getattr(lay, "property", lambda *_: None)("_fluent_main_grid"))
+    wid, do = makegrid(
+        grid,
+        savelist,
+        savelay,
+        delay=True,
+        hiderows=hiderows,
+        toptouch=flush,
+        topmargin=16 if (incard or mainpg) else None,
+    )
     swid = makescroll()
     lay.addWidget(swid)
     swid.setWidget(wid)
@@ -2665,14 +2689,15 @@ def makesubtab_lazy(
     delay=False,
     initial=None,
     fast=False,
-    padding=False,
+    bare=True,
+    type=0,
 ):
-    if padding and isinstance(titles, list):
-        titles = [("_" + _ + "_") for _ in titles]
+    # FluentUI3 插件对 QTabBar 自带内边距，"_标题_" 的下划线补白不再需要
     if klass:
         tab: LTabWidget = klass()
     else:
-        tab = LTabWidget()
+        # 统一 Gallery 式页签组：Pivot_Grow bar + 各页直角面板
+        tab = FluentPaneTabWidget(colorstyle=type)
 
     def __(fast, t: LTabWidget, initial, i):
         if initial:
@@ -2696,16 +2721,22 @@ def makesubtab_lazy(
     if not can:
         tab.currentChanged.connect(functools.partial(__, fast, tab, initial))
 
-    def __do(tab: LTabWidget, titles, functions, initial):
+    def __do(tab: LTabWidget, titles, functions, initial, bare):
         if titles and functions:
             for i, func in enumerate(functions):
-                tabadd_lazy(tab, titles[i], func)
+                # FluentPaneTabWidget 的 addTab 自行包直角面板，页须裸
+                tabadd_lazy(
+                    tab,
+                    titles[i],
+                    func,
+                    bare=bare or isinstance(tab, FluentPaneTabWidget),
+                )
         if can:
             tab.setCurrentIndex(initial[0][initial[1]])
             tab.currentChanged.connect(functools.partial(__, fast, tab, initial))
             tab.currentChanged.emit(initial[0][initial[1]])
 
-    ___do = functools.partial(__do, tab, titles, functions, initial)
+    ___do = functools.partial(__do, tab, titles, functions, initial, bare)
     if not delay:
         ___do()
         return tab
@@ -2952,11 +2983,42 @@ class ClickableLine(QLineEdit):
         super().__init__()
         self.issecret = issecret
 
+    def enterEvent(self, e):
+        # 悬停显隐切换时需要主动触发一次重绘
+        self.update()
+        super().enterEvent(e)
+
+    def leaveEvent(self, e):
+        self.update()
+        super().leaveEvent(e)
+
     def paintEvent(self, a0):
         if self.text() and self.issecret and not (self.underMouse() or self.hasFocus()):
+            # 不用 Password echo 模式（会禁掉复制粘贴），直接把文本画成 *
             painter = QPainter(self)
-            painter.setCompositionMode(QPainter.CompositionMode.CompositionMode_Clear)
-            painter.fillRect(self.rect(), Qt.GlobalColor.transparent)
+            opt = QStyleOptionFrame()
+            self.initStyleOption(opt)
+            style = self.style()
+            style.drawPrimitive(QStyle.PE_PanelLineEdit, opt, painter, self)
+            cr = style.subElementRect(QStyle.SE_LineEditContents, opt, self)
+            tm = self.textMargins()
+            cr.adjust(tm.left(), tm.top(), -tm.right(), -tm.bottom())
+            fm = self.fontMetrics()
+            stars = "*" * len(self.text())
+            while len(stars) > 1 and fm.horizontalAdvance(stars) > cr.width():
+                stars = stars[1:]
+            style.drawItemText(
+                painter,
+                cr,
+                self.alignment() | Qt.AlignVCenter,
+                self.palette(),
+                self.isEnabled(),
+                stars,
+                QPalette.Text,
+            )
+            # PyQt5 的 QPainter 不随作用域自动析构，必须显式 end()，
+            # 否则 painter 带 active 状态活到下一次 paint → Qt 内部崩溃
+            painter.end()
         else:
             super().paintEvent(a0)
 
@@ -3341,7 +3403,7 @@ class IconButton(LPushButton):
         self.setCheckable(checkable)
         if checked and checkable:
             self.setChecked(checked)
-        self.setEnabled(enable and (bool(icon) or bool(qicon)))
+        self.setEnabled(enable and ((icon is not None) or bool(qicon)))
         self.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         self.resizedirect()
 
@@ -3359,15 +3421,13 @@ class IconButton(LPushButton):
 
     @staticmethod
     def _is_pixmap_icon(icon) -> bool:
-        return (
-            isinstance(icon, str)
-            and len(icon) > 1
-            and (icon == "luna" or not icon.startswith("fa."))
+        return (icon == "" or icon == "luna") or (
+            isinstance(icon, str) and len(icon) > 1 and (not icon.startswith("fa."))
         )
 
     @staticmethod
     def _load_pixmap(icon: str):
-        if icon == "luna":
+        if icon == "" or icon == "luna":
             return getExeIcon(getcurrexe(), icon=False, large=True)
         return load_specific_icon_size(icon)
 
@@ -3424,7 +3484,10 @@ class IconButton(LPushButton):
         self.__seticon()
 
 
-class ColorButton(IconButton):
+class ColorButton(ColorPickerButton):
+    """取色按钮（CommunityToolkit ColorPickerButton）：色块显示当前颜色，
+    点击弹出 Fluent 取色器飞层，选色实时写回配置并回调。"""
+
     def __init__(
         self,
         parent,
@@ -3435,22 +3498,40 @@ class ColorButton(IconButton):
         tips="颜色",
         cantzeroalpha=False,
         default=None,
+        width=68,
     ):
-        qicon = qtawesome.icon("fa.paint-brush", color=d.get(key, default))
-        super().__init__(None, qicon=qicon, tips=tips)
-        cb = functools.partial(
-            _selectcolor,
-            parent,
-            self,
-            d,
-            key,
-            callback,
-            alpha=alpha,
-            cantzeroalpha=cantzeroalpha,
-            default=default,
-            title=tips,
+        super().__init__(None, width=width)
+        self._configdict = d
+        self._configkey = key
+        self._callback = callback
+        self._alpha = alpha
+        self._cantzeroalpha = cantzeroalpha
+        self._default = default
+        init = QColor(d.get(key, default) or "")
+        if not init.isValid():
+            init = QColor(Qt.GlobalColor.black)
+        self.setAlphaEnabled(alpha)
+        self.setSelectedColor(init)
+        if tips:
+            self.setToolTip(_TR(tips))
+            self.setAccessibleName(_TR(tips))
+        self.selectedColorChanged.connect(self._on_color_changed)
+
+    def _on_color_changed(self, color: QColor):
+        if self._alpha and self._cantzeroalpha and color.alpha() == 0:
+            color = QColor(color)
+            color.setAlpha(1)
+            self.setSelectedColor(color)  # 同步飞层/色块后经再次信号落值
+            return
+        colorname = (
+            color.name(QColor.NameFormat.HexArgb) if self._alpha else color.name()
         )
-        self.clicked.connect(cb)
+        self._configdict[self._configkey] = colorname
+        if self._callback:
+            try:
+                self._callback(colorname)
+            except:
+                print_exc()
 
 
 class SplitLine(QFrame):
@@ -3596,7 +3677,7 @@ else:
         pass
 
 
-class CollapsibleBox(NQGroupBox):
+class CollapsibleBox(QWidget):
     def __init__(self, delayloadfunction=None, parent=None, margin0=True):
         super(CollapsibleBox, self).__init__(parent)
         lay = QVBoxLayout(self)
@@ -3617,28 +3698,128 @@ class CollapsibleBox(NQGroupBox):
         return self.__lay
 
 
+class _FoldHeaderButton(QAbstractButton):
+    """折叠卡片头（同 ExExpander header）：标题 + 右端 chevron
+    （随展开旋转 180°，悬停时 chevron 区 subtle 高亮，鼠标指针不变）。"""
+
+    _CHEVRON_SIZE = 32
+    _CHEVRON_TRAILING = 8
+
+    def __init__(self, title="", parent=None, fullheight=False):
+        super().__init__(parent)
+        self.setCheckable(True)
+        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        # fullheight：与两行文字卡片同高（72px），否则 48px
+        self.setMinimumHeight(72 if fullheight else 48)
+        self.setAttribute(Qt.WA_Hover, True)
+        self._progress = 0.0
+        lay = QHBoxLayout(self)
+        lay.setContentsMargins(12, 12, 12, 12)
+        lay.setSpacing(8)
+        self._leftcount = 0
+        self.titlelabel = LLabel(title)
+        titlefont = self.titlelabel.font()
+        titlefont.setPixelSize(15)
+        self.titlelabel.setFont(titlefont)
+        self.titlelabel.setAttribute(Qt.WA_TransparentForMouseEvents, True)
+        lay.addWidget(self.titlelabel)
+        lay.addStretch(1)
+        self._anim = QVariantAnimation(self)
+        self._anim.setDuration(167)
+        self._anim.setEasingCurve(QEasingCurve.OutCubic)
+        self._anim.valueChanged.connect(self._on_anim_value)
+        self.toggled.connect(self._on_toggled)
+
+    def addLeftWidget(self, w):
+        # 挂件（doclink 等）紧随标题之后，不跑到最右端
+        self.layout().insertWidget(self._leftcount + 1, w)
+        self._leftcount += 1
+
+    def addRightWidget(self, w):
+        # 开关等挂件放在右端、折叠按钮左边（预留自绘 chevron 区域）
+        self.layout().addWidget(w)
+        self.layout().setContentsMargins(12, 12, 48, 12)
+
+    def _on_toggled(self, checked):
+        if not self.isVisible():
+            self._progress = 1.0 if checked else 0.0
+            self.update()
+            return
+        self._anim.stop()
+        self._anim.setStartValue(self._progress)
+        self._anim.setEndValue(1.0 if checked else 0.0)
+        self._anim.start()
+
+    def _on_anim_value(self, v):
+        self._progress = float(v)
+        self.update()
+
+    def paintEvent(self, _):
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.Antialiasing)
+        # chevron 按钮区（悬停/按下时 subtle 高亮）——同 ExExpander
+        chevron_rect = QRectF(
+            self.width() - self._CHEVRON_TRAILING - self._CHEVRON_SIZE,
+            (self.height() - self._CHEVRON_SIZE) * 0.5,
+            self._CHEVRON_SIZE,
+            self._CHEVRON_SIZE,
+        )
+        if self.isEnabled() and (self.underMouse() or self.isDown()):
+            painter.setPen(Qt.NoPen)
+            painter.setBrush(
+                _exp_chevron_button_background(self.palette(), self.isDown())
+            )
+            painter.drawRoundedRect(chevron_rect, 4, 4)
+        # chevron 随展开旋转 180°——同 ExExpander
+        painter.save()
+        painter.translate(chevron_rect.center())
+        painter.rotate(180.0 * self._progress)
+        painter.setPen(
+            self.palette().color(
+                QPalette.Active if self.isEnabled() else QPalette.Disabled,
+                QPalette.Text,
+            )
+        )
+        chevronfont = QFont("Segoe Fluent Icons")
+        chevronfont.setPixelSize(15)
+        painter.setFont(chevronfont)
+        painter.drawText(
+            QRectF(
+                -self._CHEVRON_SIZE * 0.5,
+                -self._CHEVRON_SIZE * 0.5,
+                self._CHEVRON_SIZE,
+                self._CHEVRON_SIZE,
+            ),
+            Qt.AlignCenter,
+            ICON_CHEVRON_DOWN_MED,
+        )
+        painter.restore()
+
+
 class CollapsibleBoxWithButton(QWidget):
     toggled = pyqtSignal(bool)
 
-    def __init__(self, delayloadfunction=None, title="", parent=None, toggled=False):
+    def __init__(
+        self,
+        delayloadfunction=None,
+        title="",
+        parent=None,
+        toggled=False,
+        fullheight=False,
+    ):
         super(CollapsibleBoxWithButton, self).__init__(parent)
-        self.toggle_button = LToolButton(text=title, checkable=True, checked=False)
-        self.toggle_button.setCursor(Qt.CursorShape.PointingHandCursor)
-        self.toggle_button.setToolButtonStyle(
-            Qt.ToolButtonStyle.ToolButtonTextBesideIcon
-        )
+        # WinUI 卡片外观（同 GroupCardWidget / ExExpander）
+        self.setAttribute(Qt.WA_StyledBackground, True)
+        self.setProperty("isCard", True)
+        self.toggle_button = _FoldHeaderButton(title, self, fullheight=fullheight)
         self.toggle_button.toggled.connect(self.__toggled)
         self.toggle_button.toggled.connect(self.toggled)
         self.content_area = CollapsibleBox(delayloadfunction, self)
+        self.content_area.layout().setContentsMargins(12, 0, 12, 12)
         lay = QVBoxLayout(self)
         lay.setSpacing(0)
         lay.setContentsMargins(0, 0, 0, 0)
-        _ = QWidget()
-        self.lay1 = QHBoxLayout(_)
-        self.lay1.setContentsMargins(0, 0, 0, 0)
-        self.lay1.setAlignment(Qt.AlignmentFlag.AlignLeft)
-        self.lay1.addWidget(self.toggle_button)
-        lay.addWidget(_)
+        lay.addWidget(self.toggle_button)
         lay.addWidget(self.content_area)
         self.__toggled(toggled)
 
@@ -3646,14 +3827,17 @@ class CollapsibleBoxWithButton(QWidget):
         if not isinstance(ws, (tuple, list)):
             ws = [ws]
         for w in ws:
-            self.lay1.addWidget(w)
+            self.toggle_button.addLeftWidget(w)
+
+    def addRightWidget(self, ws):
+        if not isinstance(ws, (tuple, list)):
+            ws = [ws]
+        for w in ws:
+            self.toggle_button.addRightWidget(w)
 
     def __toggled(self, checked):
         self.toggle_button.setChecked(checked)
         self.content_area.toggle(checked)
-        self.toggle_button.setIcon(
-            qtawesome.icon("fa.chevron-down" if checked else "fa.chevron-right")
-        )
 
     @property
     def internalLayout(self):
@@ -3668,12 +3852,16 @@ def createfoldgrid(
     internallayoutname=None,
     parent=None,
     leftwidget=None,
+    switch=None,
+    fullheight=False,
 ):
 
     def __(grid, internallayoutname, parent, lay: QLayout):
         if callable(grid):
             grid = grid()
         w, do = makegrid(grid, delay=True)
+        # 卡片内网格零边距（边距由卡片自身提供）
+        w.layout().setContentsMargins(0, 0, 0, 0)
         lay.addWidget(w)
         if internallayoutname:
             setattr(parent, internallayoutname, w.layout())
@@ -3684,9 +3872,14 @@ def createfoldgrid(
         functools.partial(__, grid, internallayoutname, parent),
         title,
         toggled=toggled,
+        fullheight=fullheight,
     )
     if leftwidget:
         box.addLeftWidget(leftwidget())
+    if switch is not None:
+        if callable(switch):
+            switch = switch()
+        box.addRightWidget(switch)
     if d:
         box.toggled.connect(functools.partial(d.__setitem__, k))
     return box
@@ -3775,16 +3968,41 @@ def limitpos(pos: QPoint, w: QWidget, offset: QPoint):
 
 
 class PopupWidget(QWidget):
+    """FluentUI 飞层弹窗（同取色器 flyout）：插件 PE_FluentFlyoutSurface
+    绘制卡片表面（WinUI 阴影+圆角+描边），四周 8px 透明阴影区，内容
+    布局在首次显示时统一补 16px 边距（8 阴影 + 8 内边距）。"""
+
     def __init__(self, parent):
         super().__init__(parent)
-        self.setWindowFlags(Qt.WindowType.Popup | self.windowFlags())
+        # FramelessWindowHint 必须有：Windows 上 WA_TranslucentBackground
+        # 依赖它（Qt::Popup 不隐含）——缺了的话阴影区叠在不透明黑底上，
+        # 显出纯黑边框
+        self.setWindowFlags(
+            Qt.WindowType.Popup
+            | Qt.WindowType.FramelessWindowHint
+            | Qt.WindowType.NoDropShadowWindowHint
+            | self.windowFlags()
+        )
+        # 阴影区/圆角外需要透明窗口
+        self.setAttribute(Qt.WA_TranslucentBackground)
         self.dragging = False
         self.offset = None
 
     def showEvent(self, a0):
+        # 子类在构造里 setLayout 到本体——布局就绪后统一补边距（只补一次）
+        lay = self.layout()
+        if lay is not None and not self.property("_fluent_flyout_padded"):
+            self.setProperty("_fluent_flyout_padded", True)
+            lay.setContentsMargins(16, 16, 16, 12)
         pos = self.pos()
         self.move(limitpos(pos, self, QPoint()))
         return super().showEvent(a0)
+
+    def paintEvent(self, a0):
+
+        p = QPainter(self)
+        p.setRenderHint(QPainter.Antialiasing)
+        paint_fluent_flyout_surface(self, p)
 
     def display(self, pos=None):
         self.move(pos if pos else QCursor.pos())

@@ -212,7 +212,6 @@ def getdefaultsavehook(title=None):
         # "steamid": 0,
         "title": "",
         # "imagepath_all": [],
-        "usertags": [],
         "developers": [],
         "webtags": [],  # 标签
         # "createtime":xx  添加时间
@@ -408,14 +407,9 @@ def migrate_ui_settings():
         "transparent",
         "transparent_tool",
         "backgroundpic",
-        "settingfonttype",
-        "theme3",
         "backcolor",
         "backcolor_tool",
         "darklight2",
-        "settingfontsize",
-        "force_rect",
-        "WindowBackdrop",
         "button_color_normal",
         "buttoncolor_1",
         "buttoncolor",
@@ -447,6 +441,7 @@ def migrate_ui_settings():
         "word_hover_border",
         "word_hover_DWM",
         "word_hover_DWM_1",
+        "min_auto_height",
 
     ):
         if k in globalconfig:

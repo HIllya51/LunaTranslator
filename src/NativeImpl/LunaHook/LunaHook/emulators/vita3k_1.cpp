@@ -581,6 +581,18 @@ namespace
         }
         buffer->from(final_string);
     }
+    void PCSG00992(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    {
+        auto address = (char *)VITA3K::emu_arg(context)[1];
+        std::string final_string;
+        while (*address)
+        {
+            std::string text = address;
+            address += text.size() + 1;
+            final_string += strReplace(text, "\n");
+        }
+        buffer->from(final_string);
+    }
     void TPCSG00291(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
         auto a2 = VITA3K::emu_arg(context)[0];
@@ -1050,6 +1062,10 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // 遙かなる時空の中で Ultimate
+    {0x800608F0, {FULL_STRING, 4, 0, 0, NewLineCharFilterA, "PCSG01157"}},
+    // 遙かなる時空の中で３ Ultimate
+    {0x800A927E, {FULL_STRING, 1, 0, PCSG00992, 0, "PCSG00992"}},
     // ソラユメ
     {0x8000C1C8, {FULL_STRING, 0, 0, 0, PCSG00401, "PCSG00401"}},
     // Princess Arthur
@@ -1323,8 +1339,8 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // １２時の鐘とシンデレラ～シンデレラシリーズ　トリプル全巻パック～
     {0x8001701C, {CODEC_UTF8, 1, 0, 0, NewLineCharFilterA, "PCSG00561"}},
     // ハートの国のアリス～Wonderful Wonder World～
-    {0x8100F0CA, {CODEC_UTF8, 1, 0, 0, NewLineCharFilterA, "PCSG00614"}}, // 手动解压
-    {0x800173F4, {CODEC_UTF8, 1, 0, 0, NewLineCharFilterA, "PCSG00614"}},
+    {0x8100F0CA, {FULL_STRING | CODEC_UTF8, 1, 0, 0, NewLineCharFilterA, "PCSG00614"}}, // 手动解压
+    {0x8001290A, {FULL_STRING | CODEC_UTF8, 1, 0, 0, NewLineCharFilterA, "PCSG00614"}},
     // 新装版魔法使いとご主人様～Wizard and The Master～
     {0x8001733C, {CODEC_UTF8, 1, 0, 0, NewLineCharFilterA, "PCSG00580"}},
     // 円環のメモーリア -カケラ灯し-

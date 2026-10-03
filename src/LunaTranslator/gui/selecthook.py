@@ -1,4 +1,5 @@
 from qtsymbols import *
+from gui.fluent.messagebox import ExMessageBox
 import functools, binascii
 from collections import OrderedDict
 from traceback import print_exc
@@ -13,7 +14,7 @@ from myutils.config import (
 from gui.unityfontdownload import UnityFontDownloadDialog
 from myutils.wrapper import threader
 from myutils.utils import get_time_stamp, is_ascii_control
-from gui.gamemanager.dialog import dialog_setting_game
+from gui.gamemanager.dialog import opengamesettings
 from textio.textsource.texthook import texthook
 from gui.usefulwidget import (
     closeashidewindow,
@@ -36,9 +37,9 @@ from gui.dynalang import (
     LStandardItemModel,
     LDialog,
     LAction,
-    LTabWidget,
     LCheckBox,
 )
+from gui.fluent.tabwidget import FluentPaneTabWidget
 
 
 def getformlayoutw(w=None, cls=LFormLayout, hide=False):
@@ -145,7 +146,7 @@ class searchhookparam(LDialog):
             # usestruct.codepage=self.codepage.value()
             usestruct.text = self.searchtext.text()[:30]
             if len(usestruct.text) < 3:
-                QMessageBox.information(self, _TR("警告"), _TR("搜索文本过短！"))
+                ExMessageBox.warning(self, _TR("警告"), _TR("搜索文本过短！"))
                 return
         elif idx == 2:
             for k, widget in self.regists.items():
@@ -163,7 +164,7 @@ class searchhookparam(LDialog):
                 try:
                     p = pattern.replace(" ", "").replace("??", "11")
                     if ("?" in p) or (len(p) % 2 != 0):
-                        QMessageBox.information(self, _TR("警告"), _TR("无效"))
+                        ExMessageBox.warning(self, _TR("警告"), _TR("无效"))
                         raise Exception()
                     bs = bytes.fromhex(p)
                     usestruct.pattern = bs[:30]
@@ -423,7 +424,7 @@ class hookselect(closeashidewindow):
     removehooksignal = pyqtSignal(tuple)
     getfoundhooksignal = pyqtSignal(dict)
     update_item_new_line = pyqtSignal(tuple, str)
-    consoleoutput  = pyqtSignal(str)
+    consoleoutput = pyqtSignal(str)
     SaveTextThreadRole = Qt.ItemDataRole.UserRole + 1
 
     @property
@@ -709,12 +710,16 @@ class hookselect(closeashidewindow):
         self.userhook = QLineEdit()
         self.searchtextlayout.addWidget(self.userhook)
         self.userhook.returnPressed.connect(self.inserthook)
-        userhookinsert = getIconButton(icon="fa.plus", callback=self.inserthook, tips="插入")
+        userhookinsert = getIconButton(
+            icon="fa.plus", callback=self.inserthook, tips="插入"
+        )
         self.searchtextlayout.addWidget(userhookinsert)
 
         self.searchtextlayout.addWidget(D_getdoclink("hooksettings.html#特殊码格式")())
 
-        self.userhookfind = getIconButton(icon="fa.search", callback=self.findhook, tips="搜索")
+        self.userhookfind = getIconButton(
+            icon="fa.search", callback=self.findhook, tips="搜索"
+        )
         self.searchtextlayout.addWidget(self.userhookfind)
         self.searchtextlayout.addWidget(__)
 
@@ -757,9 +762,11 @@ class hookselect(closeashidewindow):
         self.sysOutput.setUndoRedoEnabled(False)
         self.sysOutput.setReadOnly(True)
 
-        self.tabwidget = LTabWidget()
+        self.tabwidget = FluentPaneTabWidget(colorstyle=3)
         self.vboxlayout.addWidget(self.tabwidget)
-        self.tabwidget.setTabPosition(QTabWidget.TabPosition.East)
+        # 统一 Gallery 式页签组（Pivot_Grow bar + 各页直角面板）；
+        # 插件样式仅支持横向，保持 North
+        self.tabwidget.setTabPosition(QTabWidget.TabPosition.North)
         self.tabwidget.addTab(self.textOutput, ("文本"))
         self.tabwidget.addTab(self.sysOutput, ("日志"))
         self.tabwidget.setCurrentIndex(1)
@@ -836,14 +843,15 @@ class hookselect(closeashidewindow):
     def opensolvetext(self):
         try:
             if gobject.base.gameuid:
-                dialog_setting_game(self, gobject.base.gameuid, 3)
+                opengamesettings(gobject.base.gameuid, 2)
         except:
             print_exc()
 
     def opengamesetting(self):
+        # 游戏管理窗口导航到该游戏的 游戏设置（HOOK 页），不再开小窗口
         try:
             if gobject.base.gameuid:
-                dialog_setting_game(self, gobject.base.gameuid, 1)
+                opengamesettings(gobject.base.gameuid, 1)
         except:
             print_exc()
 
@@ -912,12 +920,14 @@ class hookselect(closeashidewindow):
         self.checkfilt_notshiftjis.setHidden(hide)
 
     def findhook(self):
-        if not self.textsource.pids:
+        if (not self.textsource.gameuid) or (
+            not self.textsource.pids.get(self.textsource.gameuid)
+        ):
             return
         if globalconfig["sourcestatus2"]["texthook"]["use"] == False:
             return
         if self.firsttimex:
-            ret = QMessageBox.question(
+            ret = ExMessageBox.question(
                 self,
                 _TR("警告"),
                 _TR(
@@ -962,9 +972,7 @@ class hookselect(closeashidewindow):
             else:
                 self.allres[hookcode] = hooks[hookcode].copy()
             resbatch = self.allres[hookcode]
-            hide = all(
-                (searchtext not in res) or self.gethide(res) for res in resbatch
-            )
+            hide = all((searchtext not in res) or self.gethide(res) for res in resbatch)
             if hookcode in rowof:
                 rowupdates.append((rowof[hookcode], string[:100], hide))
             else:

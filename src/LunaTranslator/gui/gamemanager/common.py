@@ -1,16 +1,15 @@
 from qtsymbols import *
+from gui.fluent.messagebox import ExMessageBox
 import os, functools
 from traceback import print_exc
-from myutils.wrapper import threader, Singleton
+from myutils.wrapper import threader
 from myutils.utils import find_or_create_uid, duplicateconfig
 from myutils.hwnd import getExeIcon, getcurrexe
-import gobject, hashlib, NativeUtils, uuid, re
-from gui.dynalang import LFormLayout, LDialog
+import gobject, NativeUtils, uuid, re
 from myutils.localetools import localeswitchedrun
 from myutils.config import (
     savehook_new_data,
     savegametaged,
-    uid2gamepath,
     get_launchpath,
     _TR,
     extradatas,
@@ -19,9 +18,7 @@ from myutils.config import (
 )
 from gui.usefulwidget import (
     getIconButton,
-    getsimpleswitch,
     SClickableLabel,
-    SplitLine,
 )
 
 
@@ -30,31 +27,11 @@ class tagitem(QFrame):
     TYPE_SEARCH = 0
     TYPE_DEVELOPER = 1
     TYPE_TAG = 2
-    TYPE_USERTAG = 3
     TYPE_EXISTS = 4
     removesignal = pyqtSignal(tuple)
     labelclicked = pyqtSignal(tuple)
 
     @staticmethod
-    def setstyles(parent: QWidget):
-        parent.setStyleSheet("""
-            tagitem#red {
-                border: 1px solid red;
-            }
-            tagitem#black {
-                border: 1px solid black;
-            }
-            tagitem#green {
-                border: 1px solid green;
-            }
-            tagitem#blue {
-                border: 1px solid blue;
-            }
-            tagitem#yellow {
-                border: 1px solid yellow;
-            }
-        """)
-
     def __init__(self, tag, removeable=True, _type=TYPE_SEARCH, refdata=None) -> None:
         super().__init__()
         if _type == tagitem.TYPE_SEARCH:
@@ -63,8 +40,6 @@ class tagitem(QFrame):
             border_color = "red"
         elif _type == tagitem.TYPE_TAG:
             border_color = "green"
-        elif _type == tagitem.TYPE_USERTAG:
-            border_color = "blue"
         elif _type == tagitem.TYPE_EXISTS:
             border_color = "yellow"
         self.setObjectName(border_color)
@@ -115,41 +90,65 @@ def startgame(gameuid):
         print_exc()
 
 
-def __b64string(a: str):
-    return hashlib.md5(a.encode("utf8")).hexdigest()
-
-
-def __scaletosize(_pix: QPixmap, tgt):
-
-    if max(_pix.width(), _pix.height()) > 400:
-
-        if _pix.width() > _pix.height():
-            sz = QSize(400, 400 * _pix.height() // _pix.width())
-        else:
-            sz = QSize(400, _pix.width() * 400 // _pix.height())
-        _pix = _pix.scaled(
-            sz,
-            Qt.AspectRatioMode.KeepAspectRatio,
-            Qt.TransformationMode.SmoothTransformation,
-        )
-    _pix.save(tgt)
+def decode_scaled(src, by_max=None, by_height=None, by_width=None) -> QImage:
+    """按目标尺寸直接解码（shrink-on-load，缩略路径共用核心）：全量
+    解码再缩既慢又吃内存——9448px 实测全量 730ms/~213MB，按目标解码
+    ~265ms/~0.4MB（Qt JPEG 走 DCT 缩放）。三种定尺寸方式（互斥）：
+    by_max    长边不超过 by_max
+    by_height 高度恰为 by_height（横向条带）
+    by_width  宽度恰为 by_width（纵向条带）
+    均仅缩小不放大；尺寸未知/无需缩时原样解码。返回 QImage（可跨
+    线程；QPixmap 仅限 GUI 线程）。"""
+    reader = QImageReader(src)
+    sz = reader.size()
+    if sz.isValid() and sz.width() > 0 and sz.height() > 0:
+        w, h = sz.width(), sz.height()
+        if by_max and max(w, h) > by_max:
+            if w > h:
+                reader.setScaledSize(QSize(by_max, max(1, by_max * h // w)))
+            else:
+                reader.setScaledSize(QSize(max(1, w * by_max // h), by_max))
+        elif by_height and by_height < h:
+            reader.setScaledSize(QSize(
+                max(1, round(w * by_height / h)), by_height))
+        elif by_width and by_width < w:
+            reader.setScaledSize(QSize(
+                by_width, max(1, round(h * by_width / w))))
+    return reader.read()
 
 
 def getcachedimage(src, small) -> QPixmap:
+    """small=True 取缩略（≤400，按需解码不落盘）；False 原图全量
+    （画廊轮播的查看器语义）。解码核心见 decode_scaled。"""
     src = extradatas["localedpath"].get(src, src)
     if not small:
         return QPixmap(src)
-    if not os.path.exists(src):
+    img = decode_scaled(src, by_max=400)
+    if img.isNull():
         return QPixmap()
-    srcsave = gobject.getcachedir("icon3/{}.webp".format(__b64string(src)))
-    _pix = QPixmap(srcsave)
-    if not _pix.isNull():
-        return _pix
-    _pix = QPixmap(src)
-    if _pix.isNull():
-        return _pix
-    __scaletosize(_pix, srcsave)
-    return _pix
+    return QPixmap.fromImage(img)
+
+
+def loadgridimage(uid) -> QImage:
+    """网格项图标（工作线程调用）：currentmainimage -> 其余图片依次
+    全量解码——网格项用完整分辨率（缩略图会糊）；大图解码在后台
+    线程进行，不占 GUI 线程。无可用图返回 null，exe 图标兜底由 GUI
+    线程回调做（widgets.ItemWidget.applyimage）。"""
+    data = savehook_new_data.get(uid) or {}
+    _all = data.get("imagepath_all", [])
+    checks = [data.get("currentmainimage")]
+    if data.get("currentmainimage") not in _all:
+        checks += _all
+    for _ in checks:
+        if not _:
+            continue
+        src = extradatas["localedpath"].get(_, _)
+        if not os.path.exists(src):
+            continue
+        img = QImage(src)
+        if not img.isNull():
+            return img
+    return QImage()
 
 
 def getpixfunction(kk, small=False, iconfirst=False) -> QPixmap:
@@ -205,8 +204,11 @@ def startgamecheck(self: QWidget, reflist: list, gameuid):
     if not os.path.exists(get_launchpath(gameuid)):
         return
     if not globalconfig.get("startgamenototop", True):
-        idx = reflist.index(gameuid)
-        reflist.insert(0, reflist.pop(idx))
+        # 最近游戏的 getreflist 返回哨兵 1（动态列表，启动后自然置顶），
+        # 非列表/不在列表中时跳过手动置顶
+        if isinstance(reflist, list) and gameuid in reflist:
+            idx = reflist.index(gameuid)
+            reflist.insert(0, reflist.pop(idx))
     self.window().close()
     startgame(gameuid)
 
@@ -221,7 +223,7 @@ def addgamesingle(parent, callback, targetlist):
     uid = find_or_create_uid(targetlist, res)
     if uid in targetlist:
         idx = targetlist.index(uid)
-        response = QMessageBox.question(
+        response = ExMessageBox.question(
             parent,
             "?",
             _TR("游戏已存在，是否重复添加？"),
@@ -316,7 +318,6 @@ def loadrecentlist():
         datas[uid] = tm
     ks = list(_ for _ in datas if _ in savehook_new_data and _ in savehook_new_list)
     ks.sort(key=lambda uid: -datas[uid])
-
     return ks[: globalconfig.get("recentgamelistnum", 10)]
 
 
@@ -369,27 +370,3 @@ def getfonteditor(d: dict, k: str, callback=None):
     return lay
 
 
-@Singleton
-class dialog_syssetting(LDialog):
-
-    def __init__(self, parent) -> None:
-        super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
-        self.setWindowTitle("其他设置")
-        formLayout = LFormLayout(self)
-
-        formLayout.addRow(
-            "隐藏不存在的游戏",
-            getsimpleswitch(
-                globalconfig, "hide_not_exists", callback=self.parent().callexists,
-                default=False,
-            ),
-        )
-
-        formLayout.addRow(
-            "启动游戏不修改顺序",
-            getsimpleswitch(globalconfig, "startgamenototop", default=True),
-        )
-
-        formLayout.addRow(SplitLine())
-        self.parent().createsettings(formLayout)
-        self.show()

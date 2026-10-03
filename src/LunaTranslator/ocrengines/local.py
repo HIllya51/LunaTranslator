@@ -3,6 +3,7 @@ from myutils.utils import stringfyerror
 from myutils.config import _TR, globalconfig, dynamiclink
 from language import Languages
 from qtsymbols import *
+from gui.fluent.messagebox import ExMessageBox
 from ocrengines.baseocrclass import baseocr, OCRResult
 from CVUtils import (
     LocalOCR,
@@ -104,7 +105,7 @@ class question(QWidget):
         self.lineX.setEnabled(True)
         self.loadcombos(self.result)
         if not succ:
-            QMessageBox.critical(
+            ExMessageBox.critical(
                 self,
                 _TR("添加失败"),
                 _TR("错误") + "\n" + failreason,

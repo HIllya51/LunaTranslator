@@ -181,7 +181,6 @@ def getallgamelabels(yearinfos):
                 developers[dev] = []
             developers[dev].append(img)
         for tag in data["webtags"]:
-            tag = globalconfig["tagNameRemap"].get(tag, tag)
             if tag not in webtags:
                 webtags[tag] = []
             webtags[tag].append(img)

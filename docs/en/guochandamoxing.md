@@ -202,4 +202,5 @@ Currently, this interface supports the following models:
 | Author | Model | Languages |
 | ---- | ---------- | ---------- | 
 | tencent | Hy-MT2 | General |
+| IndexTeam | Index-Translate | General |
 | SakuraLLM | SakuraLLM & GalTransl | Japanese -> Chinese |

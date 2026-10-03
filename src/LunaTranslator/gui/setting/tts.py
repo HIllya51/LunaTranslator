@@ -145,9 +145,6 @@ def getttsgrid(self, names):
             continue
         if "args" in globalconfig["reader"][name]:
             items = autoinitdialog_items(globalconfig["reader"][name])
-            items[-1]["callback"] = functools.partial(
-                gobject.base.startreader, name, True, True
-            )
             _3 = D_getIconButton(
                 callback=functools.partial(
                     autoinitdialog,
@@ -158,6 +155,9 @@ def getttsgrid(self, names):
                     items,
                     "tts." + name,
                     name,
+                    callback=functools.partial(
+                        gobject.base.startreader, name, True, True
+                    ),
                 )
             )
         elif name == "selfbuild":
@@ -256,6 +256,7 @@ def setTab5lz(self):
                     [
                         dict(
                             type="grid",
+                            card=True,
                             grid=[
                                 [
                                     "自动朗读",
@@ -286,6 +287,7 @@ def setTab5lz(self):
                     [
                         dict(
                             type="grid",
+                            card=True,
                             grid=[
                                 [
                                     "语音指定",

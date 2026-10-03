@@ -757,6 +757,7 @@
 				"internal": [
 					"auto",
 					"Hy-MT2",
+					"Index-Translate",
 					"GalTransl",
 					"SakuraLLM v0.9",
 					"SakuraLLM v0.10",
@@ -766,6 +767,7 @@
 				"list": [
 					"自动",
 					"Hy-MT2",
+					"Index-Translate",
 					"GalTransl",
 					"SakuraLLM v0.9",
 					"SakuraLLM v0.10",

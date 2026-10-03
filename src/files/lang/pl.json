@@ -955,5 +955,15 @@
     "下载/解压失败": "Pobieranie/rozpakowywanie nie powiodło się",
     "请手动下载并解压到软件目录下": "Proszę ręcznie pobrać i rozpakować do katalogu programu.",
     "未检测到Unity TMP字体文件。内嵌翻译修改游戏字体需要这些文件，请点击下载：": "Nie wykryto plików czcionek Unity TMP. Osadzone tłumaczenie wymaga tych plików do modyfikacji czcionek gry, kliknij, aby pobrać:",
-    "插入": "Wstawić"
+    "插入": "Wstawić",
+    "收起设置": "Ukryj ustawienia",
+    "折叠/展开侧边栏": "Zwiń/rozwiń panel boczny",
+    "上一张": "Poprzedni",
+    "下一张": "Następny",
+    "展开/收起导航": "Rozwiń/zwiń nawigację",
+    "界面语言": "Język interfejsu",
+    "应用主题": "Zastosuj motyw",
+    "隐藏目标": "Ukryty cel",
+    "隐藏延迟": "Ukryte opóźnienie",
+    "编辑颜色": "Edytuj kolor"
 }

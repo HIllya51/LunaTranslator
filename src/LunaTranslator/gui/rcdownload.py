@@ -1,16 +1,17 @@
 import os
 from myutils.config import globalconfig
 import requests, zipfile, gobject
-from gui.usefulwidget import VisLFormLayout, getboxlayout, NQGroupBox, LinkLabel
+from gui.usefulwidget import VisLFormLayout, getboxlayout, LinkLabel, GroupCardWidget
 from myutils.utils import makehtml, stringfyerror, format_bytes
 from myutils.config import _TR, mayberelpath, dynamiclink
 from myutils.wrapper import threader
 from myutils.proxy import getproxy
 from qtsymbols import *
+from gui.fluent.messagebox import ExMessageBox
 from gui.dynalang import LPushButton
 
 
-class resourcewidget(NQGroupBox):
+class resourcewidget(GroupCardWidget):
     installsucc = pyqtSignal(bool, str)
 
     def _installsucc(self, succ, failreason):
@@ -18,9 +19,9 @@ class resourcewidget(NQGroupBox):
         self.btninstall.setVisible(not succ)
         self.btninstall.setEnabled(True)
         if succ:
-            QMessageBox.information(self, _TR("成功"), _TR("添加成功"))
+            ExMessageBox.information(self, _TR("成功"), _TR("添加成功"))
         else:
-            QMessageBox.critical(self, _TR("添加失败"), _TR("错误") + "\n" + failreason)
+            ExMessageBox.critical(self, _TR("添加失败"), _TR("错误") + "\n" + failreason)
 
     @property
     def oldlink(self):
@@ -98,7 +99,7 @@ class resourcewidget(NQGroupBox):
     def __init__(self, *argc, **kw):
         super().__init__(*argc, **kw)
         self.installsucc.connect(self._installsucc)
-        formLayout = VisLFormLayout(self)
+        formLayout = VisLFormLayout(self.contentWidget())
         formLayout.addRow(
             "unidic", LinkLabel(makehtml("https://clrd.ninjal.ac.jp/unidic/"))
         )
@@ -132,7 +133,7 @@ class resourcewidget(NQGroupBox):
         formLayout.setRowVisible(2, False)
 
 
-class resourcewidget2(NQGroupBox):
+class resourcewidget2(GroupCardWidget):
     installsucc = pyqtSignal(bool, str)
 
     def _installsucc(self, succ, failreason):
@@ -140,9 +141,9 @@ class resourcewidget2(NQGroupBox):
         self.btninstall.setVisible(not succ)
         self.btninstall.setEnabled(True)
         if succ:
-            QMessageBox.information(self, _TR("成功"), _TR("添加成功"))
+            ExMessageBox.information(self, _TR("成功"), _TR("添加成功"))
         else:
-            QMessageBox.critical(self, _TR("添加失败"), _TR("错误") + "\n" + failreason)
+            ExMessageBox.critical(self, _TR("添加失败"), _TR("错误") + "\n" + failreason)
 
     @property
     def oldlink(self):
@@ -216,7 +217,7 @@ class resourcewidget2(NQGroupBox):
     def __init__(self, *argc, **kw):
         super().__init__(*argc, **kw)
         self.installsucc.connect(self._installsucc)
-        formLayout = VisLFormLayout(self)
+        formLayout = VisLFormLayout(self.contentWidget())
         self.formLayout = formLayout
         formLayout.addRow("论坛", LinkLabel(makehtml("https://forum.freemdict.com/")))
         formLayout.addRow(

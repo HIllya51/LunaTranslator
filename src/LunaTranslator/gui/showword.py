@@ -1,4 +1,10 @@
 from qtsymbols import *
+from gui.fluent.messagebox import ExMessageBox
+from gui.fluent.tabwidget import (
+    FluentPaneTabWidget,
+    apply_pivot_bar_style,
+)
+from gui.fluent.expander import ExExpander
 import json, re
 import time
 import functools
@@ -34,7 +40,7 @@ from myutils.utils import (
     ffmpeg_record,
     getimageformat,
 )
-from gui.setting.hotkey import setTab_quick_lazy
+from gui.setting.hotkey import HotkeyListTree
 from NativeUtils import MenuItem
 from cishu.cishubase import DictionaryRoot
 from sometypes import WordSegResult
@@ -47,7 +53,7 @@ from gui.usefulwidget import (
     closeashidewindow,
     getIconSwitch,
     auto_select_webview,
-    PopupWidget,
+    makecardrow,
     WebviewWidget,
     MSHtmlWidget,
     EdgeHtmlWidget,
@@ -71,7 +77,7 @@ from gui.usefulwidget import (
     threeswitch,
     VisGridLayout,
 )
-from gui.dynalang import LPushButton, LLabel, LTabWidget, LTabBar, LAction, LFormLayout
+from gui.dynalang import LPushButton, LLabel, LTabBar, LAction, LFormLayout
 from myutils.audioplayer import bass_code_cast
 from tts.basettsclass import TTSResult
 
@@ -231,8 +237,10 @@ class AnkiWindow(QWidget):
         self.currentword = ""
         self.lastankid = None
         self.lastankiword = None
+        # 每个子页都包进紧贴 tabbar 的卡片（pagecard）
         self.tabs = makesubtab_lazy(callback=self.ifshowrefresh)
-        self.tabs.addTab(self.createaddtab(), "添加")
+        _addwid = self.createaddtab()
+        tabadd_lazy(self.tabs, "添加", lambda l: l.addWidget(_addwid))
         tabadd_lazy(self.tabs, "设置", self.creatsetdtab)
         tabadd_lazy(self.tabs, "快捷键", self.createhotkeytab)
         tabadd_lazy(self.tabs, "模板", self.creattemplatetab)
@@ -302,33 +310,35 @@ class AnkiWindow(QWidget):
         self.htmlbrowser.setHtml(html)
 
     def creattemplatetab(self, baselay: QVBoxLayout):
-
+        # 编辑器分栏自身带边框：卡内边距为 0，spliter 填满整卡
+        baselay.setContentsMargins(0, 0, 0, 0)
         spliter = QSplitter()
         baselay.addWidget(spliter)
-        edittemptab = LTabWidget()
+        edittemptab = FluentPaneTabWidget(colorstyle=3)
         self.previewtab = LTabBar()
+        apply_pivot_bar_style(self.previewtab)
         revertbtn = LPushButton("恢复")
         revertbtn.clicked.connect(self.loadedits)
         savebtn = LPushButton("保存")
         savebtn.clicked.connect(self.saveedits)
 
-        spliter.addWidget(
-            getboxwidget(
+        w = getboxwidget(
                 [
                     edittemptab,
                     getboxlayout([revertbtn, savebtn]),
                 ],
                 lc=QVBoxLayout,
             )
-        )
+        w.layout().setSpacing(0)
+        spliter.addWidget(w)
 
         self.htmlbrowser = auto_select_webview(self, False)
         self.htmlbrowser.setSizePolicy(
             QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
         )
-        spliter.addWidget(
-            getboxwidget([self.previewtab, self.htmlbrowser], lc=QVBoxLayout)
-        )
+        w = getboxwidget([self.previewtab, self.htmlbrowser], lc=QVBoxLayout)
+        w.layout().setSpacing(0)
+        spliter.addWidget(w)
         self.fronttext = FQPlainTextEdit()
         self.backtext = FQPlainTextEdit()
         self.csstext = FQPlainTextEdit()
@@ -444,141 +454,181 @@ class AnkiWindow(QWidget):
             "croprecord",
             "recordwindow",
         ]
-        makescrollgrid(
-            setTab_quick_lazy(gobject.base.settin_ui, ls, doc=False), baselay
-        )
+        baselay.addWidget(
+                HotkeyListTree(gobject.base.settin_ui, ls, doc=False))
 
     def creatsetdtab(self, baselay: QVBoxLayout):
-        class zidongluyinw(PopupWidget):
+        """Fluent 设置页：每项一张单行卡片；自动录音/音频编码为折叠卡。"""
 
-            def __init__(_self, parent):
-                super().__init__(parent)
-                form = LFormLayout(_self)
-                form.addRow(
-                    "Detection threshold",
-                    getspinbox(
-                        0,
+        def _foldheader(title):
+            """折叠卡头部：标题在左，控件由调用方追加在右。"""
+            header = QWidget()
+            hlay = QHBoxLayout(header)
+            hlay.setContentsMargins(0, 12, 0, 12)
+            hlay.setSpacing(8)
+            titlelabel = LLabel(title)
+            titlefont = titlelabel.font()
+            titlefont.setPixelSize(15)
+            titlelabel.setFont(titlefont)
+            hlay.addWidget(titlelabel)
+            hlay.addStretch(1)
+            return header, hlay
+
+        def _widen(w):
+            """行内 combobox/spinbox/lineedit 统一宽度（170）对齐（switch 除外）。"""
+            for c in w.findChildren(QComboBox):
+                c.setMinimumWidth(170)
+            for c in w.findChildren(QAbstractSpinBox):
+                c.setMinimumWidth(170)
+            for c in w.findChildren(QLineEdit):
+                c.setMinimumWidth(170)
+                c.setMaximumWidth(170)
+            return w
+
+        def _card(label, *controls):
+            return _widen(makecardrow(label, *controls))
+
+        # ---- 自动录音：折叠卡（子项 = 原弹窗里的三项 VAD 设置） ----
+        luyinexp = ExExpander(content_pad=True)
+        luyinheader, luyinhlay = _foldheader("自动录音")
+        luyinhlay.addWidget(
+            getsimpleswitch(
+                globalconfig["ankiconnect"],
+                "autorecord",
+                callback=self.refsearchw.safeloadrecorder,
+                default=False,
+            )
+        )
+        luyinexp.setHeaderWidget(luyinheader)
+        for _label, _key, _maxv, _default in (
+            ("Detection threshold", "vad_threshold", 1, 0.5),
+            ("Minimum silence duration in seconds", "vad_min_silence_duration", 2, 0.5),
+            ("Minimum speech duration in seconds", "vad_min_speech_duration", 2, 0.25),
+        ):
+            luyinexp.addContentWidget(
+                getboxwidget(
+                    [
+                        _label,
                         1,
-                        globalconfig,
-                        "vad_threshold",
-                        step=0.1,
-                        double=True,
-                        default=0.5,
-                        callback=self.refsearchw.safeloadrecorder,
-                    ),
+                        getspinbox(
+                            0,
+                            _maxv,
+                            globalconfig,
+                            _key,
+                            step=0.1,
+                            double=True,
+                            default=_default,
+                            callback=self.refsearchw.safeloadrecorder,
+                        ),
+                    ]
                 )
-                form.addRow(
-                    "Minimum silence duration in seconds",
-                    getspinbox(
-                        0,
-                        2,
+            )
+
+        # ---- 音频编码：折叠卡（子项随编码在 MP3/OPUS bitrate 间切换） ----
+        stack = QStackedWidget()
+        stack.addWidget(
+            getboxwidget(
+                [
+                    "MP3 bitrate",
+                    1,
+                    getsimplecombobox(
+                        [str(8 * i) for i in range(1, 320 // 8 + 1)],
                         globalconfig,
-                        "vad_min_silence_duration",
-                        step=0.1,
-                        double=True,
-                        default=0.5,
-                        callback=self.refsearchw.safeloadrecorder,
+                        "mp3kbps",
+                        internal=[8 * i for i in range(1, 320 // 8 + 1)],
+                        default=64,
                     ),
-                )
-                form.addRow(
-                    "Minimum speech duration in seconds",
-                    getspinbox(
-                        0,
-                        2,
-                        globalconfig,
-                        "vad_min_speech_duration",
-                        step=0.1,
-                        double=True,
-                        default=0.25,
-                        callback=self.refsearchw.safeloadrecorder,
-                    ),
-                )
-                _self.display()
+                ]
+            )
+        )
+        stack.addWidget(
+            getboxwidget(
+                [
+                    "OPUS bitrate",
+                    1,
+                    getspinbox(6, 256, globalconfig, "opusbitrate", default=10),
+                ]
+            )
+        )
 
-        savelay: "list[VisGridLayout]" = []
+        def __audio(xx):
+            stack.setCurrentIndex(["mp3", "opus"].index(xx))
 
-        def __(xx):
-            i = ["mp3", "opus"].index(xx)
-            savelay[0].setRowVisible(len(grid) - 2, False)
-            savelay[0].setRowVisible(len(grid) - 1, False)
-            savelay[0].setRowVisible(len(grid) - 2 + i, True)
+        audioexp = ExExpander(content_pad=True)
+        audioheader, audiohlay = _foldheader("音频编码")
+        audiohlay.addWidget(
+            getsimplecombobox(
+                ["mp3", "opus(ogg)"],
+                globalconfig,
+                "audioformat",
+                internal=["mp3", "opus"],
+                callback=__audio,
+                default="mp3",
+            )
+        )
+        audioexp.setHeaderWidget(audioheader)
+        audioexp.addContentWidget(stack)
+        __audio(globalconfig.get("audioformat", "mp3"))
 
-        grid = [
-            [
+        items = [
+            _card(
                 "端口号",
-                getspinbox(0, 65536, globalconfig["ankiconnect"], "port", default=8765),
-            ],
-            [
+                getspinbox(
+                    0, 65536, globalconfig["ankiconnect"], "port", default=8765
+                ),
+            ),
+            _card(
                 "ModelName",
                 getlineedit(
                     globalconfig["ankiconnect"], "ModelName6", default="modelofluna"
                 ),
-            ],
-            [
+            ),
+            _card(
                 "允许重复",
                 getsimpleswitch(
                     globalconfig["ankiconnect"], "allowDuplicate", default=True
                 ),
-            ],
-            [
+            ),
+            _card(
                 "添加时更新模板",
                 getsimpleswitch(
                     globalconfig["ankiconnect"], "autoUpdateModel", default=True
                 ),
-            ],
-            [
+            ),
+            _card(
                 "自定义Anki生成脚本",
-                getboxlayout(
-                    [
-                        getsimpleswitch(
-                            globalconfig, "usecustomankigen", default=False
-                        ),
-                        getIconButton(
-                            callback=functools.partial(selectdebugfile, "myanki_v3.py"),
-                            icon="fa.edit",
-                        ),
-                        0,
-                    ]
+                getsimpleswitch(globalconfig, "usecustomankigen", default=False),
+                getIconButton(
+                    callback=functools.partial(selectdebugfile, "myanki_v3.py"),
+                    icon="fa.edit",
                 ),
-            ],
-            [
+            ),
+            _card(
                 "截图后进行OCR",
                 getsimpleswitch(
                     globalconfig["ankiconnect"], "ocrcroped", default=False
                 ),
-            ],
-            [
-                "自动录音",
-                getboxlayout(
-                    [
-                        getsimpleswitch(
-                            globalconfig["ankiconnect"],
-                            "autorecord",
-                            callback=self.refsearchw.safeloadrecorder,
-                            default=False,
-                        ),
-                        getIconButton(callback=functools.partial(zidongluyinw, self)),
-                        0,
-                    ]
-                ),
-            ],
-            [
+            ),
+            _widen(luyinexp),
+            _card(
                 "自动TTS",
                 getsimpleswitch(
                     globalconfig["ankiconnect"], "autoruntts", default=False
                 ),
-            ],
-            [
+            ),
+            _card(
                 "自动TTS_例句",
                 getsimpleswitch(
                     globalconfig["ankiconnect"], "autoruntts2", default=False
                 ),
-            ],
-            [
+            ),
+            _card(
                 "自动截图",
-                getsimpleswitch(globalconfig["ankiconnect"], "autocrop", default=False),
-            ],
-            [
+                getsimpleswitch(
+                    globalconfig["ankiconnect"], "autocrop", default=False
+                ),
+            ),
+            _card(
                 "截图保存格式",
                 getsimplecombobox(
                     getimageformatlist(),
@@ -588,54 +638,28 @@ class AnkiWindow(QWidget):
                     internal=getimageformatlist(),
                     default="webp",
                 ),
-            ],
-            [
+            ),
+            _card(
                 "例句中加粗单词",
-                getsimpleswitch(globalconfig["ankiconnect"], "boldword", default=False),
-            ],
-            [
+                getsimpleswitch(
+                    globalconfig["ankiconnect"], "boldword", default=False
+                ),
+            ),
+            _card(
                 "成功添加后关闭窗口",
                 getsimpleswitch(
                     globalconfig["ankiconnect"], "addsuccautoclose", default=False
                 ),
-            ],
-            [
+            ),
+            _card(
                 "成功添加后隐藏Anki页面",
                 getsimpleswitch(
                     globalconfig["ankiconnect"], "addsuccautocloseEx", default=False
                 ),
-            ],
-            [
-                "音频编码",
-                getsimplecombobox(
-                    ["mp3", "opus(ogg)"],
-                    globalconfig,
-                    "audioformat",
-                    internal=["mp3", "opus"],
-                    callback=__,
-                    default="mp3",
-                ),
-            ],
-            [
-                "MP3 bitrate",
-                getsimplecombobox(
-                    [str(8 * i) for i in range(1, 320 // 8 + 1)],
-                    globalconfig,
-                    "mp3kbps",
-                    internal=[8 * i for i in range(1, 320 // 8 + 1)],
-                    default=64,
-                ),
-            ],
-            [
-                "OPUS bitrate",
-                getspinbox(6, 256, globalconfig, "opusbitrate", default=10),
-            ],
+            ),
+            _widen(audioexp),
         ]
-        makescrollgrid(
-            grid, baselay, hiderows=[len(grid) - 2, len(grid) - 1], savelay=savelay
-        )
-
-        __(globalconfig.get("audioformat", "mp3"))
+        makescrollgrid([[(it, 0)] for it in items], baselay)
 
     @threader
     def simulate_key(self, i):
@@ -668,7 +692,7 @@ class AnkiWindow(QWidget):
                 self.recorders[ii] = loopbackrecorder()
             except Exception as e:
                 self.recorders[ii] = None
-                QMessageBox.critical(
+                ExMessageBox.critical(
                     self, _TR("错误"), _TR("系统不支持环回录制")
                 )  # str(e))
                 btn.click()
@@ -734,6 +758,7 @@ class AnkiWindow(QWidget):
         self.recorders: "dict[int, loopbackrecorder]" = {}
         wid = QWidget()
         layout = QVBoxLayout(wid)
+        layout.setContentsMargins(16, 16, 16, 12 )
         soundbutton = IconButton("fa.music", tips="语音合成")
         soundbutton.clicked.connect(self.langdu)
 
@@ -1015,7 +1040,7 @@ class AnkiWindow(QWidget):
             anki.global_port = globalconfig["ankiconnect"].get("port", 8765)
             anki.global_host = globalconfig["ankiconnect"].get("host", "127.0.0.1")
             if self.currentword == self.lastankiword:
-                response = QMessageBox.question(
+                response = ExMessageBox.question(
                     self, _TR("警告"), _TR("检测到存在重复，是否覆盖？")
                 )
                 if response == QMessageBox.StandardButton.Yes:
@@ -1047,7 +1072,7 @@ class AnkiWindow(QWidget):
             RichMessageBox(self, _TR("错误"), t)
         except anki.AnkiException as e:
             print_exc()
-            QMessageBox.critical(self, _TR("错误"), str(e))
+            ExMessageBox.critical(self, _TR("错误"), str(e))
         except:
             print_exc()
 
@@ -1188,6 +1213,8 @@ class AnkiWindow(QWidget):
 class CustomTabBar(LTabBar):
     def __init__(self) -> None:
         super().__init__()
+        # 查词结果页签：统一 Pivot_Grow
+        apply_pivot_bar_style(self)
         self.savesizehint = QSize()
 
     def sizeHint(self):
@@ -1547,9 +1574,7 @@ class showdiction(QWidget):
         root = self.model.invisibleRootItem()
         rows = []
 
-        from cishu.mdict import mdict
-
-        cishus: list[mdict] = []
+        cishus = []
         for k in globalconfig["cishuvisrank"]:
             cishu = gobject.base.cishus.get(k)
             if not hasattr(cishu, "tree"):

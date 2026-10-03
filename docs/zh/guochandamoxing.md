@@ -207,6 +207,7 @@
 | 作者 | 模型 | 语言 |
 | ---- | ---------- | ---------- | 
 | tencent | Hy-MT2 | 通用 |
+| IndexTeam | Index-Translate | 通用 |
 | SakuraLLM | SakuraLLM & GalTransl | 日语 -> 中文 |
 
 <!-- 

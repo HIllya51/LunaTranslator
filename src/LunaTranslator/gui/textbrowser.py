@@ -40,7 +40,6 @@ class Textbrowser(QFrame):
         self.textbrowser.resize(event.size())
 
     def _contentsChanged(self, size: QSize):
-        size.setHeight(max(size.height(), globalconfig.get("min_auto_height", 0)))
         self._lastcontentsize = size
         self.contentsChanged.emit(size)
 

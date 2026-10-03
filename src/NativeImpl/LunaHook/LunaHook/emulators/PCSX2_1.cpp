@@ -2655,6 +2655,63 @@ namespace
             return buffer->clear();
         buffer->from(s);
     }
+    void SLPM62586(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    {
+        static auto charset = LoadResCharSet(L"Kanshikikan");
+        auto cell = PCSX2_REG_EMU(a0) & 0x1fffffff;
+        if (cell == 0 || cell >= 0x2000000)
+            return;
+        auto S = *(uint32_t *)emu_addr(cell) & 0x1fffffff;
+        if (S == 0 || S >= 0x2000000)
+            return;
+        static uint32_t lastS = 0;
+        static std::wstring passA; // 已输出的上一遍
+        static std::wstring passB; // 待判定的潜在重复遍，先攒着不输出
+        static bool holding = false;
+        static ULONGLONG passAlast = 0, passBfirst = 0;
+        if (S == lastS)
+            return; // 同一字符重画
+        if (S < lastS)
+        { // 指针回退：新的一遍开始，结算上一遍
+            if (holding)
+            {
+                bool dup = passB.size() && passB == passA && (passBfirst - passAlast < 200);
+                if (passB.size() && !dup)
+                {
+                    buffer->from(passB); // 不是重复，其实是新的一行，补发
+                    passA = passB;
+                }
+                else if (dup)
+                    passA.clear(); // 第二遍绘制，丢弃
+                holding = false;
+            }
+            else if (passA.size())
+                holding = true; // 输出完一遍后，下一遍先攒着判定
+            passB.clear();
+        }
+        lastS = S;
+        uint16_t code = *(uint16_t *)emu_addr(S);
+        if (code >= 0xFFF0) // 控制码
+            return;
+        if (code >= charset.size() || !charset[code])
+            return;
+        auto ch = charset[code];
+        if (holding)
+        {
+            if (passB.empty())
+                passBfirst = GetTickCount64();
+            if (passB.size() < 2048)
+                passB += ch;
+        }
+        else
+        {
+            passAlast = GetTickCount64();
+            if (passA.size() >= 2048)
+                passA.clear();
+            passA += ch;
+            buffer->from_t(ch);
+        }
+    }
 }
 struct emfuncinfoX
 {
@@ -2662,6 +2719,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // THE 鑑識官
+    {0x118958, {USING_CHAR | CODEC_UTF16, PCSX2_REG_OFFSET(a0), 0, SLPM62586, 0, "SLPM-62586"}},
     // Darling Special Backlash ～恋のエキゾースト・ヒート～
     {0x1890c0, {USING_CHAR | CODEC_UTF16, 0, 0, SLPM65988char<0>, 0, "SLPM-65653"}},
     // ガイザード・レボリューション ～ 僕らは想いを身に纏う ～

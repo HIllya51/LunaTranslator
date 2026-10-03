@@ -205,4 +205,5 @@
 | Автор | Модель | Языки |
 | ---- | ---------- | ---------- | 
 | tencent | Hy-MT2 | Универсальный |
+| IndexTeam | Index-Translate | Универсальный |
 | SakuraLLM | SakuraLLM & GalTransl | Японский -> Китайский |
