@@ -1,9 +1,15 @@
 from qtsymbols import *
-import windows, NativeUtils, gobject
+import windows, NativeUtils, gobject, threading
 from myutils.config import globalconfig
 from myutils.hwnd import safepixmap
 from gui.dynalang import LAction, LDialog, LFormLayout
-from gui.usefulwidget import getspinbox, ColorButton
+from gui.usefulwidget import getspinbox, ColorButton, getsimpleswitch
+from gui.ocrtranslationoverlay import (
+    OCRTranslationOverlay,
+    OCRCaptureSnapshot,
+    sample_background,
+    suspend_ocr_capture,
+)
 from traceback import print_exc
 from myutils.wrapper import Singleton_activate
 
@@ -167,12 +173,55 @@ class yangshisetting(LDialog):
             default="#000000",
         )
         form.addRow("颜色", colorbtn)
+        form.addRow(
+            "译文覆盖OCR区域",
+            getsimpleswitch(
+                globalconfig,
+                "ocr_translation_overlay",
+                default=False,
+                callback=gobject.base.textsource.setstyle,
+            ),
+        )
+        form.addRow(
+            "覆盖译文字号",
+            getspinbox(
+                6,
+                100,
+                globalconfig,
+                "ocr_translation_overlay_fontsize",
+                default=22,
+                callback=gobject.base.textsource.setstyle,
+            ),
+        )
+        form.addRow(
+            "覆盖背景不透明度",
+            getspinbox(
+                0.1,
+                1,
+                globalconfig,
+                "ocr_translation_overlay_opacity",
+                default=0.95,
+                double=True,
+                callback=gobject.base.textsource.setstyle,
+            ),
+        )
+        form.addRow(
+            "背景自动取色",
+            getsimpleswitch(
+                globalconfig,
+                "ocr_translation_overlay_adaptive_background",
+                default=True,
+                callback=gobject.base.textsource.setstyle,
+            ),
+        )
         self.show()
 
 
 class rangeadjust(Mainw):
     closesignal = pyqtSignal()
     traceoffsetsignal = pyqtSignal(QPoint)
+    overlaytranslationsignal = pyqtSignal(object)
+    overlaybackgroundsignal = pyqtSignal(object)
 
     @property
     def isfocus(self):
@@ -244,6 +293,10 @@ class rangeadjust(Mainw):
     def __init__(self, parent, ranges):
         super().__init__(parent)
         self._ready = False
+        self.ocr_source_lock = threading.RLock()
+        self._ocr_overlay_revision = 0
+        self._ocr_overlay_original = None
+        self.translation_overlay = None
         self._mousetransp = False
         self.__isfocus = False
         self.ranges: list = ranges
@@ -268,11 +321,19 @@ class rangeadjust(Mainw):
         for s in self.cornerGrips:
             s.raise_()
         windows.WindowFocus.giveup(self.winId())
+        self.translation_overlay = OCRTranslationOverlay(self)
+        self.overlaytranslationsignal.connect(self.translation_overlay.receive)
+        self.overlaybackgroundsignal.connect(
+            self.translation_overlay.receive_background
+        )
         self._ready = True
         self._updateWindowRgn()
 
     def showmenu(self, _):
         menu = QMenu(self)
+        menu.setWindowFlags(
+            menu.windowFlags() | Qt.WindowType.WindowStaysOnTopHint
+        )
         multiregion = LAction("多重区域模式", menu)
         multiregion.setCheckable(True)
         multiregion.setChecked(globalconfig.get("multiregion", False))
@@ -286,18 +347,26 @@ class rangeadjust(Mainw):
         menu.addSeparator()
         style = LAction("样式", menu)
         menu.addAction(style)
+        overlay = LAction("译文覆盖OCR区域", menu)
+        overlay.setCheckable(True)
+        overlay.setChecked(globalconfig.get("ocr_translation_overlay", False))
+        menu.addAction(overlay)
         close = LAction("关闭", menu)
         mousetransp = LAction("鼠标穿透窗口", menu)
         mousetransp.setCheckable(True)
         mousetransp.setChecked(self._mousetransp)
         menu.addAction(mousetransp)
         menu.addAction(close)
-        action = menu.exec(QCursor.pos())
+        with suspend_ocr_capture():
+            action = menu.exec(QCursor.pos())
         if action == multiregion:
             checked = multiregion.isChecked()
             globalconfig["multiregion"] = checked
             if not checked:
                 gobject.base.textsource.leaveone()
+        elif action == overlay:
+            globalconfig["ocr_translation_overlay"] = overlay.isChecked()
+            gobject.base.textsource.setstyle()
         elif action == style:
             yangshisetting(self)
         elif focus is not None and action == focus:
@@ -306,7 +375,7 @@ class rangeadjust(Mainw):
         elif action == mousetransp:
             self.setmousetransp(mousetransp.isChecked())
         elif action == close:
-            self._rect = QRect()
+            self._set_ocr_rect(QRect())
             self.isfocus = False
             self.close()
 
@@ -340,6 +409,8 @@ class rangeadjust(Mainw):
             self._updateWindowRgn()
 
     def setstyle(self):
+        if self.translation_overlay is not None:
+            self.translation_overlay.sync()
         self.label.setStyleSheet(
             " border:%spx solid %s; background-color: rgba(0,0,0, %s); border-radius:0;"
             % (
@@ -350,6 +421,62 @@ class rangeadjust(Mainw):
         )
         if getattr(self, "_ready", False):
             self._updateWindowRgn()
+
+    def update_overlay_background(self, image, rect):
+        # Runs in the OCR worker, sampling raw color before OCR preprocessing.
+        if not globalconfig.get("ocr_translation_overlay", False):
+            return
+        rgb = sample_background(image)
+        if rgb is None:
+            return
+        sample = (rect.getRect(), rgb)
+        if sample != getattr(self, "_last_background_sample", None):
+            self._last_background_sample = sample
+            self.overlaybackgroundsignal.emit(sample)
+
+    def capture_snapshot(self):
+        # Called by workers; no native/Qt widget access under this lock.
+        with self.ocr_source_lock:
+            return OCRCaptureSnapshot(self._ocr_overlay_revision, self._rect.getRect())
+
+    def remember_overlay_source(self, text, snapshot=None):
+        # Validation and revision assignment must be atomic with selection edits.
+        with self.ocr_source_lock:
+            if snapshot is not None and snapshot != self.capture_snapshot():
+                return None
+            if text != self._ocr_overlay_original:
+                self._ocr_overlay_original = text
+                self._ocr_overlay_revision += 1
+                self.overlaytranslationsignal.emit((self._ocr_overlay_revision, None, ""))
+            return self._ocr_overlay_revision
+
+    def invalidate_overlay(self):
+        with self.ocr_source_lock:
+            self._ocr_overlay_original = None
+            self._ocr_overlay_revision += 1
+            self.overlaytranslationsignal.emit((self._ocr_overlay_revision, None, ""))
+
+    def _set_ocr_rect(self, rect):
+        with self.ocr_source_lock:
+            if rect != self._rect:
+                self._rect = QRect(rect)
+                self.invalidate_overlay()
+
+    def showEvent(self, event):
+        super().showEvent(event)
+        if self.translation_overlay is not None:
+            self.translation_overlay.sync()
+
+    def hideEvent(self, event):
+        if self.translation_overlay is not None:
+            self.translation_overlay.hide()
+        super().hideEvent(event)
+
+    def closeEvent(self, event):
+        self.invalidate_overlay()
+        if self.translation_overlay is not None:
+            self.translation_overlay.hide()
+        super().closeEvent(event)
 
     def mouseMoveEvent(self, e: QMouseEvent):
         if self._isTracking:
@@ -374,6 +501,8 @@ class rangeadjust(Mainw):
         return rect.adjusted(r, r, -r, -r)
 
     def setGeometry(self, r: QRect):
+        if r == self.geometry():
+            return
         windows.MoveWindow(
             int(self.winId()), r.left(), r.top(), r.width(), r.height(), True
         )
@@ -384,7 +513,9 @@ class rangeadjust(Mainw):
 
     def moveEvent(self, _):
         if self._rect.isValid():
-            self._rect = self.rectoffset(self.geometry())
+            self._set_ocr_rect(self.rectoffset(self.geometry()))
+        if self.translation_overlay is not None:
+            self.translation_overlay.sync()
 
     def enterEvent(self, _):
         if self._mousetransp:
@@ -403,22 +534,29 @@ class rangeadjust(Mainw):
     def resizeEvent(self, a0):
         self.label.setGeometry(self.rect())
         if self._rect.isValid():
-            self._rect = self.rectoffset(self.geometry())
+            self._set_ocr_rect(self.rectoffset(self.geometry()))
         if getattr(self, "_ready", False):
             self._updateWindowRgn()
+        if self.translation_overlay is not None:
+            self.translation_overlay.sync()
         super().resizeEvent(a0)
 
     def getrect(self):
-        return self._rect
+        with self.ocr_source_lock:
+            return QRect(self._rect)
 
     def setrect(self, rect: QRect, show=True):
+        if rect != self._rect:
+            self.invalidate_overlay()
         self.tracepos = QPoint()
         if rect.isValid():
             if show:
                 self.show()
             r = round(globalconfig.get("ocrrangewidth", 1) * self.devicePixelRatioF())
             self.setGeometry(rect.adjusted(-r, -r, r, r))
-        self._rect = rect
+        self._set_ocr_rect(rect)
+        if self.translation_overlay is not None:
+            self.translation_overlay.sync()
         # 由于使用movewindow而非qt函数，导致内部执行绪有问题。
 
 
