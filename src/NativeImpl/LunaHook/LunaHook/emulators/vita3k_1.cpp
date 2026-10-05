@@ -484,71 +484,40 @@ namespace
             buffer->from(s);
         }
     }
-    namespace Corda
+    void PCSG01124(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
-        std::string readBinaryString(uintptr_t address, bool *haveName)
+        auto address = (char *)VITA3K::emu_arg(context)[hp->offset];
+        std::string s;
+        while (*(BYTE *)address == 0xaa)
         {
-            *haveName = false;
-            if ((*(WORD *)address & 0xF0FF) == 0x801b)
+            address += 1;
+            if (*(BYTE *)address == 0x1b && *(BYTE *)(address + 1) == 0xb4)
             {
-                *haveName = true;
-                address = address + 2; // (1)
+                address += 6 + 1;
+                continue;
             }
-            std::string s;
-            int i = 0;
-            uint8_t c;
-            if (*(BYTE *)(address + i) == 0xaa)
-                i += 1;
-
-            while (true)
+            else if (*(BYTE *)address == 0x1b && *(BYTE *)(address + 1) == 0xb5)
             {
-                c = *(uint8_t *)(address + i);
-                if (!c)
-                {
-                    if (*(uint8_t *)(address + i + 1) == 0xaa)
-                        i += 2;
-                    else
-                        break;
-                }
-                else if (c == 0x1b)
-                {
-                    if (*haveName)
-                        return s; // (1) skip junk after name
-
-                    c = *(uint8_t *)(address + (i + 1));
-                    if (c == 0x7f)
-                        i += 5;
-                    else if (c == 0xb4) // 下天の華 夢灯り //NPJH50864
-                        i += 6;
-                    else
-                        i += 2;
-                }
-                else if (c == 0x0a)
-                {
-                    s += '\n';
-                    i += 1;
-                }
-                else if (c == 0x20)
-                {
-                    s += ' ';
-                    i += 1;
-                }
-                else
-                {
-                    auto len = 1 + (IsShiftjisLeadByte(*(BYTE *)(address + i)));
-                    s += std::string((char *)(address + i), len);
-                    i += len; // encoder.encode(c).byteLength;
-                }
+                address += 2 + 1;
+                continue;
             }
-            return s;
+            else if (*(BYTE *)address == 0x1b && *(BYTE *)(address + 1) == 0xb6)
+            {
+                address += 6 + 1;
+                continue;
+            }
+            std::string ss = address;
+            address += ss.size() + 1;
+            s += ss;
         }
+        buffer->from(s);
     }
-    void PCSG01245(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    void FPCSG01124(TextBuffer *buffer, HookParam *hp)
     {
-        auto address = VITA3K::emu_arg(context)[hp->offset];
-        bool haveNamve;
-        auto s = Corda::readBinaryString(address, &haveNamve);
-        *split = haveNamve;
+        auto s = buffer->strA();
+        s = re::sub(s, "\x1b\xb4");
+        s = re::sub(s, "\x1b\xb5");
+        s = re::sub(s, R"((\x81\x40)*\n*(\x81\x40)*)");
         buffer->from(s);
     }
     void PCSG00912(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
@@ -1046,6 +1015,11 @@ namespace
         s = re::sub(s, LR"(　*<br>　*)");
         buffer->from(s);
     }
+    void PCSG00708(TextBuffer *buffer, HookParam *hp)
+    {
+        CharFilter(buffer, L'\\');
+        CharFilter(buffer, L'$');
+    }
     void PCSG00543(TextBuffer *buffer, HookParam *hp)
     {
         static std::wstring last;
@@ -1062,6 +1036,21 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // 下天の華 with 夢灯り 愛蔵版
+    {0x80129BE0, {FULL_STRING, 0, 0, PCSG01124, FPCSG01124, "PCSG00921"}}, // 下天の華
+    {0x8014C56C, {FULL_STRING, 0, 0, PCSG01124, FPCSG01124, "PCSG00921"}}, // 下天の華 with 夢灯り
+    // 金色のコルダ オクターヴ
+    {0x8000854A, {FULL_STRING, 0, 0, PCSG01124, FPCSG01124, "PCSG01245"}},
+    // 金色のコルダ２ff フォルテッシモ
+    {0x80202CA6, {FULL_STRING, 0, 0, PCSG01124, FPCSG01124, "PCSG01124"}},
+    // 金色のコルダ３ AnotherSky feat.神南/至誠館/天音学園
+    {0x8020BE6E, {FULL_STRING, 0, 0, PCSG01124, FPCSG01124, "PCSG01212"}}, // 神南
+    {0x8020E876, {FULL_STRING, 0, 0, PCSG01124, FPCSG01124, "PCSG01212"}}, // 至誠館
+    {0x80218E4A, {FULL_STRING, 0, 0, PCSG01124, FPCSG01124, "PCSG01212"}}, // 天音学園
+    // 金色のコルダ３ フルボイス Special
+    {0x801F64CE, {FULL_STRING, 0, 0, PCSG01124, FPCSG01124, "PCSG01211"}},
+    // 薔薇に隠されしヴェリテ
+    {0x81558104, {FULL_STRING | CODEC_UTF16, 0, 0xc, 0, PCSG00708, "PCSG00708"}},
     // 遙かなる時空の中で Ultimate
     {0x800608F0, {FULL_STRING, 4, 0, 0, NewLineCharFilterA, "PCSG01157"}},
     // 遙かなる時空の中で３ Ultimate
@@ -1465,8 +1454,6 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // 金色ラブリッチェ
     {0x800154CC, {0, 0, 0, 0, PCSG01250_N<0>, "PCSG01318"}},
     {0x800158B8, {0, 4, 0, 0, PCSG01250_T, "PCSG01318"}},
-    // 金色のコルダ オクターヴ
-    {0x80022B46, {0, 2, 0, PCSG01245, 0, "PCSG01245"}},
     // 幕末Rock 超魂
     {0x8000BF18, {0, 4, 0, 0, PCSG01247, "PCSG00425"}},
     // your diary +

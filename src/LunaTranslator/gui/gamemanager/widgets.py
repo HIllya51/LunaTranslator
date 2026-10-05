@@ -32,22 +32,12 @@ class imagehelper:
 
     def adaptsize(self, size: QSize):
 
-        if self.imagewrapmode == 0:
-            h, w = size.height(), size.width()
-            r = float(w) / h
+        if self.imagewrapmode in (0, 1):
+            r = float(size.width()) / size.height()
             max_r = float(self.width()) / self.height()
-            if r < max_r:
-                new_w = self.width()
-                new_h = new_w / r
-            else:
-                new_h = self.height()
-                new_w = new_h * r
-            return QSizeF(new_w, new_h)
-        elif self.imagewrapmode == 1:
-            h, w = size.height(), size.width()
-            r = float(w) / h
-            max_r = float(self.width()) / self.height()
-            if r > max_r:
+            # 0：受限取高（留宽）；1：受限取宽（留高）
+            fit_width = (r < max_r) if self.imagewrapmode == 0 else (r > max_r)
+            if fit_width:
                 new_w = self.width()
                 new_h = new_w / r
             else:

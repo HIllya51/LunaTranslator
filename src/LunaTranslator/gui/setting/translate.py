@@ -1004,55 +1004,19 @@ class interruptexc(Exception):
     pass
 
 
-def downloadgguf(key, url: str):
+def _download_file(key, url, savep, *, digest=None, check_interrupt=None,
+                   octet_stream_only=False, verify_size=True):
+    """llama.cpp 下载流（downloadgguf / downloadone 共用）：分块写入 +
+    中断 + 进度 + 可选 SHA256 校验。异常统一转进度码（-3 取消 / -1
+    失败），返回是否成功。"""
     try:
         gobject.base.llamacppdownloadprogress.emit(key, url, 0, 0)
-        savep = gobject.gettempdir("llamacpp-models/" + str(uuid.uuid4()))
         with open(savep, "wb") as file:
             r = requests.get(url, stream=True, proxies=getproxy())
-            if r.headers.get("Content-Type") not in (None, "application/octet-stream"):
+            if octet_stream_only and r.headers.get("Content-Type") not in (
+                None, "application/octet-stream"
+            ):
                 raise Exception()
-            size = int(r.headers["Content-Length"])
-            file_size = 0
-            for i in r.iter_content(chunk_size=1024 * 32):
-                if interrupt.get(key, False):
-                    raise interruptexc()
-                if not i:
-                    continue
-                file.write(i)
-                file_size += len(i)
-                gobject.base.llamacppdownloadprogress.emit(key, url, file_size, size)
-        if file_size != size:
-            raise Exception()
-        gobject.base.llamacppdownloadprogress.emit(key, url, -2, 0)
-
-        shutil.move(savep, gobject.getcachedir("llamacpp-models/" + key))
-        globalconfig["llama.cpp"]["models"] = gobject.getcachedir("llamacpp-models")
-        globalconfig["llama.cpp"]["model"] = key
-        if GGUF_REFRESH_BTN:
-            gobject.base.safeinvokefunction.emit(GGUF_REFRESH_BTN.click)
-        return True
-    except interruptexc:
-        gobject.base.llamacppdownloadprogress.emit(key, url, -3, 0)
-        return False
-    except:
-        print_exc()
-        gobject.base.llamacppdownloadprogress.emit(key, url, -1, 0)
-        return False
-
-
-def downloadone(key, url: str, digest: str, check_interrupt, tag: str):
-    try:
-        digmethod, digest = digest.upper().split(":")
-        if digmethod != "SHA256":
-            raise Exception()
-    except:
-        digest = None
-    try:
-        gobject.base.llamacppdownloadprogress.emit(key, url, 0, 0)
-        savep = gobject.gettempdir("llamacpp/" + str(uuid.uuid4()) + ".zip")
-        with open(savep, "wb") as file:
-            r = requests.get(url, stream=True, proxies=getproxy())
             size = int(r.headers["Content-Length"])
             file_size = 0
             hash_obj = hashlib.sha256()
@@ -1070,13 +1034,47 @@ def downloadone(key, url: str, digest: str, check_interrupt, tag: str):
                     hash_obj.update(i)
             if digest and (hash_obj.hexdigest().upper() != digest):
                 raise Exception()
+            if verify_size and (file_size != size):
+                raise Exception()
+        return True
+    except interruptexc:
+        gobject.base.llamacppdownloadprogress.emit(key, url, -3, 0)
+    except:
+        print_exc()
+        gobject.base.llamacppdownloadprogress.emit(key, url, -1, 0)
+    return False
+
+
+def downloadgguf(key, url: str):
+    savep = gobject.gettempdir("llamacpp-models/" + str(uuid.uuid4()))
+    if not _download_file(key, url, savep, octet_stream_only=True):
+        return False
+    gobject.base.llamacppdownloadprogress.emit(key, url, -2, 0)
+
+    shutil.move(savep, gobject.getcachedir("llamacpp-models/" + key))
+    globalconfig["llama.cpp"]["models"] = gobject.getcachedir("llamacpp-models")
+    globalconfig["llama.cpp"]["model"] = key
+    if GGUF_REFRESH_BTN:
+        gobject.base.safeinvokefunction.emit(GGUF_REFRESH_BTN.click)
+    return True
+
+
+def downloadone(key, url: str, digest: str, check_interrupt, tag: str):
+    try:
+        digmethod, digest = digest.upper().split(":")
+        if digmethod != "SHA256":
+            raise Exception()
+    except:
+        digest = None
+    savep = gobject.gettempdir("llamacpp/" + str(uuid.uuid4()) + ".zip")
+    if not _download_file(key, url, savep, digest=digest,
+                          check_interrupt=check_interrupt, verify_size=False):
+        return False
+    try:
         with zipfile.ZipFile(savep) as zipf:
             zipf.extractall(gobject.gettempdir("llamacpp/" + tag))
         gobject.base.llamacppdownloadprogress.emit(key, url, -2, 0)
         return True
-    except interruptexc:
-        gobject.base.llamacppdownloadprogress.emit(key, url, -3, 0)
-        return False
     except:
         gobject.base.llamacppdownloadprogress.emit(key, url, -1, 0)
         return False

@@ -49,6 +49,8 @@ user32.TrackPopupMenu.restype = wt.BOOL
 user32.TrackPopupMenu.argtypes = [wt.HWND, wt.UINT,
                                   ctypes.c_int, ctypes.c_int, ctypes.c_int,
                                   wt.HWND, ctypes.c_void_p]
+user32.ScreenToClient.restype = wt.BOOL
+user32.ScreenToClient.argtypes = [wt.HWND, ctypes.POINTER(wt.POINT)]
 
 
 class _MSG(ctypes.Structure):
@@ -167,6 +169,25 @@ class FluentFramelessWindowMixin:
         return (user32.GetSystemMetrics(SM_CXSIZEFRAME)
                 + user32.GetSystemMetrics(SM_CXPADDEDBORDER))
 
+    def _native_local_pos(self, x, y):
+        """物理全局坐标 -> 窗口本地逻辑坐标（WM_NC* 消息通用）。
+
+        不能走 x/dpr + mapFromGlobal：混合 DPI 多屏下 Qt5 的全局逻辑
+        空间与真实屏幕布局错位（副屏上的窗口 mapFromGlobal 偏差可达
+        数百像素），命中测试与右键菜单定位全部漂移。ScreenToClient
+        在原生层完成原点换算，窗口内 逻辑=客户区物理/DPR 恒成立，
+        与显示器数量/排列/缩放组合无关。"""
+        pt = wt.POINT(x, y)
+        user32.ScreenToClient(wt.HWND(int(self.winId())), ctypes.byref(pt))
+        dpr = self.devicePixelRatioF() or 1.0
+        return QPoint(round(pt.x / dpr), round(pt.y / dpr))
+
+    @staticmethod
+    def _unpack_nc_lparam(l_param):
+        """WM_NC* lParam：屏幕坐标，有符号 16 位打包（物理像素）。"""
+        return (ctypes.c_short(l_param & 0xFFFF).value,
+                ctypes.c_short((l_param >> 16) & 0xFFFF).value)
+
     def nativeEvent(self, eventType, message):
         try:
             return self._native_event_impl(eventType, message)
@@ -231,10 +252,8 @@ class FluentFramelessWindowMixin:
     def _show_title_bar_system_menu(self, l_param):
         """标题栏右键 → 原生系统菜单（GetSystemMenu + TrackPopupMenu）。"""
         bar = self._fluent_title_bar
-        dpr = self.devicePixelRatioF() or 1.0
-        x = ctypes.c_short(l_param & 0xFFFF).value
-        y = ctypes.c_short((l_param >> 16) & 0xFFFF).value
-        local = self.mapFromGlobal(QPoint(int(x / dpr), int(y / dpr)))
+        x, y = self._unpack_nc_lparam(l_param)
+        local = self._native_local_pos(x, y)
         bar_rect = QRect(bar.mapTo(self, QPoint(0, 0)), bar.size())
         if not bar_rect.contains(local):
             return False
@@ -266,11 +285,11 @@ class FluentFramelessWindowMixin:
 
     def _hit_test(self, l_param):
         # lParam 为屏幕坐标（有符号 16 位打包，物理像素）；
-        # Qt 的 mapFromGlobal / width / height 都是逻辑坐标，需按 DPR 换算
+        # 经 _native_local_pos 换算为窗口本地逻辑坐标（见其注释），
+        # width / height / 边框均为逻辑坐标
+        x, y = self._unpack_nc_lparam(l_param)
+        local = self._native_local_pos(x, y)
         dpr = self.devicePixelRatioF() or 1.0
-        x = ctypes.c_short(l_param & 0xFFFF).value
-        y = ctypes.c_short((l_param >> 16) & 0xFFFF).value
-        local = self.mapFromGlobal(QPoint(int(x / dpr), int(y / dpr)))
 
         border = 0 if self.isMaximized() else int(self._frame_thickness() / dpr)
         width = self.width()

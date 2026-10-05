@@ -211,28 +211,16 @@ class _ToolButtonList(FluentSettingTree):
             self.setItemWidget(
                 item, 5, self._movecell(functools.partial(self._move, k)))
 
-    def _applymove(self, idx1, idx2):
+    # 拖拽 / 上下移共用（_ondrop/_move 见基类）
+    def _rank_list(self):
+        return globalconfig["toolbutton"]["rank2"]
+
+    def _rank_applymove(self, idx1, idx2):
         rank = globalconfig["toolbutton"]["rank2"]
         k = rank.pop(idx1)
         rank.insert(idx2, k)
         self.rebuild()
         doadjust()
-
-    def _ondrop(self, idx1, idx2):
-        self._applymove(idx1, idx2)
-
-    def _move(self, k, up, tomax):
-        """上下移按钮：循环移一位（首行再上移到末尾、末行再下移到
-        开头），右键（tomax）置顶/置底。"""
-        rank = globalconfig["toolbutton"]["rank2"]
-        idx1 = rank.index(k)
-        if tomax:
-            idx2 = 0 if up else len(rank) - 1
-        else:
-            idx2 = (idx1 + (-1 if up else 1)) % len(rank)
-        if idx2 == idx1:
-            return
-        self._applymove(idx1, idx2)
 
 
 savebtns: "dict[tuple[str, str], IconButton]" = {}
