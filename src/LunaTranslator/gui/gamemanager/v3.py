@@ -1377,6 +1377,10 @@ class _gridpage(QWidget):
         )
         gameitem.focuschanged.connect(self._itemfocus)
         gameitem.droppedgame.connect(self.ref._gridmove)
+        # 右键菜单（_griditemmenu：同侧栏游戏菜单 + "设置"直达游戏设置）
+        gameitem.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        gameitem.customContextMenuRequested.connect(
+            functools.partial(self.ref._griditemmenu, k))
         # 不做初始 click 高亮：click 会经 point_game 联动侧栏抢走选中
         return gameitem
 
@@ -1756,11 +1760,22 @@ class dialog_savedgame_v3(QWidget):
                 pass
         super().deleteLater()
 
+    def _rec_lastpage(self, idx):
+        # _rebuilding_righttop：viewitem 页签手术期间索引经 0 中转；
+        # count<2：首个 addTab（画廊）在空 tabwidget 上触发 -1->0 的
+        # currentChanged，会把记忆页覆盖成 0
+        if self._rebuilding_righttop or self.righttop.count() < 2:
+            return
+        globalconfig["gamemanager_lastpage"] = idx
+
     def viewitem(self, k):
         try:
             self.pixview.setpix(k)
             self.currentfocusuid = k
-            currvis = self.righttop.currentIndex()
+            # 停留页跟随用户上次选择（会话内实时记录于
+            # gamemanager_lastpage；页签手术期间的过渡信号不记录）
+            currvis = globalconfig.get("gamemanager_lastpage", 0)
+            self._rebuilding_righttop = True
             # 画廊(0) 常驻；移除旧的游戏设置/游戏数据两页。升序删：
             # 当前页随索引左移（同一控件）不触发多余的懒构建
             while self.righttop.count() > 1:
@@ -1782,10 +1797,12 @@ class dialog_savedgame_v3(QWidget):
                     title,
                     functools.partial(dgi.doaddtab, wfunct, k),
                 )
+            self._rebuilding_righttop = False
             self.righttop.setCurrentIndex(
                 min(currvis, self.righttop.count() - 1))
         except:
             print_exc()
+            self._rebuilding_righttop = False
 
     def navigate_to_settings(self, uid, setindexhook=None):
         """外部入口（选择文本窗口/托盘菜单）：导航到该游戏的 游戏设置
@@ -2256,19 +2273,25 @@ class dialog_savedgame_v3(QWidget):
         if addlist == action:
             self.createlist(True, None)
 
-    def _gamemenu(self):
+    def _gamemenu(self, control=False):
+        """游戏右键菜单（侧栏子项 / 网格项共用）。control=True（网格）
+        时在第二位多一个"设置"，直达该游戏的 游戏设置 页。"""
         if not self.currentfocusuid or (
             self.currentfocusuid not in savehook_new_data
         ):
             return  # 无有效选中游戏（右键空白/主项时防御）
         menu = QMenu(self)
         startgame = LAction("开始游戏", menu)
+        settings = LAction("设置", menu)
         delgame = LAction("删除游戏", menu)
         opendir = LAction("打开目录", menu)
         createlnk = LAction("创建快捷方式", menu)
         lc = get_launchpath(self.currentfocusuid)
         if os.path.exists(lc):
             menu.addAction(startgame)
+        if control:
+            menu.addAction(settings)
+        if os.path.exists(lc):
             menu.addAction(opendir)
             menu.addAction(createlnk)
         elif os.path.exists(os.path.dirname(lc)):
@@ -2280,12 +2303,22 @@ class dialog_savedgame_v3(QWidget):
         action = menu.exec(QCursor.pos())
         if action == startgame:
             startgamecheck(self, getreflist(self.reftagid), self.currentfocusuid)
+        elif action == settings:
+            self.navigate_to_settings(self.currentfocusuid)
         elif action == delgame:
             self.shanchuyouxi()
         elif action == opendir:
             self.clicked4()
         elif action == createlnk:
             CreateShortcutForUid(self.currentfocusuid)
+
+    def _griditemmenu(self, uid):
+        """网格项右键：侧栏指向该游戏（同图表单击，point_game 会设置
+        currentfocusuid），弹共用游戏菜单（control=True 多"设置"）。"""
+        if uid not in savehook_new_data:
+            return
+        self.point_game(uid)
+        self._gamemenu(True)
 
     def directshow(self):
         pass
@@ -2377,6 +2410,12 @@ class dialog_savedgame_v3(QWidget):
         self.righttop.setStyleSheet(
             "QTabWidget::pane{border:0;margin:0;padding:0;}"
             "QTabWidget::tab-bar{left:8px;}")
+        # 画廊/游戏设置/游戏数据 记住用户停在哪页（跨会话）：换游戏
+        # 重建两页时 viewitem 以此为初始页，而不是每次都回画廊。
+        # _rebuilding_righttop：viewitem 的页签手术期间索引会经 0 中转，
+        # 不记录
+        self._rebuilding_righttop = False
+        self.righttop.currentChanged.connect(self._rec_lastpage)
         self.pixview = pixwrapper(self)
         # 画廊/游戏设置/游戏数据：页为裸容器，直角面板由
         # FluentPaneTabWidget.addTab 统一包裹；后两页由 viewitem 重建

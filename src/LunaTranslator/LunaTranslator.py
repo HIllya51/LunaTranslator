@@ -1550,6 +1550,8 @@ class BASEOBJECT(QObject):
         self.tray.messageClicked.connect(self.__trayclicked)
         self.trayclicked = print
         self.tray.show()
+        if gobject.sys_le_xp:
+            return
         version = NativeUtils.QueryVersion(getcurrexe())
         if "load_doc_or_log" not in globalconfig:
             os.startfile(dynamiclink(docs=True))
