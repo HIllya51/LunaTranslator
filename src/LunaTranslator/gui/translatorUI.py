@@ -16,7 +16,6 @@ from myutils.config import (
 )
 from textio.textsource.texthook import texthook
 from textio.textsource.ocrtext import ocrtext
-from gui.setting.about import get_about_info
 from myutils.magpie_builtin import MagpieBuiltin, AdapterService
 from myutils.ocrutil import ocr_run, imageCut
 from myutils.mecab import WordSegResult
@@ -1095,13 +1094,6 @@ class TranslatorWindow(resizableframeless):
             color=SpecialColor.RawTextColor,
         )
 
-    def showabout(self):
-
-        _t = get_about_info()
-        if not globalconfig.get("adaptive_height", True):
-            _t = _t.replace("\n\n", "\n")
-        self.showMarkDown(_t)
-
     def showEvent(self, e):
         super().showEvent(e)
         if not self.firstshow:
@@ -1115,12 +1107,6 @@ class TranslatorWindow(resizableframeless):
         self.enterfunction(2 + globalconfig["disappear_delay_tool"])
         self.autohidedelaythread()
         self.tracewindowposthread()
-        if time.time() - globalconfig.get("lasttime3", 0) > 3600 * 24 * 7:
-            self.showabout()
-            globalconfig["lasttime3"] = time.time()
-        elif time.time() - globalconfig.get("lasttime2", 0) > 3600 * 24 * 1:
-            self.showabout()
-        globalconfig["lasttime2"] = time.time()
 
     def setselectableEx(self):
         globalconfig["selectableEx"] = True

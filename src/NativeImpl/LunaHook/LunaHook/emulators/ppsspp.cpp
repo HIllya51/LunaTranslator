@@ -334,6 +334,10 @@ namespace ppsspp
         if (!findbase)
             findbase = MemDbg::findBytes(sig2, sizeof(sig2), ret, ret + 0x40);
         if (!findbase)
+            findbase = MemDbg::findBytes(sig, sizeof(sig), ret - 0x1000, ret + 0x1000);
+        if (!findbase)
+            findbase = MemDbg::findBytes(sig2, sizeof(sig2), ret - 0x1000, ret + 0x1000);
+        if (!findbase)
             Msg::Log("can't find emu_baseaddr");
         PPSSPP::x86_baseaddr = (*(DWORD *)(findbase + 12)) & 0xffff0000;
 #endif

@@ -114,6 +114,38 @@ class ImageDelegate(QStyledItemDelegate):
                 opt.decorationSize = sz
 
 
+class _settingsnav(FluentNavTree):
+    """游戏管理左下角"设置"入口（底部导航）：文本 i18n
+    （LanguageChange -> updatelangtext，由应用级事件过滤器驱动，
+    同 FluentCaptionButton）。"""
+
+    _KEY = "设置"
+
+    def __init__(self):
+        super().__init__()
+        self.addNavigationItem(_TR(self._KEY), -1, ICON_SETTINGS,
+                               auto_select=False)
+
+    def updatelangtext(self):
+        item = self.topLevelItem(0)
+        if item is not None:
+            self.configureNavigationItem(
+                item, _TR(self._KEY), -1, ICON_SETTINGS)
+
+
+class _i18nLineEdit(QLineEdit):
+    """带 i18n 占位文本的输入框（LanguageChange -> updatelangtext，
+    由应用级事件过滤器驱动，同 FluentCaptionButton）。"""
+
+    def __init__(self, placeholder, parent=None):
+        super().__init__(parent)
+        self._tr_placeholder = placeholder
+        self.setPlaceholderText(_TR(placeholder))
+
+    def updatelangtext(self):
+        self.setPlaceholderText(_TR(self._tr_placeholder))
+
+
 class previewimages(QListWidget):
     changepixmappath = pyqtSignal(str)
     removepath = pyqtSignal(str)
@@ -1139,9 +1171,8 @@ class _gridpage(QWidget):
         """把本页的控件装进宿主无边框窗口的标题栏：搜索手动居中
         （右侧按钮/面包屑变化不推动它），面包屑紧贴其右（从左向右），
         排序/齿轮在右侧（仅网格页显示，见 _sync_titlebar_pagecontrols）。"""
-        self.searchedit = QLineEdit()
+        self.searchedit = _i18nLineEdit("搜索")
         self.searchedit.returnPressed.connect(self._search)
-        self.searchedit.setPlaceholderText("搜索")
         # Gallery 同款：宽 300、高度走样式自然尺寸；图标 32x32 画布 32px 字形
         self.searchedit.setClearButtonEnabled(True)
         self._search_action = _act = QAction(self.searchedit)
@@ -1377,6 +1408,10 @@ class _gridpage(QWidget):
         )
         gameitem.focuschanged.connect(self._itemfocus)
         gameitem.droppedgame.connect(self.ref._gridmove)
+        # 右键菜单（_griditemmenu：同侧栏游戏菜单 + "设置"直达游戏设置）
+        gameitem.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        gameitem.customContextMenuRequested.connect(
+            functools.partial(self.ref._griditemmenu, k))
         # 不做初始 click 高亮：click 会经 point_game 联动侧栏抢走选中
         return gameitem
 
@@ -1392,19 +1427,27 @@ class _gridpage(QWidget):
     def _matches_tags(self, k, tags, tagid=None):
         """游戏 k 是否通过 tag 过滤（TYPE_SEARCH 仅按标题、大小写不
         敏感 / TYPE_EXISTS 路径存在 / DEVELOPER·TAG 精确匹配，来源见
-        游戏数据-标签 tab）。hide_not_exists 不作用于最近游戏。"""
-        if (
-            tagid != 1
-            and globalconfig.get("hide_not_exists", False)
-        ):
-            if not os.path.exists(get_launchpath(k)):
-                return False
+        游戏数据-标签 tab）。hide_not_exists 不作用于最近游戏。
+        该函数按游戏逐个调用（网格/侧栏/计数三处全量扫）：路径探测与
+        title 小写化均只做一次。"""
+        _types = [_t for _, _t, _ in tags]
+        need_exists = any(_t == tagitem.TYPE_EXISTS for _t in _types) or (
+            tagid != 1 and globalconfig.get("hide_not_exists", False)
+        )
+        if need_exists and not os.path.exists(get_launchpath(k)):
+            return False
         _d = savehook_new_data[k]
-        webtags = _d.get("webtags", [])
+        if any(_t == tagitem.TYPE_TAG for _t in _types):
+            webtags = _d.get("webtags", [])
+        else:
+            webtags = ()
+        if any(_t == tagitem.TYPE_SEARCH for _t in _types):
+            title_l = _d["title"].lower()
+        else:
+            title_l = None
         for tag, _type, _ in tags:
             if _type == tagitem.TYPE_EXISTS:
-                if not os.path.exists(get_launchpath(k)):
-                    return False
+                return False
             elif _type == tagitem.TYPE_DEVELOPER:
                 if tag not in _d.get("developers", []):
                     return False
@@ -1412,7 +1455,7 @@ class _gridpage(QWidget):
                 if tag not in webtags:
                     return False
             elif _type == tagitem.TYPE_SEARCH:
-                if tag.lower() not in _d["title"].lower():
+                if tag.lower() not in title_l:
                     return False
         return True
 
@@ -1424,13 +1467,7 @@ class _gridpage(QWidget):
         self.flow = lazyscrollflow(self._keypressed)
         self.flow.setObjectName("NOBORDER")
         self.flow.bgclicked.connect(self._bgclicked)
-        self.flow.setsize(
-            QSize(
-                ui_settings["dialog_savegame_layout"].get("itemw", 130),
-                ui_settings["dialog_savegame_layout"].get("itemh", 190),
-            )
-        )
-        self.flow.setSpacing(ui_settings["dialog_savegame_layout"].get("margin", 6))
+        self._apply_flow_layout()
         self.flowcontainer.addWidget(self.flow)
         for k in self.reflist:
             self.flow.addwidget(functools.partial(self._makeitem, k))
@@ -1441,8 +1478,9 @@ class _gridpage(QWidget):
         tags = self.currtags
         # 有过滤时网格禁拖（侧边栏保留 drag/drop——主项排序仍可用，
         # 子项拖拽在 mouseMoveEvent/dropEvent 里按过滤状态拦截）
-        self.setAcceptDrops(not (
-            bool(tags) or globalconfig.get("hide_not_exists", False)))
+        _droppable = not (
+            bool(tags) or globalconfig.get("hide_not_exists", False))
+        self.setAcceptDrops(_droppable)
         # 网格
         for i, w in enumerate(self.flow.widgets):
             uid = None
@@ -1457,8 +1495,7 @@ class _gridpage(QWidget):
         # 已实例化的网格项也切 acceptDrops
         for w in self.flow.widgets:
             if isinstance(w, ItemWidget):
-                w.setAcceptDrops(not (
-                    bool(tags) or globalconfig.get("hide_not_exists", False)))
+                w.setAcceptDrops(_droppable)
         self.flow.resizeandshow()
         # 侧边栏子项 + 主项计数
         nav = self.ref.nav
@@ -1579,7 +1616,8 @@ class _gridpage(QWidget):
     def directshow(self):
         self.flow.directshow()
 
-    def callchange(self, _=None):
+    def _apply_flow_layout(self):
+        """网格项尺寸/间距（_build_flow 建流与设置项变更 callchange 共用）。"""
         self.flow.setsize(
             QSize(
                 ui_settings["dialog_savegame_layout"].get("itemw", 130),
@@ -1587,6 +1625,9 @@ class _gridpage(QWidget):
             )
         )
         self.flow.setSpacing(ui_settings["dialog_savegame_layout"].get("margin", 6))
+
+    def callchange(self, _=None):
+        self._apply_flow_layout()
         self.flow.resizeandshow()
         for _ in self.flow.widgets:
             if not isinstance(_, ItemWidget):
@@ -1756,11 +1797,22 @@ class dialog_savedgame_v3(QWidget):
                 pass
         super().deleteLater()
 
+    def _rec_lastpage(self, idx):
+        # _rebuilding_righttop：viewitem 页签手术期间索引经 0 中转；
+        # count<2：首个 addTab（画廊）在空 tabwidget 上触发 -1->0 的
+        # currentChanged，会把记忆页覆盖成 0
+        if self._rebuilding_righttop or self.righttop.count() < 2:
+            return
+        globalconfig["gamemanager_lastpage"] = idx
+
     def viewitem(self, k):
         try:
             self.pixview.setpix(k)
             self.currentfocusuid = k
-            currvis = self.righttop.currentIndex()
+            # 停留页跟随用户上次选择（会话内实时记录于
+            # gamemanager_lastpage；页签手术期间的过渡信号不记录）
+            currvis = globalconfig.get("gamemanager_lastpage", 0)
+            self._rebuilding_righttop = True
             # 画廊(0) 常驻；移除旧的游戏设置/游戏数据两页。升序删：
             # 当前页随索引左移（同一控件）不触发多余的懒构建
             while self.righttop.count() > 1:
@@ -1782,10 +1834,12 @@ class dialog_savedgame_v3(QWidget):
                     title,
                     functools.partial(dgi.doaddtab, wfunct, k),
                 )
+            self._rebuilding_righttop = False
             self.righttop.setCurrentIndex(
                 min(currvis, self.righttop.count() - 1))
         except:
             print_exc()
+            self._rebuilding_righttop = False
 
     def navigate_to_settings(self, uid, setindexhook=None):
         """外部入口（选择文本窗口/托盘菜单）：导航到该游戏的 游戏设置
@@ -1924,14 +1978,7 @@ class dialog_savedgame_v3(QWidget):
             # 程序化选中子项（网格图表点击/同步等）：右侧显示其所属
             # 主项的网格并联动高亮——鼠标单击/双击经延迟窗口分流，
             # 不进此分支（见 _gamelistnav._flush_click / _navdouble）
-            self.reftagid = item.parent().data(0, TAGID_ROLE)
-            self.currentfocusuid = uid
-            if (not self.gridpage._loaded) or (
-                self.gridpage.reftagid != self.reftagid
-            ):
-                self.gridpage.showtag(self.reftagid)
-            self._show_gridpage()
-            self.gridpage.focusgame(uid)
+            self._gridfocus(item)
         else:
             # 主项：右侧切网格页（大图表），展示该列表。
             # 网格已在该列表（子项→主项返回）时不重建，只清高亮
@@ -2154,11 +2201,16 @@ class dialog_savedgame_v3(QWidget):
         self.currentfocusuid = uid  # 分支可能清聚焦，补回
 
     def _navdouble(self, item, _col):
-        uid = item.data(0, GAMEUID_ROLE)
-        if not uid:
+        if not item.data(0, GAMEUID_ROLE):
             return
         # 双击子项：与其所属主项的网格同步（切网格页 + 高亮）；
         # 打开画廊/设置由单击承担（与单击语义交换）
+        self._gridfocus(item)
+
+    def _gridfocus(self, item):
+        """子项 → 网格同步：切到其所属列表并高亮该游戏
+        （_navcurrent 程序化分支与 _navdouble 双击共用）。"""
+        uid = item.data(0, GAMEUID_ROLE)
         self.reftagid = item.parent().data(0, TAGID_ROLE)
         self.currentfocusuid = uid
         if (not self.gridpage._loaded) or (
@@ -2256,19 +2308,25 @@ class dialog_savedgame_v3(QWidget):
         if addlist == action:
             self.createlist(True, None)
 
-    def _gamemenu(self):
+    def _gamemenu(self, control=False):
+        """游戏右键菜单（侧栏子项 / 网格项共用）。control=True（网格）
+        时在第二位多一个"设置"，直达该游戏的 游戏设置 页。"""
         if not self.currentfocusuid or (
             self.currentfocusuid not in savehook_new_data
         ):
             return  # 无有效选中游戏（右键空白/主项时防御）
         menu = QMenu(self)
         startgame = LAction("开始游戏", menu)
+        settings = LAction("设置", menu)
         delgame = LAction("删除游戏", menu)
         opendir = LAction("打开目录", menu)
         createlnk = LAction("创建快捷方式", menu)
         lc = get_launchpath(self.currentfocusuid)
         if os.path.exists(lc):
             menu.addAction(startgame)
+        if control:
+            menu.addAction(settings)
+        if os.path.exists(lc):
             menu.addAction(opendir)
             menu.addAction(createlnk)
         elif os.path.exists(os.path.dirname(lc)):
@@ -2280,12 +2338,22 @@ class dialog_savedgame_v3(QWidget):
         action = menu.exec(QCursor.pos())
         if action == startgame:
             startgamecheck(self, getreflist(self.reftagid), self.currentfocusuid)
+        elif action == settings:
+            self.navigate_to_settings(self.currentfocusuid)
         elif action == delgame:
             self.shanchuyouxi()
         elif action == opendir:
             self.clicked4()
         elif action == createlnk:
             CreateShortcutForUid(self.currentfocusuid)
+
+    def _griditemmenu(self, uid):
+        """网格项右键：侧栏指向该游戏（同图表单击，point_game 会设置
+        currentfocusuid），弹共用游戏菜单（control=True 多"设置"）。"""
+        if uid not in savehook_new_data:
+            return
+        self.point_game(uid)
+        self._gamemenu(True)
 
     def directshow(self):
         pass
@@ -2353,11 +2421,9 @@ class dialog_savedgame_v3(QWidget):
         _sep = FluentCardSeparator()
         _sep.followNavScroll(self.nav)
         navlay.addWidget(_sep)
-        self._footernav = FluentNavTree()
+        self._footernav = _settingsnav()
         self._footernav.setProperty("ItemHeight", 38)
         self._footernav.setFixedHeight(38)
-        self._footernav.addNavigationItem("设置", -1, ICON_SETTINGS,
-                                          auto_select=False)
         self._footernav.pageIndexChanged.connect(
             lambda _: self._open_settings())
         footer_container = QWidget()
@@ -2377,6 +2443,12 @@ class dialog_savedgame_v3(QWidget):
         self.righttop.setStyleSheet(
             "QTabWidget::pane{border:0;margin:0;padding:0;}"
             "QTabWidget::tab-bar{left:8px;}")
+        # 画廊/游戏设置/游戏数据 记住用户停在哪页（跨会话）：换游戏
+        # 重建两页时 viewitem 以此为初始页，而不是每次都回画廊。
+        # _rebuilding_righttop：viewitem 的页签手术期间索引会经 0 中转，
+        # 不记录
+        self._rebuilding_righttop = False
+        self.righttop.currentChanged.connect(self._rec_lastpage)
         self.pixview = pixwrapper(self)
         # 画廊/游戏设置/游戏数据：页为裸容器，直角面板由
         # FluentPaneTabWidget.addTab 统一包裹；后两页由 viewitem 重建

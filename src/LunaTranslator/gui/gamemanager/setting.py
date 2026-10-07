@@ -246,28 +246,15 @@ class _GameTextProcTree(FluentSettingTree):
             self.setItemWidget(
                 item, 3, self._movecell(functools.partial(self._move, k)))
 
-    # ---- 排序（拖拽 / 上下移按钮共用）----
-    def _applymove(self, idx1, idx2):
+    # ---- 排序（拖拽 / 上下移共用，_ondrop/_move 见基类）----
+    def _rank_list(self):
+        return self._rank()
+
+    def _rank_applymove(self, idx1, idx2):
         rank = self._rank()
         k = rank.pop(idx1)
         rank.insert(idx2, k)
         self.rebuild()
-
-    def _ondrop(self, idx1, idx2):
-        self._applymove(idx1, idx2)
-
-    def _move(self, k, up, tomax):
-        """循环移一位（首行再上移到末尾、末行再下移到开头），
-        右键（tomax）置顶/置底。"""
-        rank = self._rank()
-        idx1 = rank.index(k)
-        if tomax:
-            idx2 = 0 if up else len(rank) - 1
-        else:
-            idx2 = (idx1 + (-1 if up else 1)) % len(rank)
-        if idx2 == idx1:
-            return
-        self._applymove(idx1, idx2)
 
     # ---- 增删 ----
     def addmethod(self, k):
@@ -950,18 +937,15 @@ class dialog_setting_game_internal(QWidget):
         chart2 = chartwidget(timechart=False)
         chart2.xtext = chart.xtext
         chart2.ytext = str
-        self._timelabel = QLabel()
-        self._timelabel.setSizePolicy(
-            QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed
-        )
-        self._wordlabel = QLabel()
-        self._wordlabel.setSizePolicy(
-            QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed
-        )
-        self._wordlabel = QLabel()
-        self._wordlabel.setSizePolicy(
-            QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed
-        )
+        def _fixedlabel():
+            lb = QLabel()
+            lb.setSizePolicy(
+                QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed
+            )
+            return lb
+
+        self._timelabel = _fixedlabel()
+        self._wordlabel = _fixedlabel()
         refreshcallback = functools.partial(self.refresh, chart, chart2, gameuid)
         stack = QStackedWidget()
         stack.addWidget(chart)

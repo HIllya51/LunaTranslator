@@ -11,6 +11,7 @@ namespace
         std::wstring game;
         std::string Vita3KGameID;
         std::wstring lastcheck;
+        HWND hwnd;
     } game_info;
     uintptr_t getDoJitAddress()
     {
@@ -102,11 +103,12 @@ namespace
                 if (!match)
                     return;
                 auto curr = match.value()[1].str();
-                if (game_info.lastcheck == curr)
+                if (game_info.lastcheck == curr && game_info.hwnd == info.handle)
                     return;
                 game_info.Vita3KGameID = wcasta(curr);
                 game_info.lastcheck = curr;
                 game_info.game = game;
+                game_info.hwnd = info.handle;
                 auto &&[id, title] = splitpair(Trim(game_info.game));
                 return Msg::EmuGameInfo(id.c_str(), title.c_str());
             }

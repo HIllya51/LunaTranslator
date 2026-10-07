@@ -686,7 +686,8 @@ class autoinitdialog(LDialog, DarkLightAutoResetIconHelper):
                 )
             lineW.addWidget(combo)
         elif line["type"] == "multiline":
-            lineW = QTextEdit(dd[key])
+            lineW = QTextEdit()
+            lineW.setPlainText(dd[key])
             lineW.setAcceptRichText(False)
             lineW.setPlaceholderText(line.get("placeholder", ""))
             self.regist[key] = lineW.toPlainText

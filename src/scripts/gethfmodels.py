@@ -15,6 +15,14 @@ res = [
         ],
     },
     {
+        "series": "Index-Translate",
+        "account": "IndexTeam",
+        "repos": [
+            {"repo": "Index-Translate-2B-GGUF"},
+            {"repo": "Index-Translate-9B-GGUF"},
+        ],
+    },
+    {
         "series": "SakuraLLM",
         "lang": "ja->zh",
         "repos": [
@@ -24,15 +32,6 @@ res = [
             {"repo": "Sakura-GalTransl-7B-v3.7"},
             {"repo": "Sakura-7B-Qwen2.5-v1.0-GGUF"},
             {"repo": "Sakura-32B-Qwen2beta-v0.10pre1-GGUF"},
-        ],
-    },
-    {
-        "series": "Shisa.AI",
-        "account": "shisa-ai",
-        "lang": "ja<->en",
-        "repos": [
-            {"account": "mradermacher", "repo": "shisa-v2.1-qwen3-8b-i1-GGUF"},
-            {"account": "mradermacher", "repo": "shisa-v2-mistral-nemo-12b-GGUF"},
         ],
     },
     {

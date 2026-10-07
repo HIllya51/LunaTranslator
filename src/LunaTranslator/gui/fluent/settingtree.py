@@ -111,6 +111,30 @@ class FluentSettingTree(QTreeWidget):
             center=True,
         )
 
+    # ---- 排序（拖拽 / 上下移按钮共用）----
+    # 子类实现 _rank_list（可见键序列）与 _rank_applymove（数据序
+    # 调整 + 重建行）；_ondrop/_move 由本基类统一提供
+    def _rank_list(self):
+        raise NotImplementedError
+
+    def _rank_applymove(self, idx1, idx2):
+        raise NotImplementedError
+
+    def _ondrop(self, idx1, idx2):
+        self._rank_applymove(idx1, idx2)
+
+    def _move(self, k, up, tomax):
+        """循环移一位（首行再上移到末尾、末行再下移到开头），
+        右键（tomax）置顶/置底。"""
+        lst = self._rank_list()
+        idx1 = lst.index(k)
+        if tomax:
+            idx2 = 0 if up else len(lst) - 1
+        else:
+            idx2 = (idx1 + (-1 if up else 1)) % len(lst)
+        if idx2 != idx1:
+            self._rank_applymove(idx1, idx2)
+
     # ---- 自管拖拽（子类实现 _ondrop：改写数据序 + 重建行）----
     def mousePressEvent(self, ev):
         self._dragitem = self.itemAt(ev.pos())
