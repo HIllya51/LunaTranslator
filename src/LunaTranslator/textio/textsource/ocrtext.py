@@ -3,6 +3,12 @@ from myutils.config import globalconfig
 from myutils.utils import checkmd5reloadmodule, parsekeystringtomodvkcode
 import NativeUtils, windows
 from gui.rangeselect import rangeadjust
+from gui.ocrtranslationoverlay import (
+    OCRRegionText,
+    OCRRegionBatch,
+    capture_without_overlays,
+    overlay_source_is_current,
+)
 from myutils.wrapper import threader
 from myutils.ocrutil import imageCut, ocr_run, ocr_init
 import time, gobject
@@ -13,8 +19,10 @@ from CVUtils import cvMat
 from traceback import print_exc
 
 
-def imageCutEx(hwnd, rectX: QRect):
-    img = imageCut(hwnd, rectX)
+def imageCutEx(hwnd, rectX: QRect, background_callback=None):
+    img = capture_without_overlays(lambda: imageCut(hwnd, rectX), rectX)
+    if img is None:
+        return QImage()
     succ = True
     if hwnd:
         succ, img = img
@@ -33,6 +41,8 @@ def imageCutEx(hwnd, rectX: QRect):
             painter.drawRect(rect)
             painter.end()
 
+    if background_callback is not None:
+        background_callback(img, rectX)
     if globalconfig.get("use_ocr_preprocess", False):
         try:
             img = checkmd5reloadmodule(
@@ -51,77 +61,126 @@ class rangemanger:
         self.savelastrecimg: cvMat = None
         self.lastocrtime: float = 0
         self.savelasttext: str = None
+        self._last_capture_rect = None
 
     def __del__(self):
         self.range_ui.closesignal.emit()
 
+    def _commit_ocr_result(self, result, snapshot, image=None):
+        with self.range_ui.ocr_source_lock:
+            revision = self.range_ui.remember_overlay_source(
+                "" if result.error else result.textonly, snapshot
+            )
+            if revision is None:
+                return
+            if image is not None:
+                self.savelastimg = cvMat(image)
+                self.savelastrecimg = self.savelastimg
+            self.lastocrtime = time.time()
+            self.savelasttext = result.textonly
+            self._last_capture_rect = snapshot.rect
+            # Freeze provenance here; batch assembly must not read a newer
+            # selection revision and attach it to this older OCR result.
+            result.ocr_overlay_source = OCRRegionText(
+                result.textonly, self.range_ui, revision, owner=self.ref
+            )
+            return result
+
     def getresmanual(self):
-        rect = self.range_ui.getrect()
+        snapshot = self.range_ui.capture_snapshot()
+        rect = QRect(*snapshot.rect)
         if not rect.isValid():
             return
-        imgr = imageCutEx(self.ref.hwnd, rect)
+        imgr = imageCutEx(self.ref.hwnd, rect, self.range_ui.update_overlay_background)
         if imgr.isNull():
             return
+        if snapshot != self.range_ui.capture_snapshot():
+            return
         result = ocr_run(imgr)
-        self.savelastimg = cvMat(imgr)
-        self.savelastrecimg = self.savelastimg
-        self.lastocrtime = time.time()
-        self.savelasttext = result.textonly
-        return result
+        return self._commit_ocr_result(result, snapshot, imgr)
 
     def getresauto(self):
-        rect = self.range_ui.getrect()
+        snapshot = self.range_ui.capture_snapshot()
+        rect = QRect(*snapshot.rect)
         if not rect.isValid():
             return
-        imgr = imageCutEx(self.ref.hwnd, rect)
-        ok = True
-        if globalconfig.get("ocr_auto_method_v2", "period") == "analysis":
-            imgr1 = cvMat(imgr)
-
-            image_score = imgr1.MSSIM(self.savelastimg)
-
-            gobject.base.thresholdsett1.emit(str(image_score))
-            self.savelastimg = imgr1
-
-            if image_score > globalconfig.get("ocr_stable_sim_v2", 0.5):
-
-                image_score2 = imgr1.MSSIM(self.savelastrecimg)
-
-                gobject.base.thresholdsett2.emit(str(image_score2))
-                if image_score2 > globalconfig.get("ocr_diff_sim_v2", 0.95):
-                    ok = False
+        imgr = imageCutEx(self.ref.hwnd, rect, self.range_ui.update_overlay_background)
+        if imgr.isNull():
+            return
+        with self.range_ui.ocr_source_lock:
+            if snapshot != self.range_ui.capture_snapshot():
+                return
+            reset = self._last_capture_rect != snapshot.rect or (
+                globalconfig.get("ocr_translation_overlay", False)
+                and self.range_ui._ocr_overlay_original is None
+            )
+            ok = True
+            analysis_image = None
+            recorded_image = self.savelastrecimg
+            if globalconfig.get("ocr_auto_method_v2", "period") == "analysis":
+                imgr1 = cvMat(imgr)
+                analysis_image = imgr1
+                image_score = imgr1.MSSIM(self.savelastimg)
+                gobject.base.thresholdsett1.emit(str(image_score))
+                if image_score > globalconfig.get("ocr_stable_sim_v2", 0.5):
+                    image_score2 = imgr1.MSSIM(self.savelastrecimg)
+                    gobject.base.thresholdsett2.emit(str(image_score2))
+                    if (
+                        image_score2 > globalconfig.get("ocr_diff_sim_v2", 0.95)
+                        and not reset
+                    ):
+                        ok = False
+                    else:
+                        recorded_image = imgr1
                 else:
-                    self.savelastrecimg = imgr1
-            else:
-                ok = False
-        elif globalconfig.get("ocr_auto_method_v2", "period") == "period":
-            if time.time() - self.lastocrtime > globalconfig.get("ocr_interval", 1.5):
-                ok = True
-            else:
-                ok = False
-        if ok == False:
-            return
+                    ok = False
+            elif globalconfig.get("ocr_auto_method_v2", "period") == "period":
+                ok = reset or time.time() - self.lastocrtime > globalconfig.get(
+                    "ocr_interval", 1.5
+                )
+            if not ok:
+                if analysis_image is not None:
+                    self.savelastimg = analysis_image
+                    self.savelastrecimg = recorded_image
+                return
         result = ocr_run(imgr)
-        t = result.textonly
-        self.lastocrtime = time.time()
-        sim = NativeUtils.distance(self.savelasttext, t)
-        self.savelasttext = t
-        if sim < globalconfig.get("ocr_text_diff", 3):
-            return
-        self.savelasttext = t
-        return result
+        with self.range_ui.ocr_source_lock:
+            if snapshot != self.range_ui.capture_snapshot():
+                return
+            if analysis_image is not None:
+                self.savelastimg = analysis_image
+                self.savelastrecimg = recorded_image
+            t = result.textonly
+            overlay_enabled = globalconfig.get("ocr_translation_overlay", False)
+            overlay_reset = (
+                overlay_enabled and self.range_ui._ocr_overlay_original is None
+            )
+            sim = NativeUtils.distance(self.savelasttext, t)
+            if overlay_enabled and (result.error or not t):
+                return self._commit_ocr_result(result, snapshot)
+            if sim < globalconfig.get("ocr_text_diff", 3) and not overlay_reset:
+                self.lastocrtime = time.time()
+                self.savelasttext = t
+                self._last_capture_rect = snapshot.rect
+                return
+            return self._commit_ocr_result(result, snapshot)
 
     def waitforstable(self):
-        rect = self.range_ui.getrect()
+        snapshot = self.range_ui.capture_snapshot()
+        rect = QRect(*snapshot.rect)
         if not rect.isValid():
             return False
-        imgr = imageCutEx(self.ref.hwnd, rect)
-        imgr1 = cvMat(imgr)
-        image_score = imgr1.MSSIM(self.savelastimg)
-
-        gobject.base.thresholdsett1.emit(str(float(image_score)))
-        self.savelastimg = imgr1
-        return image_score > globalconfig.get("ocr_stable_sim2_v2", 0.95)
+        imgr = imageCutEx(self.ref.hwnd, rect, self.range_ui.update_overlay_background)
+        if imgr.isNull():
+            return False
+        with self.range_ui.ocr_source_lock:
+            if snapshot != self.range_ui.capture_snapshot():
+                return False
+            imgr1 = cvMat(imgr)
+            image_score = imgr1.MSSIM(self.savelastimg)
+            gobject.base.thresholdsett1.emit(str(float(image_score)))
+            self.savelastimg = imgr1
+            return image_score > globalconfig.get("ocr_stable_sim2_v2", 0.95)
 
 
 class ocrtext(basetext):
@@ -131,6 +190,7 @@ class ocrtext(basetext):
     def init(self):
         self.hwnd = None
         self._pause_state = False
+        self._overlay_enabled = globalconfig.get("ocr_translation_overlay", False)
         threader(ocr_init)()
         self.ranges: "list[rangemanger]" = []
         self.gettextthread()
@@ -151,6 +211,7 @@ class ocrtext(basetext):
     def newrangeadjustor(self):
         if len(self.ranges) == 0 or globalconfig.get("multiregion", False):
             self.ranges.append(rangemanger(self, self.ranges))
+        return self.ranges[-1]
 
     def starttrace(self, pos):
         for _r in self.ranges:
@@ -164,6 +225,17 @@ class ocrtext(basetext):
         self.ranges[-1].range_ui.setrect(rect)
 
     def setstyle(self, *_):
+        enabled = globalconfig.get("ocr_translation_overlay", False)
+        if enabled and not self._overlay_enabled:
+            for r in self.ranges:
+                r.range_ui.invalidate_overlay()
+                r.lastocrtime = 0
+                r.savelasttext = None
+                r.savelastrecimg = None
+        self._overlay_enabled = enabled
+        ui = getattr(gobject.base, "translation_ui", None)
+        if ui is not None:
+            ui.ocroverlaymodesignal.emit(enabled and not self.ending)
         [_.range_ui.setstyle() for _ in self.ranges]
 
     def showhiderangeui(self, b):
@@ -275,30 +347,63 @@ class ocrtext(basetext):
                 return [r]
         return self.ranges
 
-    def getallres(self, auto):
+    def getallres(self, auto, region=None):
+        if region is not None and (self.ending or region not in self.ranges):
+            return
         __text: "list[OCRResultParsed]" = []
-        for r in self.getuseranges():
+        recognized_ranges = []
+        active_ranges = [region] if region is not None else list(self.getuseranges())
+        independent = len(active_ranges) > 1 and globalconfig.get(
+            "ocr_translation_overlay", False
+        )
+        for r in active_ranges:
 
             if auto:
                 _ = r.getresauto()
             else:
                 _ = r.getresmanual()
+            if region is not None and (self.ending or region not in self.ranges):
+                return
             if _ is None:
+                continue
+            if globalconfig.get(
+                "ocr_translation_overlay", False
+            ) and not overlay_source_is_current(_.ocr_overlay_source):
                 continue
             if _.error:
                 _.displayerror()
+                if independent:
+                    continue
                 return
             __text.append(_)
+            recognized_ranges.append(r.range_ui)
         if not __text:
             return
         text = "\n".join(_.textonly for _ in __text)
+        if independent:
+            sources = []
+            for result in __text:
+                source = result.ocr_overlay_source
+                if not overlay_source_is_current(source):
+                    continue
+                source.ocr_direct_translation = result.result.isocrtranslate
+                sources.append(source)
+            return OCRRegionBatch(sources) if sources else None
+        if (
+            globalconfig.get("ocr_translation_overlay", False)
+            and len(active_ranges) == 1
+            and len(recognized_ranges) == 1
+        ):
+            text = __text[0].ocr_overlay_source
+            if not overlay_source_is_current(text):
+                return
         if __text[0].result.isocrtranslate:
             gobject.base.displayinfomessage(text, "<notrans>")
         else:
             return text
 
-    def gettextonce(self):
-        return self.getallres(False)
+    def gettextonce(self, region=None):
+        return self.getallres(False, region)
 
     def pause_recognition(self):
         self._pause_state = True
