@@ -37,6 +37,7 @@ from gui.usefulwidget import (
 from gui.dynalang import LPushButton, LFormLayout, LLabel
 from gui.fluent.expander import ExExpander
 from gui.fluent.colorpicker import ColorPickerButton
+from gui.ocrtranslationoverlay import refresh_overlays
 
 
 def __changeuibuttonstate(x):
@@ -48,6 +49,8 @@ def __changeuibuttonstate(x):
 
 def mayberealtimesetfont(_=None):
     gobject.base.translation_ui.translate_text.setfontstyle()
+    # 原地显示翻译覆盖层跟随译文（字号/字体/加粗）
+    refresh_overlays()
 
 
 def createtextfontcom(key, df):

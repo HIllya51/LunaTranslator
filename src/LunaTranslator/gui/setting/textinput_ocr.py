@@ -564,6 +564,18 @@ def internal(self):
                 )(),
                 default="#000000",
             ),
+            "",
+            "对齐",
+            D_getsimplecombobox(
+                ["左上", "右上", "中上", "居中"],
+                globalconfig,
+                "ocr_translation_overlay_alignment",
+                internal=["topleft", "topright", "topcenter", "center"],
+                callback=lambda _: getattr(
+                    gobject.base.textsource, "setstyle", lambda: None
+                )(),
+                default="topleft",
+            ),
         ],
     ]
     reco = [

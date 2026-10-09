@@ -84,6 +84,29 @@ class rangemanger:
             result.ocr_overlay_source = OCRRegionText(
                 result.textonly, self.range_ui, revision, owner=self.ref
             )
+            # 块级来源（原地按位置绘制）：有坐标且非图片翻译时，每个
+            # OCR 结果区域（合并临近行之后）各自翻译、各回各自位置；
+            # 否则整框一条译文（见 OCRTranslationOverlay）。
+            result.ocr_overlay_block_sources = None
+            blocks = None
+            if (
+                globalconfig.get("ocr_translation_overlay", False)
+                and not result.error
+                and result.result.hasboxs
+                and not result.result.isocrtranslate
+            ):
+                blocks = [tuple(_.box4) for _ in result.result.blocks]
+                sources = [
+                    OCRRegionText(
+                        _.text, self.range_ui, revision,
+                        owner=self.ref, block_index=i,
+                    )
+                    for i, _ in enumerate(result.result.blocks)
+                    if _.text and _.text.strip()
+                ]
+                if sources:
+                    result.ocr_overlay_block_sources = sources
+            self.range_ui.publish_overlay_layout(revision, blocks)
             return result
 
     def getresmanual(self):
@@ -384,13 +407,26 @@ class ocrtext(basetext):
                 if not overlay_source_is_current(source):
                     continue
                 source.ocr_direct_translation = result.result.isocrtranslate
-                sources.append(source)
+                # 块级来源（原地按位置绘制）：展开为各块独立翻译
+                blocksources = getattr(result, "ocr_overlay_block_sources", None)
+                if blocksources:
+                    sources.extend(
+                        _ for _ in blocksources if overlay_source_is_current(_)
+                    )
+                else:
+                    sources.append(source)
             return OCRRegionBatch(sources) if sources else None
         if (
             globalconfig.get("ocr_translation_overlay", False)
             and len(active_ranges) == 1
             and len(recognized_ranges) == 1
         ):
+            # 块级来源（原地按位置绘制）：各块独立翻译
+            blocksources = getattr(__text[0], "ocr_overlay_block_sources", None)
+            if blocksources:
+                valid = [_ for _ in blocksources if overlay_source_is_current(_)]
+                if valid:
+                    return OCRRegionBatch(valid)
             text = __text[0].ocr_overlay_source
             if not overlay_source_is_current(text):
                 return

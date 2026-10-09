@@ -179,6 +179,7 @@ class rangeadjust(Mainw):
     closesignal = pyqtSignal()
     traceoffsetsignal = pyqtSignal(QPoint)
     overlaytranslationsignal = pyqtSignal(object)
+    overlaylayoutsignal = pyqtSignal(object)
 
     @property
     def isfocus(self):
@@ -280,6 +281,7 @@ class rangeadjust(Mainw):
         windows.WindowFocus.giveup(self.winId())
         self.translation_overlay = OCRTranslationOverlay(self)
         self.overlaytranslationsignal.connect(self.translation_overlay.receive)
+        self.overlaylayoutsignal.connect(self.translation_overlay.receive_layout)
         self._ready = True
         self._updateWindowRgn()
 
@@ -391,14 +393,21 @@ class rangeadjust(Mainw):
             if text != self._ocr_overlay_original:
                 self._ocr_overlay_original = text
                 self._ocr_overlay_revision += 1
-                self.overlaytranslationsignal.emit((self._ocr_overlay_revision, None, ""))
+                self.overlaytranslationsignal.emit(
+                    (self._ocr_overlay_revision, None, "", None))
             return self._ocr_overlay_revision
+
+    def publish_overlay_layout(self, revision, rects):
+        """发布本轮识别的块区域布局（OCR 工作线程调用，经信号排队回
+        GUI 线程；rects 为各块 box4，None = 无坐标退回整框绘制）。"""
+        self.overlaylayoutsignal.emit((revision, rects))
 
     def invalidate_overlay(self):
         with self.ocr_source_lock:
             self._ocr_overlay_original = None
             self._ocr_overlay_revision += 1
-            self.overlaytranslationsignal.emit((self._ocr_overlay_revision, None, ""))
+            self.overlaytranslationsignal.emit(
+                (self._ocr_overlay_revision, None, "", None))
 
     def _set_ocr_rect(self, rect):
         with self.ocr_source_lock:

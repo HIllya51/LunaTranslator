@@ -33,12 +33,14 @@ class OCRRegionText(str):
 
     OCR managers attach this source to the parsed result at recognition commit.
     Dispatch must reuse it, rather than relabeling the result with a later revision.
+    block_index 携带块级来源（原地按位置绘制）：None = 整个选框一条译文。
     """
 
-    def __new__(cls, text, target, revision, owner=None):
+    def __new__(cls, text, target, revision, owner=None, block_index=None):
         obj = super().__new__(cls, text)
         obj.ocr_overlay_context = (weakref.ref(target), revision)
         obj.ocr_overlay_owner = weakref.ref(owner) if owner is not None else None
+        obj.ocr_block_index = block_index
         return obj
 
 
@@ -88,7 +90,9 @@ def route_overlay_translation(source, engine, text):
     target, revision = source.ocr_overlay_context
     target = target()
     try:
-        target.overlaytranslationsignal.emit((revision, engine, text))
+        target.overlaytranslationsignal.emit(
+            (revision, engine, text, getattr(source, "ocr_block_index", None))
+        )
     except RuntimeError:
         # The region may have been closed while an engine was finishing.
         pass
@@ -98,6 +102,17 @@ _overlays = weakref.WeakSet()
 _capture_guard = None
 _capture_suspensions = 0
 _capture_epoch = 0
+
+# 原地显示翻译的对齐方式（设置页 combobox 的 internal 值 -> Qt 旗标）。
+# 用 int 组合：TextFlag | (Alignment 旗标对象) 在 PyQt5 下会 TypeError，
+# 且 paintEvent 内的异常会直接 qFatal 整个进程。
+_OVERLAY_ALIGN_FLAGS = {
+    "topleft": int(Qt.AlignmentFlag.AlignLeft) | int(Qt.AlignmentFlag.AlignTop),
+    "topright": int(Qt.AlignmentFlag.AlignRight) | int(Qt.AlignmentFlag.AlignTop),
+    "topcenter": int(Qt.AlignmentFlag.AlignHCenter) | int(Qt.AlignmentFlag.AlignTop),
+    "center": int(Qt.AlignmentFlag.AlignHCenter) | int(Qt.AlignmentFlag.AlignVCenter),
+}
+_OVERLAY_ALIGN_DEFAULT = "topleft"
 
 
 def ocr_popup_is_visible():
@@ -385,6 +400,17 @@ def capture_without_overlays(capture, rect=None):
     return request.result
 
 
+def refresh_overlays():
+    """显示设置变化（译文跟随字号/字体/居中显示等）后重算覆盖层。
+
+    sync 幂等：paint_key 变化才触发重绘。"""
+    for overlay in list(_overlays):
+        try:
+            overlay.sync()
+        except RuntimeError:
+            pass
+
+
 class OCRTranslationOverlay(QWidget):
     def __init__(self, region):
         super().__init__(region)
@@ -399,6 +425,11 @@ class OCRTranslationOverlay(QWidget):
         self.results = {}
         self.text = ""
         self.revision = region._ocr_overlay_revision
+        # 块级显示（原地按位置绘制）：块区域（选框图像物理像素）与
+        # 每块各引擎的译文。无块区域（图片翻译/不输出坐标的 OCR）时
+        # 走整框绘制（self.text）。
+        self.block_rects = None
+        self.block_results = {}
         self.setWindowFlags(
             Qt.WindowType.Tool
             | Qt.WindowType.FramelessWindowHint
@@ -463,26 +494,62 @@ class OCRTranslationOverlay(QWidget):
         self._capture_visible = False
         super().hideEvent(event)
 
+    @staticmethod
+    def _preferred_text(results: dict):
+        # 同主窗口的引擎优先级：首选引擎 > 排序列表 > 任意
+        preferred = globalconfig.get("toppest_translator")
+        if preferred in results:
+            return results[preferred]
+        for key in globalconfig.get("fix_translate_rank_rank", []):
+            if key in results:
+                return results[key]
+        return next(iter(results.values()), "")
+
+    def _blocktexts(self):
+        """当前可绘制的块译文：[(块序号, 译文), ...]。"""
+        if not self.block_rects:
+            return []
+        out = []
+        for i in range(len(self.block_rects)):
+            texts = self.block_results.get(i)
+            if not texts:
+                continue
+            text = self._preferred_text(texts)
+            if text:
+                out.append((i, text))
+        return out
+
     def receive(self, payload):
-        revision, engine, text = payload
+        revision, engine, text, blockidx = payload
         if revision != self.region._ocr_overlay_revision:
             return
         if revision != self.revision or engine is None:
             self.results.clear()
             self.text = ""
+            self.block_results.clear()
             self.revision = revision
         if engine is not None and text:
-            self.results[engine] = text
-            rank = list(globalconfig.get("fix_translate_rank_rank", []))
-            preferred = globalconfig.get("toppest_translator")
-            if preferred in self.results:
-                chosen = preferred
+            if blockidx is None:
+                self.results[engine] = text
+                self.text = self._preferred_text(self.results)
             else:
-                chosen = next(
-                    (key for key in rank if key in self.results),
-                    next(iter(self.results)),
-                )
-            self.text = self.results[chosen]
+                self.block_results.setdefault(blockidx, {})[engine] = text
+        self.sync()
+
+    def receive_layout(self, payload):
+        """识别提交时发布的块区域布局（信号从 OCR 工作线程排队而来）。
+
+        rects：各块 box4（选框图像物理像素）；None = 本轮无坐标，退回
+        整框绘制。布局先于块译文到达。"""
+        revision, rects = payload
+        if revision != self.region._ocr_overlay_revision:
+            return
+        if revision != self.revision:
+            self.results.clear()
+            self.text = ""
+            self.block_results.clear()
+            self.revision = revision
+        self.block_rects = tuple(tuple(r) for r in rects) if rects else None
         self.sync()
 
     def background_color(self):
@@ -503,7 +570,7 @@ class OCRTranslationOverlay(QWidget):
         rect = self.region.getrect()
         if (
             not globalconfig.get("ocr_translation_overlay", False)
-            or not self.text
+            or not (self.text or self._blocktexts())
             or not rect.isValid()
             or not self.region.isVisible()
         ):
@@ -533,8 +600,20 @@ class OCRTranslationOverlay(QWidget):
                 popup.raise_()
         paint_key = (
             self.text,
+            self.block_rects,
+            tuple(
+                sorted(
+                    (k, tuple(sorted(v.items())))
+                    for k, v in self.block_results.items()
+                )
+            ),
             geometry,
             globalconfig.get("fonttype2", ""),
+            globalconfig.get("fontsize", 16),
+            globalconfig.get("showbold_trans", False),
+            globalconfig.get(
+                "ocr_translation_overlay_alignment", _OVERLAY_ALIGN_DEFAULT
+            ),
             globalconfig.get("ocr_translation_overlay_background", "#ffffffff"),
             globalconfig.get("ocr_translation_overlay_textcolor", "#000000"),
         )
@@ -542,18 +621,32 @@ class OCRTranslationOverlay(QWidget):
             self._last_paint_key = paint_key
             self.update()
 
-    def fitted_font(self, text_rect):
+    def _translation_font(self):
+        """译文字体（字体/字号/加粗设置，同主窗口译文显示）。"""
         font = QFont(globalconfig.get("fonttype2", "") or "Microsoft YaHei")
-        # The in-place display fills the selected region: fit the text to the
-        # rect with only a sanity cap, no user-facing size setting.
-        maximum = 100
+        try:
+            size = float(globalconfig.get("fontsize", 16))
+        except (TypeError, ValueError):
+            size = 16
+        if size > 0:
+            font.setPointSizeF(size)
+        font.setBold(globalconfig.get("showbold_trans", False))
+        return font
+
+    def fitted_font(self, text_rect, text=None, maximum=100, minimum=12):
+        """按区域尺寸二分适配字号；下限 minimum——分析出的字号不能过小，
+        放不下时宁可溢出裁剪也不缩小到不可读。"""
+        if text is None:
+            text = self.text
+        font = QFont(globalconfig.get("fonttype2", "") or "Microsoft YaHei")
+        font.setBold(globalconfig.get("showbold_trans", False))
         flags = int(Qt.TextFlag.TextWordWrap | Qt.AlignmentFlag.AlignLeft)
         # Fit by pixel size so the requested size has the same meaning across Qt versions.
-        low, high = 6, maximum
+        low, high = min(minimum, maximum), maximum
         while low < high:
             size = (low + high + 1) // 2
             font.setPixelSize(size)
-            bounds = QFontMetrics(font).boundingRect(text_rect, flags, self.text)
+            bounds = QFontMetrics(font).boundingRect(text_rect, flags, text)
             if (
                 bounds.height() <= text_rect.height()
                 and bounds.width() <= text_rect.width()
@@ -564,18 +657,48 @@ class OCRTranslationOverlay(QWidget):
         font.setPixelSize(low)
         return font
 
+    def _alignment_flags(self):
+        # 原地显示翻译自己的对齐设置（不共用文本设置的居中显示）
+        return int(Qt.TextFlag.TextWordWrap) | _OVERLAY_ALIGN_FLAGS.get(
+            globalconfig.get(
+                "ocr_translation_overlay_alignment", _OVERLAY_ALIGN_DEFAULT
+            ),
+            _OVERLAY_ALIGN_FLAGS[_OVERLAY_ALIGN_DEFAULT],
+        )
+
     def paintEvent(self, event):
         painter = QPainter(self)
+        flags = self._alignment_flags()
+        # 块级：各 OCR 结果区域按位置单独绘制；背景色只画在文字块上，
+        # 不铺满整个选框；字号 = 译文字号与按区域尺寸适配字号中的较小者
+        blocks = self._blocktexts()
+        if blocks:
+            dpr = self.devicePixelRatioF() or 1.0
+            cap = max(6, min(100, QFontInfo(self._translation_font()).pixelSize()))
+            for i, text in blocks:
+                x1, y1, x2, y2 = self.block_rects[i]
+                rect = QRectF(
+                    x1 / dpr, y1 / dpr, (x2 - x1) / dpr, (y2 - y1) / dpr
+                )
+                margin = min(4, max(1, int(min(rect.width(), rect.height()) // 12)))
+                text_rect = rect.adjusted(
+                    margin, margin, -margin, -margin
+                ).toAlignedRect()
+                if text_rect.isEmpty():
+                    continue
+                painter.setClipRect(rect.toAlignedRect())
+                painter.fillRect(rect, self.background_color())
+                painter.setFont(self.fitted_font(text_rect, text, cap))
+                painter.setPen(self.text_color())
+                painter.drawText(text_rect, flags, text)
+            painter.end()
+            return
+        # 无坐标（图片翻译、不输出坐标的 OCR）：整框绘制（原行为）
         painter.fillRect(self.rect(), self.background_color())
         margin = min(8, max(1, min(self.width(), self.height()) // 12))
         text_rect = self.rect().adjusted(margin, margin, -margin, -margin)
         painter.setClipRect(text_rect)
         painter.setFont(self.fitted_font(text_rect))
         painter.setPen(self.text_color())
-        flags = int(
-            Qt.TextFlag.TextWordWrap
-            | Qt.AlignmentFlag.AlignLeft
-            | Qt.AlignmentFlag.AlignVCenter
-        )
         painter.drawText(text_rect, flags, self.text)
         painter.end()

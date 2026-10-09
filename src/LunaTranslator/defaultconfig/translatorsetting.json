@@ -284,11 +284,6 @@
 			}
 		}
 	},
-	"sugoix": {
-		"args": {
-			"api": "http://127.0.0.1:14366/"
-		}
-	},
 	"huoshanapi": {
 		"args": {
 			"Access Key ID": "",
@@ -707,7 +702,7 @@
 	},
 	"sakura": {
 		"args": {
-			"API接口地址": "http://127.0.0.1:8080/",
+			"API接口地址": "http://127.0.0.1:9931/",
 			"model": "",
 			"modellistcache": [],
 			"流式输出": true,
