@@ -1,9 +1,5 @@
 {
     "showna": true,
-    "ocr_translation_overlay": false,
-    "ocr_translation_overlay_background": "#ffffffff",
-    "ocr_translation_overlay_textcolor": "#000000",
-    "ocr_translation_overlay_alignment": "topleft",
     "llama.cpp": {},
     "screenshot_savepath": "",
     "history": {
