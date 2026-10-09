@@ -6,7 +6,6 @@ No changes to translation engines or user credentials are required.
 import ctypes
 import sys
 import threading
-import uuid
 import weakref
 from contextlib import contextmanager
 from ctypes.wintypes import HWND, DWORD, BOOL
@@ -125,93 +124,6 @@ def suspend_ocr_capture():
             pass
         _capture_epoch += 1
         _capture_suspensions -= 1
-
-
-def sample_background(image):
-    """Estimate the inner background, tolerating borders and small selection overshoot."""
-    if image.isNull():
-        return None
-    width, height = image.width(), image.height()
-    # Selection borders and nearby panels should not decide the fill color.
-    inset_x = int(width * 0.12) if width >= 8 else 0
-    inset_y = int(height * 0.12) if height >= 8 else 0
-    inner_width, inner_height = width - 2 * inset_x, height - 2 * inset_y
-    nx, ny = min(24, inner_width), min(16, inner_height)
-    radius = max(1, min(3, round(min(width, height) / 64)))
-    all_bins, flat_bins = {}, {}
-    for row in range(ny):
-        fy = (row + 0.5) / ny
-        y = inset_y + min(inner_height - 1, int(fy * inner_height))
-        for col in range(nx):
-            fx = (col + 0.5) / nx
-            x = inset_x + min(inner_width - 1, int(fx * inner_width))
-            color = image.pixelColor(x, y)
-            if color.alpha() < 128:
-                continue
-            rgb = color.red(), color.green(), color.blue()
-            # Give the middle more influence than the edge of the sampling area.
-            weight = 1 + 2 * (1 - abs(2 * fx - 1)) * (1 - abs(2 * fy - 1))
-            flat = True
-            for dx, dy in ((-radius, 0), (radius, 0), (0, -radius), (0, radius)):
-                neighbor = image.pixelColor(
-                    max(0, min(width - 1, x + dx)), max(0, min(height - 1, y + dy))
-                )
-                if (
-                    neighbor.alpha() >= 128
-                    and max(abs(a - b) for a, b in zip(rgb, neighbor.getRgb()[:3])) > 24
-                ):
-                    flat = False
-                    break
-            bucket = tuple(channel // 32 for channel in rgb)
-            for bins in (all_bins, flat_bins) if flat else (all_bins,):
-                entry = bins.setdefault(bucket, [0, 0, 0, 0])
-                entry[0] += weight
-                for channel in range(3):
-                    entry[channel + 1] += weight * rgb[channel]
-    if not all_bins:
-        return None
-    # Text strokes and sharp transitions are poor background samples. For a
-    # textured image with few flat points, keep the general weighted estimate.
-    flat_weight = sum(entry[0] for entry in flat_bins.values())
-    all_weight = sum(entry[0] for entry in all_bins.values())
-    bins = flat_bins if flat_weight >= all_weight * 0.35 else all_bins
-    colors = {
-        key: tuple(value / entry[0] for value in entry[1:])
-        for key, entry in bins.items()
-    }
-    best = None
-    # Merge close shades across quantization boundaries, e.g. 223 and 224.
-    # Otherwise one background can split into weaker bins than an outside panel.
-    for key, rgb in colors.items():
-        group = [0, 0, 0, 0]
-        for dr in (-1, 0, 1):
-            for dg in (-1, 0, 1):
-                for db in (-1, 0, 1):
-                    neighbor_key = key[0] + dr, key[1] + dg, key[2] + db
-                    neighbor_rgb = colors.get(neighbor_key)
-                    if (
-                        neighbor_rgb is None
-                        or max(abs(a - b) for a, b in zip(rgb, neighbor_rgb)) > 24
-                    ):
-                        continue
-                    entry = bins[neighbor_key]
-                    for channel in range(4):
-                        group[channel] += entry[channel]
-        if best is None or group[0] > best[0]:
-            best = group
-    return tuple(round(value / best[0]) for value in best[1:])
-
-
-def contrasting_text_color(rgb):
-    def linear(channel):
-        value = channel / 255.0
-        return value / 12.92 if value <= 0.04045 else ((value + 0.055) / 1.055) ** 2.4
-
-    red, green, blue = (linear(channel) for channel in rgb)
-    luminance = 0.2126 * red + 0.7152 * green + 0.0722 * blue
-    black_contrast = (luminance + 0.05) / 0.05
-    white_contrast = 1.05 / (luminance + 0.05)
-    return QColor("black" if black_contrast >= white_contrast else "white")
 
 
 def _windows_build():
@@ -483,12 +395,10 @@ class OCRTranslationOverlay(QWidget):
         self._geometry_window_handle = None
         self._last_rect = None
         self._last_paint_key = None
-        self.background_rgb = (20, 20, 24)
         self.region = region
         self.results = {}
         self.text = ""
         self.revision = region._ocr_overlay_revision
-        self.font_size = 22
         self.setWindowFlags(
             Qt.WindowType.Tool
             | Qt.WindowType.FramelessWindowHint
@@ -575,21 +485,19 @@ class OCRTranslationOverlay(QWidget):
             self.text = self.results[chosen]
         self.sync()
 
-    def receive_background(self, payload):
-        rect, rgb = payload
-        # A capture may finish after the selection has moved or been replaced.
-        if rect != self.region.getrect().getRect():
-            return
-        # Ignore capture noise instead of repainting the panel every OCR tick.
-        if max(abs(a - b) for a, b in zip(rgb, self.background_rgb)) <= 6:
-            return
-        self.background_rgb = tuple(rgb)
-        self.sync()
+    def background_color(self):
+        color = QColor(
+            globalconfig.get("ocr_translation_overlay_background", "#ffffffff")
+        )
+        if not color.isValid():
+            color = QColor(Qt.GlobalColor.white)
+        return color
 
-    def background_colors(self):
-        if globalconfig.get("ocr_translation_overlay_adaptive_background", True):
-            return self.background_rgb, contrasting_text_color(self.background_rgb)
-        return (20, 20, 24), QColor("white")
+    def text_color(self):
+        color = QColor(globalconfig.get("ocr_translation_overlay_textcolor", "#000000"))
+        if not color.isValid():
+            color = QColor(Qt.GlobalColor.black)
+        return color
 
     def sync(self):
         rect = self.region.getrect()
@@ -627,9 +535,8 @@ class OCRTranslationOverlay(QWidget):
             self.text,
             geometry,
             globalconfig.get("fonttype2", ""),
-            globalconfig.get("ocr_translation_overlay_fontsize", 22),
-            globalconfig.get("ocr_translation_overlay_opacity", 0.95),
-            self.background_colors()[0],
+            globalconfig.get("ocr_translation_overlay_background", "#ffffffff"),
+            globalconfig.get("ocr_translation_overlay_textcolor", "#000000"),
         )
         if showing or paint_key != self._last_paint_key:
             self._last_paint_key = paint_key
@@ -637,9 +544,9 @@ class OCRTranslationOverlay(QWidget):
 
     def fitted_font(self, text_rect):
         font = QFont(globalconfig.get("fonttype2", "") or "Microsoft YaHei")
-        maximum = max(
-            6, min(100, int(globalconfig.get("ocr_translation_overlay_fontsize", 22)))
-        )
+        # The in-place display fills the selected region: fit the text to the
+        # rect with only a sanity cap, no user-facing size setting.
+        maximum = 100
         flags = int(Qt.TextFlag.TextWordWrap | Qt.AlignmentFlag.AlignLeft)
         # Fit by pixel size so the requested size has the same meaning across Qt versions.
         low, high = 6, maximum
@@ -655,22 +562,16 @@ class OCRTranslationOverlay(QWidget):
             else:
                 high = size - 1
         font.setPixelSize(low)
-        self.font_size = low
         return font
 
     def paintEvent(self, event):
         painter = QPainter(self)
-        alpha = max(
-            0.1,
-            min(1.0, float(globalconfig.get("ocr_translation_overlay_opacity", 0.95))),
-        )
-        background, foreground = self.background_colors()
-        painter.fillRect(self.rect(), QColor(*background, round(alpha * 255)))
+        painter.fillRect(self.rect(), self.background_color())
         margin = min(8, max(1, min(self.width(), self.height()) // 12))
         text_rect = self.rect().adjusted(margin, margin, -margin, -margin)
         painter.setClipRect(text_rect)
         painter.setFont(self.fitted_font(text_rect))
-        painter.setPen(foreground)
+        painter.setPen(self.text_color())
         flags = int(
             Qt.TextFlag.TextWordWrap
             | Qt.AlignmentFlag.AlignLeft
@@ -678,119 +579,3 @@ class OCRTranslationOverlay(QWidget):
         )
         painter.drawText(text_rect, flags, self.text)
         painter.end()
-
-
-class OCRToolbarMode(QObject):
-    """Keep the main window as a usable toolbar while OCR overlays display text."""
-
-    def __init__(self, window, icon_size):
-        super().__init__(window)
-        self.window = window
-        self.icon_size = icon_size
-        self.active = False
-        self._syncing = False
-        self._orientation = None
-
-    def _stop_animations(self):
-        for name in ("smooth_resizer", "smooth_resizer2", "smooth_resizer4"):
-            animation = getattr(self.window, name, None)
-            if animation is not None:
-                animation.stop()
-
-    def save_geometry(self, rect):
-        # Persist the expanded dimensions, even if the app exits while folded.
-        x, y, width, height = rect
-        if self.active:
-            if self._orientation:
-                if not self._syncing:
-                    self._expanded_size.setHeight(height)
-                width = self._expanded_size.width()
-            else:
-                if not self._syncing:
-                    self._expanded_size.setWidth(width)
-                height = self._expanded_size.height()
-        if self._save_geometry is not None:
-            self._save_geometry((x, y, width, height))
-
-    def set_active(self, active):
-        active = bool(active)
-        if active == self.active:
-            if active:
-                self.refresh()
-            return
-        window = self.window
-        self._stop_animations()
-        # Invalidate any pending toolbar-hide timer from the previous mode.
-        window.enter_sig = uuid.uuid4()
-        if active:
-            self._expanded_size = QSize(window.size())
-            self._expanded_minimum = QSize(window.minimumSize())
-            self._expanded_maximum = QSize(window.maximumSize())
-            self._text_was_hidden = window.translate_text.isHidden()
-            self._save_geometry = getattr(window, "possave", None)
-            window.possave = self.save_geometry
-            self.active = True
-            self.refresh()
-        else:
-            self.active = False
-            window.setMaximumSize(self._expanded_maximum)
-            window.setMinimumSize(self._expanded_minimum)
-            window.possave = self._save_geometry
-            window.translate_text.setVisible(not self._text_was_hidden)
-            window.resizeFuck(self._expanded_size)
-            self._orientation = None
-            window.changeextendstated()
-            window.enterfunction()
-
-    def refresh(self):
-        if not self.active or self._syncing:
-            return
-        self._syncing = True
-        try:
-            window = self.window
-            self._stop_animations()
-            window.translate_text.hide()
-            window.titlebar.show()
-            vertical = bool(globalconfig.get("verticalhorizontal", False))
-            changed_direction = vertical != self._orientation
-            self._orientation = vertical
-            thickness = max(1, self.icon_size(vertical))
-            minimum = QSize(self._expanded_minimum)
-            maximum = QSize(self._expanded_maximum)
-            size = QSize(self._expanded_size if changed_direction else window.size())
-            if vertical:
-                minimum.setWidth(thickness)
-                maximum.setWidth(thickness)
-                size.setWidth(thickness)
-                # Match ButtonBar's minimum along the direction of its buttons.
-                minimum.setHeight(
-                    max(200, int(window.titlebar.cntbtn * self.icon_size(False)))
-                )
-            else:
-                minimum.setHeight(thickness)
-                maximum.setHeight(thickness)
-                size.setHeight(thickness)
-                minimum.setWidth(
-                    max(200, int(window.titlebar.cntbtn * self.icon_size(True)))
-                )
-            if (
-                window.minimumWidth() > maximum.width()
-                or window.minimumHeight() > maximum.height()
-            ):
-                window.setMinimumSize(0, 0)
-            if window.maximumSize() != maximum:
-                window.setMaximumSize(maximum)
-            if window.minimumSize() != minimum:
-                window.setMinimumSize(minimum)
-            if size != window.size():
-                window.resizeFuck(size)
-            if vertical:
-                window.titlebar.setFixedWidth(thickness)
-                window.titlebar.setFixedHeight(window.height())
-            else:
-                window.titlebar.setFixedHeight(thickness)
-                window.titlebar.setFixedWidth(window.width())
-            window.titlebar.move(0, 0)
-        finally:
-            self._syncing = False
-        self.save_geometry(window.geometry().getRect())

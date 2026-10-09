@@ -10,6 +10,8 @@ from gui.usefulwidget import (
     getIconButton,
     yuitsu_switch,
     D_getsimpleswitch,
+    D_getcolorbutton,
+    getsimpleswitch,
     clearlayout,
     D_getdoclink,
     ClickableLabel,
@@ -443,6 +445,20 @@ class showocrimage(saveposwindow):
         self.originlabel.showboxtext(result.result)
 
 
+def _inplace_switch():
+    """原地显示翻译开关：与 OCR 选框右键菜单互相同步。"""
+    btn = getsimpleswitch(
+        globalconfig,
+        "ocr_translation_overlay",
+        default=False,
+        callback=lambda _: getattr(
+            gobject.base.textsource, "setstyle", lambda: None
+        )(),
+    )
+    gobject.base.ocr_inplace_switch.connect(btn.setChecked)
+    return btn
+
+
 def internal(self):
     offline, online, other = splitocrtypes(globalconfig["ocr"], other=True)
     outdate = [_ for _ in offline if globalconfig["ocr"][_].get("outdate", False)]
@@ -523,63 +539,30 @@ def internal(self):
     ]
     overlay = [
         [
-            "译文覆盖OCR区域",
-            D_getsimpleswitch(
+            "使用",
+            _inplace_switch,
+            "",
+            "背景颜色",
+            D_getcolorbutton(
+                self,
                 globalconfig,
-                "ocr_translation_overlay",
-                default=False,
+                "ocr_translation_overlay_background",
                 callback=lambda _: getattr(
                     gobject.base.textsource, "setstyle", lambda: None
                 )(),
+                alpha=True,
+                default="#ffffffff",
             ),
             "",
-            "显示主翻译框",
-            D_getsimpleswitch(
+            "文字颜色",
+            D_getcolorbutton(
+                self,
                 globalconfig,
-                "ocr_translation_overlay_show_main",
-                default=False,
-                name="ocrshowmainswitch",
-                parent=self,
+                "ocr_translation_overlay_textcolor",
                 callback=lambda _: getattr(
                     gobject.base.textsource, "setstyle", lambda: None
                 )(),
-            ),
-            "",
-            "背景自动取色",
-            D_getsimpleswitch(
-                globalconfig,
-                "ocr_translation_overlay_adaptive_background",
-                default=True,
-                callback=lambda _: getattr(
-                    gobject.base.textsource, "setstyle", lambda: None
-                )(),
-            ),
-        ],
-        [
-            "覆盖译文字号",
-            D_getspinbox(
-                6,
-                100,
-                globalconfig,
-                "ocr_translation_overlay_fontsize",
-                default=22,
-                callback=lambda _: getattr(
-                    gobject.base.textsource, "setstyle", lambda: None
-                )(),
-            ),
-            "",
-            "覆盖背景不透明度",
-            D_getspinbox(
-                0.1,
-                1,
-                globalconfig,
-                "ocr_translation_overlay_opacity",
-                double=True,
-                step=0.05,
-                default=0.95,
-                callback=lambda _: getattr(
-                    gobject.base.textsource, "setstyle", lambda: None
-                )(),
+                default="#000000",
             ),
         ],
     ]
@@ -632,7 +615,7 @@ def internal(self):
 
     allothers = [
         [dict(title="识别设置", type="grid", grid=reco)],
-        [dict(title="译文覆盖", type="grid", grid=overlay)],
+        [dict(title="原地显示翻译", type="grid", grid=overlay)],
         [dict(title="自动化执行", grid=autorun, widget=D_getdoclink("ocrparam.html"))],
     ]
 

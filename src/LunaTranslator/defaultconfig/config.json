@@ -1,10 +1,8 @@
 {
     "showna": true,
     "ocr_translation_overlay": false,
-    "ocr_translation_overlay_show_main": false,
-    "ocr_translation_overlay_fontsize": 22,
-    "ocr_translation_overlay_opacity": 0.95,
-    "ocr_translation_overlay_adaptive_background": true,
+    "ocr_translation_overlay_background": "#ffffffff",
+    "ocr_translation_overlay_textcolor": "#000000",
     "llama.cpp": {},
     "screenshot_savepath": "",
     "history": {

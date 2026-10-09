@@ -3,11 +3,10 @@ import windows, NativeUtils, gobject, threading
 from myutils.config import globalconfig
 from myutils.hwnd import safepixmap
 from gui.dynalang import LAction, LDialog, LFormLayout
-from gui.usefulwidget import getspinbox, ColorButton, getsimpleswitch
+from gui.usefulwidget import getspinbox, ColorButton
 from gui.ocrtranslationoverlay import (
     OCRTranslationOverlay,
     OCRCaptureSnapshot,
-    sample_background,
     suspend_ocr_capture,
 )
 from traceback import print_exc
@@ -173,47 +172,6 @@ class yangshisetting(LDialog):
             default="#000000",
         )
         form.addRow("颜色", colorbtn)
-        form.addRow(
-            "译文覆盖OCR区域",
-            getsimpleswitch(
-                globalconfig,
-                "ocr_translation_overlay",
-                default=False,
-                callback=gobject.base.textsource.setstyle,
-            ),
-        )
-        form.addRow(
-            "覆盖译文字号",
-            getspinbox(
-                6,
-                100,
-                globalconfig,
-                "ocr_translation_overlay_fontsize",
-                default=22,
-                callback=gobject.base.textsource.setstyle,
-            ),
-        )
-        form.addRow(
-            "覆盖背景不透明度",
-            getspinbox(
-                0.1,
-                1,
-                globalconfig,
-                "ocr_translation_overlay_opacity",
-                default=0.95,
-                double=True,
-                callback=gobject.base.textsource.setstyle,
-            ),
-        )
-        form.addRow(
-            "背景自动取色",
-            getsimpleswitch(
-                globalconfig,
-                "ocr_translation_overlay_adaptive_background",
-                default=True,
-                callback=gobject.base.textsource.setstyle,
-            ),
-        )
         self.show()
 
 
@@ -221,7 +179,6 @@ class rangeadjust(Mainw):
     closesignal = pyqtSignal()
     traceoffsetsignal = pyqtSignal(QPoint)
     overlaytranslationsignal = pyqtSignal(object)
-    overlaybackgroundsignal = pyqtSignal(object)
 
     @property
     def isfocus(self):
@@ -323,9 +280,6 @@ class rangeadjust(Mainw):
         windows.WindowFocus.giveup(self.winId())
         self.translation_overlay = OCRTranslationOverlay(self)
         self.overlaytranslationsignal.connect(self.translation_overlay.receive)
-        self.overlaybackgroundsignal.connect(
-            self.translation_overlay.receive_background
-        )
         self._ready = True
         self._updateWindowRgn()
 
@@ -347,7 +301,7 @@ class rangeadjust(Mainw):
         menu.addSeparator()
         style = LAction("样式", menu)
         menu.addAction(style)
-        overlay = LAction("译文覆盖OCR区域", menu)
+        overlay = LAction("原地显示翻译", menu)
         overlay.setCheckable(True)
         overlay.setChecked(globalconfig.get("ocr_translation_overlay", False))
         menu.addAction(overlay)
@@ -366,6 +320,8 @@ class rangeadjust(Mainw):
                 gobject.base.textsource.leaveone()
         elif action == overlay:
             globalconfig["ocr_translation_overlay"] = overlay.isChecked()
+            # 同步 OCR 设置页里的开关
+            gobject.base.ocr_inplace_switch.emit(overlay.isChecked())
             gobject.base.textsource.setstyle()
         elif action == style:
             yangshisetting(self)
@@ -421,18 +377,6 @@ class rangeadjust(Mainw):
         )
         if getattr(self, "_ready", False):
             self._updateWindowRgn()
-
-    def update_overlay_background(self, image, rect):
-        # Runs in the OCR worker, sampling raw color before OCR preprocessing.
-        if not globalconfig.get("ocr_translation_overlay", False):
-            return
-        rgb = sample_background(image)
-        if rgb is None:
-            return
-        sample = (rect.getRect(), rgb)
-        if sample != getattr(self, "_last_background_sample", None):
-            self._last_background_sample = sample
-            self.overlaybackgroundsignal.emit(sample)
 
     def capture_snapshot(self):
         # Called by workers; no native/Qt widget access under this lock.

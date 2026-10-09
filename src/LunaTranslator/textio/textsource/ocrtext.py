@@ -91,7 +91,7 @@ class rangemanger:
         rect = QRect(*snapshot.rect)
         if not rect.isValid():
             return
-        imgr = imageCutEx(self.ref.hwnd, rect, self.range_ui.update_overlay_background)
+        imgr = imageCutEx(self.ref.hwnd, rect)
         if imgr.isNull():
             return
         if snapshot != self.range_ui.capture_snapshot():
@@ -104,7 +104,7 @@ class rangemanger:
         rect = QRect(*snapshot.rect)
         if not rect.isValid():
             return
-        imgr = imageCutEx(self.ref.hwnd, rect, self.range_ui.update_overlay_background)
+        imgr = imageCutEx(self.ref.hwnd, rect)
         if imgr.isNull():
             return
         with self.range_ui.ocr_source_lock:
@@ -170,7 +170,7 @@ class rangemanger:
         rect = QRect(*snapshot.rect)
         if not rect.isValid():
             return False
-        imgr = imageCutEx(self.ref.hwnd, rect, self.range_ui.update_overlay_background)
+        imgr = imageCutEx(self.ref.hwnd, rect)
         if imgr.isNull():
             return False
         with self.range_ui.ocr_source_lock:
@@ -233,9 +233,6 @@ class ocrtext(basetext):
                 r.savelasttext = None
                 r.savelastrecimg = None
         self._overlay_enabled = enabled
-        ui = getattr(gobject.base, "translation_ui", None)
-        if ui is not None:
-            ui.ocroverlaymodesignal.emit(enabled and not self.ending)
         [_.range_ui.setstyle() for _ in self.ranges]
 
     def showhiderangeui(self, b):

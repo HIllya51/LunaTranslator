@@ -1051,8 +1051,10 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x801F64CE, {FULL_STRING, 0, 0, PCSG01124, FPCSG01124, "PCSG01211"}},
     // 薔薇に隠されしヴェリテ
     {0x81558104, {FULL_STRING | CODEC_UTF16, 0, 0xc, 0, PCSG00708, "PCSG00708"}},
+    {0x81558264, {FULL_STRING | CODEC_UTF16, 0, 0xc, 0, PCSG00708, "PCSG00708"}}, // 1.01
     // 遙かなる時空の中で Ultimate
     {0x800608F0, {FULL_STRING, 4, 0, 0, NewLineCharFilterA, "PCSG01157"}},
+    {0x80060980, {FULL_STRING, 4, 0, 0, NewLineCharFilterA, "PCSG01157"}}, // 1.01
     // 遙かなる時空の中で３ Ultimate
     {0x800A927E, {FULL_STRING, 1, 0, PCSG00992, 0, "PCSG00992"}},
     // ソラユメ

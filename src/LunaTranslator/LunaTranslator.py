@@ -171,6 +171,8 @@ class BASEOBJECT(QObject):
     llamacppposttask = pyqtSignal(str, object)
     wheelhistory = pyqtSignal(int)
     switchdisplayengine = pyqtSignal(str)
+    # OCR 选框右键菜单切换 原地显示翻译 -> 同步设置页开关（btn.setChecked）
+    ocr_inplace_switch = pyqtSignal(bool)
 
     def connectsignal(self, signal: pyqtBoundSignal, callback):
         if signal in self.__cachesignal:
@@ -418,12 +420,6 @@ class BASEOBJECT(QObject):
             self.hwnd = None
             self.gameuid = 0
         self.textsource_p = _
-        ui = getattr(self, "translation_ui", None)
-        if ui is not None:
-            ui.ocroverlaymodesignal.emit(
-                isinstance(_, ocrtext)
-                and globalconfig.get("ocr_translation_overlay", False)
-            )
 
     @threader
     def safeloadprocessmodels(self):
