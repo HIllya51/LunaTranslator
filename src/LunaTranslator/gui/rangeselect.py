@@ -152,6 +152,77 @@ def _hover_fill_color():
     return color
 
 
+def add_overlay_style_rows(form: LFormLayout):
+    """原地显示翻译 的样式行（背景颜色/文字颜色/对齐）——OCR 设置的
+    原地显示翻译折叠卡与选框右键菜单的样式飞层共用；任一侧修改经
+    ocr_style_sync 信号同步另一侧的控件（弱引用，控件销毁后跳过）。"""
+    import weakref
+
+    def setstyle():
+        getattr(gobject.base.textsource, "setstyle", lambda: None)()
+
+    def onchanged(key):
+        def _(_val):
+            setstyle()
+            gobject.base.ocr_style_sync.emit(key)
+
+        return _
+
+    def syncfrom(key, w, default):
+        ref = weakref.ref(w)
+
+        def _(k):
+            if k != key:
+                return
+            w = ref()
+            if w is None:
+                return
+            w.blockSignals(True)
+            try:
+                if isinstance(w, ColorButton):
+                    w.setSelectedColor(
+                        QColor(globalconfig.get(key, default) or default)
+                    )
+                else:
+                    w.setCurrentData(globalconfig.get(key, default))
+            finally:
+                w.blockSignals(False)
+
+        gobject.base.ocr_style_sync.connect(_)
+
+    bgbtn = ColorButton(
+        None,
+        globalconfig,
+        "ocr_translation_overlay_background",
+        callback=onchanged("ocr_translation_overlay_background"),
+        alpha=True,
+        tips="背景颜色",
+        default="#ffffffff",
+    )
+    syncfrom("ocr_translation_overlay_background", bgbtn, "#ffffffff")
+    form.addRow("背景颜色", bgbtn)
+    textbtn = ColorButton(
+        None,
+        globalconfig,
+        "ocr_translation_overlay_textcolor",
+        callback=onchanged("ocr_translation_overlay_textcolor"),
+        tips="文字颜色",
+        default="#000000",
+    )
+    syncfrom("ocr_translation_overlay_textcolor", textbtn, "#000000")
+    form.addRow("文字颜色", textbtn)
+    aligncombo = getsimplecombobox(
+        ["左上", "右上", "中上", "居中"],
+        globalconfig,
+        "ocr_translation_overlay_alignment",
+        internal=["topleft", "topright", "topcenter", "center"],
+        callback=onchanged("ocr_translation_overlay_alignment"),
+        default="topleft",
+    )
+    syncfrom("ocr_translation_overlay_alignment", aligncombo, "topleft")
+    form.addRow("对齐", aligncombo)
+
+
 class yangshisetting(PopupWidget):
     """样式飞层（右键菜单-样式）：鼠标悬停/边框/原地显示翻译 三张卡，
     在光标处弹出，点外部关闭。"""
@@ -202,43 +273,10 @@ class yangshisetting(PopupWidget):
             ),
         )
         vlay.addWidget(border)
-        # ---- 原地显示翻译 ----
+        # ---- 原地显示翻译（样式行与 OCR 设置共用，双向同步） ----
         overlay = GroupCardWidget("原地显示翻译")
         overlayform = LFormLayout(overlay.contentWidget())
-        overlayform.addRow(
-            "背景颜色",
-            ColorButton(
-                self,
-                globalconfig,
-                "ocr_translation_overlay_background",
-                callback=setstyle,
-                alpha=True,
-                tips="背景颜色",
-                default="#ffffffff",
-            ),
-        )
-        overlayform.addRow(
-            "文字颜色",
-            ColorButton(
-                self,
-                globalconfig,
-                "ocr_translation_overlay_textcolor",
-                callback=setstyle,
-                tips="文字颜色",
-                default="#000000",
-            ),
-        )
-        overlayform.addRow(
-            "对齐",
-            getsimplecombobox(
-                ["左上", "右上", "中上", "居中"],
-                globalconfig,
-                "ocr_translation_overlay_alignment",
-                internal=["topleft", "topright", "topcenter", "center"],
-                callback=setstyle,
-                default="topleft",
-            ),
-        )
+        add_overlay_style_rows(overlayform)
         vlay.addWidget(overlay)
         vlay.addStretch(1)
         self.display()

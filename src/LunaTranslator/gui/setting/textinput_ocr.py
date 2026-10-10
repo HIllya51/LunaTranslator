@@ -32,6 +32,7 @@ from gui.usefulwidget import (
     makescroll,
 )
 from gui.fluent.expander import ExExpander
+from gui.rangeselect import add_overlay_style_rows
 from gui.specialwidget import KeyPressDetector
 from traceback import print_exc
 import gobject, qtawesome, importlib
@@ -531,7 +532,16 @@ def _otherspage(self, l):
             ),
         )
     )
-    vlay.addWidget(makecardrow("原地显示翻译", _inplace_switch))
+    # 原地显示翻译：折叠卡，头部开关，子项 = 与右键菜单样式飞层共用
+    # 的样式行（双向同步）
+    inplace = ExExpander(content_pad=True)
+    inplace.setHeaderWidget(
+        _expander_header("原地显示翻译", _inplace_switch)
+    )
+    inplacehost = QWidget()
+    add_overlay_style_rows(LFormLayout(inplacehost))
+    inplace.addContentWidget(inplacehost)
+    vlay.addWidget(inplace)
     vlay.addWidget(
         makecardrow(
             "易错内容修正",

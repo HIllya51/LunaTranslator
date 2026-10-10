@@ -186,6 +186,8 @@ class BASEOBJECT(QObject):
     switchdisplayengine = pyqtSignal(str)
     # OCR 选框右键菜单切换 原地显示翻译 -> 同步设置页开关（btn.setChecked）
     ocr_inplace_switch = pyqtSignal(bool)
+    # 原地显示翻译 样式（背景色/文字色/对齐）任一侧修改 -> 同步另一侧控件
+    ocr_style_sync = pyqtSignal(str)
 
     def connectsignal(self, signal: pyqtBoundSignal, callback):
         if signal in self.__cachesignal:
