@@ -88,6 +88,18 @@ from collections import OrderedDict
 from itertools import islice
 
 
+def _same_ocr_source(a, b):
+    """同一 OCR 来源判同：区域+修订（ocr_overlay_context）再加块序号。
+    同一选框里内容相同的两个块是不同来源，不能因文本相同被判重复；
+    普通字符串（无来源）之间仍按文本去重。"""
+    return (
+        getattr(a, "ocr_overlay_context", None)
+        == getattr(b, "ocr_overlay_context", None)
+        and getattr(a, "ocr_block_index", None)
+        == getattr(b, "ocr_block_index", None)
+    )
+
+
 class HistoryHelper:
     # 仅记录主界面中显示的内容，不要显示具有回调的内容。
     class singlehistory:
@@ -628,8 +640,7 @@ class BASEOBJECT(QObject):
             is_auto_run
             and text == self.currenttext_raw
             and statusok == self.statusok
-            and getattr(text, "ocr_overlay_context", None)
-            == getattr(self.currenttext_raw, "ocr_overlay_context", None)
+            and _same_ocr_source(text, self.currenttext_raw)
         ):
             return
         origin = text
@@ -665,8 +676,7 @@ class BASEOBJECT(QObject):
             is_auto_run
             and text == self.currenttext
             and statusok == self.statusok
-            and getattr(origin, "ocr_overlay_context", None)
-            == getattr(self.currenttext_raw, "ocr_overlay_context", None)
+            and _same_ocr_source(origin, self.currenttext_raw)
         ):
             return
         self.currentsignature = currentsignature
