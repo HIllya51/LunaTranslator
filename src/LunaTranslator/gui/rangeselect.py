@@ -3,7 +3,12 @@ import windows, NativeUtils, gobject, threading
 from myutils.config import globalconfig
 from myutils.hwnd import safepixmap
 from gui.dynalang import LAction, LDialog, LFormLayout
-from gui.usefulwidget import getspinbox, ColorButton
+from gui.usefulwidget import (
+    getspinbox,
+    ColorButton,
+    getsimplecombobox,
+    GroupCardWidget,
+)
 from gui.ocrtranslationoverlay import (
     OCRTranslationOverlay,
     OCRCaptureSnapshot,
@@ -144,34 +149,86 @@ class yangshisetting(LDialog):
     def __init__(self, p):
         super().__init__(p, Qt.WindowType.WindowCloseButtonHint)
         self.setWindowTitle("样式")
-        form = LFormLayout(self)
-        spin = getspinbox(
-            0,
-            1,
-            globalconfig,
-            "ocrrangealpha",
-            default=0.1,
-            double=True,
-            callback=gobject.base.textsource.setstyle,
+        vlay = QVBoxLayout(self)
+        vlay.setContentsMargins(12, 12, 12, 12)
+        vlay.setSpacing(8)
+        setstyle = gobject.base.textsource.setstyle
+        # ---- 边框（选框框线） ----
+        border = GroupCardWidget("边框")
+        borderform = LFormLayout(border.contentWidget())
+        borderform.addRow(
+            "不透明度",
+            getspinbox(
+                0,
+                1,
+                globalconfig,
+                "ocrrangealpha",
+                default=0.1,
+                double=True,
+                callback=setstyle,
+            ),
         )
-        form.addRow("不透明度", spin)
-        spin = getspinbox(
-            1,
-            20,
-            globalconfig,
-            "ocrrangewidth",
-            default=1,
-            callback=gobject.base.textsource.setstyle,
+        borderform.addRow(
+            "宽度",
+            getspinbox(
+                1,
+                20,
+                globalconfig,
+                "ocrrangewidth",
+                default=1,
+                callback=setstyle,
+            ),
         )
-        form.addRow("宽度", spin)
-        colorbtn = ColorButton(
-            self,
-            globalconfig,
-            "ocrrangecolor",
-            callback=gobject.base.textsource.setstyle,
-            default="#000000",
+        borderform.addRow(
+            "颜色",
+            ColorButton(
+                self,
+                globalconfig,
+                "ocrrangecolor",
+                callback=setstyle,
+                default="#000000",
+            ),
         )
-        form.addRow("颜色", colorbtn)
+        vlay.addWidget(border)
+        # ---- 原地显示翻译 ----
+        overlay = GroupCardWidget("原地显示翻译")
+        overlayform = LFormLayout(overlay.contentWidget())
+        overlayform.addRow(
+            "背景颜色",
+            ColorButton(
+                self,
+                globalconfig,
+                "ocr_translation_overlay_background",
+                callback=setstyle,
+                alpha=True,
+                tips="背景颜色",
+                default="#ffffffff",
+            ),
+        )
+        overlayform.addRow(
+            "文字颜色",
+            ColorButton(
+                self,
+                globalconfig,
+                "ocr_translation_overlay_textcolor",
+                callback=setstyle,
+                tips="文字颜色",
+                default="#000000",
+            ),
+        )
+        overlayform.addRow(
+            "对齐",
+            getsimplecombobox(
+                ["左上", "右上", "中上", "居中"],
+                globalconfig,
+                "ocr_translation_overlay_alignment",
+                internal=["topleft", "topright", "topcenter", "center"],
+                callback=setstyle,
+                default="topleft",
+            ),
+        )
+        vlay.addWidget(overlay)
+        vlay.addStretch(1)
         self.show()
 
 

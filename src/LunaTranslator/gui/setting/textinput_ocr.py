@@ -10,7 +10,6 @@ from gui.usefulwidget import (
     getIconButton,
     yuitsu_switch,
     D_getsimpleswitch,
-    D_getcolorbutton,
     getsimpleswitch,
     clearlayout,
     D_getdoclink,
@@ -537,47 +536,6 @@ def internal(self):
         ],
         [functools.partial(_ocrparam, self)],
     ]
-    overlay = [
-        [
-            "使用",
-            _inplace_switch,
-            "",
-            "背景颜色",
-            D_getcolorbutton(
-                self,
-                globalconfig,
-                "ocr_translation_overlay_background",
-                callback=lambda _: getattr(
-                    gobject.base.textsource, "setstyle", lambda: None
-                )(),
-                alpha=True,
-                default="#ffffffff",
-            ),
-            "",
-            "文字颜色",
-            D_getcolorbutton(
-                self,
-                globalconfig,
-                "ocr_translation_overlay_textcolor",
-                callback=lambda _: getattr(
-                    gobject.base.textsource, "setstyle", lambda: None
-                )(),
-                default="#000000",
-            ),
-            "",
-            "对齐",
-            D_getsimplecombobox(
-                ["左上", "右上", "中上", "居中"],
-                globalconfig,
-                "ocr_translation_overlay_alignment",
-                internal=["topleft", "topright", "topcenter", "center"],
-                callback=lambda _: getattr(
-                    gobject.base.textsource, "setstyle", lambda: None
-                )(),
-                default="topleft",
-            ),
-        ],
-    ]
     reco = [
         [
             "识别方向",
@@ -623,11 +581,14 @@ def internal(self):
                 )
             ),
         ],
+        [
+            "原地显示翻译",
+            _inplace_switch,
+        ],
     ]
 
     allothers = [
         [dict(title="识别设置", type="grid", grid=reco)],
-        [dict(title="原地显示翻译", type="grid", grid=overlay)],
         [dict(title="自动化执行", grid=autorun, widget=D_getdoclink("ocrparam.html"))],
     ]
 
