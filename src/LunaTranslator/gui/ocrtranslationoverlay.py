@@ -219,8 +219,11 @@ class _CaptureGuard(QObject):
 
     @staticmethod
     def _is_popup(window):
+        # 任何 Qt::Popup 顶层都按可见性暂停截图：菜单、PopupWidget 飞层
+        # （样式/取色器等——它们可能正好盖在 OCR 选区上）。
+        # 事件过滤器会看到非控件 QObject，须先判 QWidget
         return isinstance(window, QMenu) or (
-            isinstance(window, QFrame)
+            isinstance(window, QWidget)
             and window.isWindow()
             and window.windowType() == Qt.WindowType.Popup
         )

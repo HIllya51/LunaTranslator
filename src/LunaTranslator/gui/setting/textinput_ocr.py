@@ -447,8 +447,9 @@ class showocrimage(saveposwindow):
         self.originlabel.showboxtext(result.result)
 
 
-def _expander_header(title, *controls):
-    """折叠卡头部行：标题在左、控件靠右（同设置窗口折叠卡头部）。"""
+def _expander_header(title, *controls, after_title=None):
+    """折叠卡头部行：标题（后可紧跟 after_title 挂件，如 doclink）在左、
+    控件靠右（同设置窗口折叠卡头部）。"""
     header = QWidget()
     hlay = QHBoxLayout(header)
     hlay.setContentsMargins(0, 12, 0, 12)
@@ -458,6 +459,11 @@ def _expander_header(title, *controls):
     titlefont.setPixelSize(15)
     titlelabel.setFont(titlefont)
     hlay.addWidget(titlelabel)
+    if after_title is not None:
+        if callable(after_title):
+            after_title = after_title()
+        if after_title is not None:
+            hlay.addWidget(after_title)
     hlay.addStretch(1)
     for c in controls:
         if callable(c):
@@ -547,10 +553,11 @@ def _otherspage(self, l):
                 callback=functools.partial(_ocrparam_create, self),
                 default="period",
             ),
-            D_getdoclink("ocrparam.html"),
+            after_title=D_getdoclink("ocrparam.html"),
         )
     )
     auto.addContentWidget(_ocrparam(self))
+    auto.setExpanded(True)
     vlay.addWidget(auto)
     vlay.addStretch(1)
     scroll = makescroll()

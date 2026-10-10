@@ -2,12 +2,13 @@ from qtsymbols import *
 import windows, NativeUtils, gobject, threading
 from myutils.config import globalconfig
 from myutils.hwnd import safepixmap
-from gui.dynalang import LAction, LDialog, LFormLayout
+from gui.dynalang import LAction, LFormLayout
 from gui.usefulwidget import (
     getspinbox,
     ColorButton,
     getsimplecombobox,
     GroupCardWidget,
+    PopupWidget,
 )
 from gui.ocrtranslationoverlay import (
     OCRTranslationOverlay,
@@ -15,7 +16,6 @@ from gui.ocrtranslationoverlay import (
     suspend_ocr_capture,
 )
 from traceback import print_exc
-from myutils.wrapper import Singleton_activate
 
 
 class SideGrip(QWidget):
@@ -152,13 +152,14 @@ def _hover_fill_color():
     return color
 
 
-@Singleton_activate
-class yangshisetting(LDialog):
+class yangshisetting(PopupWidget):
+    """样式飞层（右键菜单-样式）：鼠标悬停/边框/原地显示翻译 三张卡，
+    在光标处弹出，点外部关闭。"""
+
     def __init__(self, p):
-        super().__init__(p, Qt.WindowType.WindowCloseButtonHint)
-        self.setWindowTitle("样式")
+        super().__init__(p)
+        self.setMinimumWidth(340)
         vlay = QVBoxLayout(self)
-        vlay.setContentsMargins(12, 12, 12, 12)
         vlay.setSpacing(8)
         setstyle = gobject.base.textsource.setstyle
         # ---- 鼠标悬停 ----
@@ -240,7 +241,7 @@ class yangshisetting(LDialog):
         )
         vlay.addWidget(overlay)
         vlay.addStretch(1)
-        self.show()
+        self.display()
 
 
 class rangeadjust(Mainw):
