@@ -207,6 +207,116 @@ class rangemanger:
             return image_score > globalconfig.get("ocr_stable_sim2_v2", 0.95)
 
 
+class ocrbox(rangeadjust):
+    """单次OCR右键的常驻容器：与 OCR 范围框同款的边框样式，周期识别
+    框内内容并在框内原地显示翻译；任意鼠标键一碰即关闭（无拖动/缩放）。
+    不受 OCR 设置里 原地显示翻译 开关控制。"""
+
+    def __init__(self, rect: QRect):
+        self._boxranges = []
+        super().__init__(gobject.base.settin_ui, self._boxranges)
+        self._closing = False
+        self._lasttext = ""
+        self.translation_overlay.display_always = True
+        self.setContextMenuPolicy(Qt.ContextMenuPolicy.NoContextMenu)
+        # 不需要拖动/缩放：隐藏全部手柄，任何点击都用于关闭
+        for grip in list(self.cornerGrips) + list(self.sideGrips):
+            grip.hide()
+        self.setrect(rect)
+        self.__recognition_loop()
+
+    def closebox(self):
+        self._closing = True
+        try:
+            self.invalidate_overlay()
+            self.close()
+        finally:
+            self.deleteLater()
+
+    def mousePressEvent(self, e):
+        # 任意键一碰即关（不进入父类的拖动逻辑）
+        self.closebox()
+
+    @threader
+    def __recognition_loop(self):
+        while True:
+            try:
+                if self._closing or not self.isVisible():
+                    return
+                self.__recognize()
+            except RuntimeError:
+                return  # 窗口已销毁
+            except:
+                print_exc()
+            deadline = time.time() + globalconfig.get("ocr_interval", 1.5)
+            while time.time() < deadline:
+                if self._closing:
+                    return
+                time.sleep(0.1)
+
+    def __recognize(self):
+        snapshot = self.capture_snapshot()
+        rect = QRect(*snapshot.rect)
+        if not rect.isValid():
+            return
+        img = imageCutEx(0, rect)
+        if img.isNull():
+            return
+        if snapshot != self.capture_snapshot():
+            return
+        result = ocr_run(img)
+        text = "" if result.error else result.textonly
+        with self.ocr_source_lock:
+            if snapshot != self.capture_snapshot():
+                return
+            # 与范围框相同的噪声门控：编辑距离小于阈值不重新翻译
+            if NativeUtils.distance(self._lasttext, text) < globalconfig.get(
+                "ocr_text_diff", 3
+            ):
+                return
+            self._lasttext = text
+            revision = self.remember_overlay_source(text, snapshot)
+            if revision is None:
+                return
+            result.ocr_overlay_source = OCRRegionText(
+                text, self, revision, owner=None
+            )
+            # 块级原地显示：有坐标且非图片翻译时按块拆分
+            result.ocr_overlay_block_sources = None
+            blocks = None
+            if (
+                not result.error
+                and result.result.hasboxs
+                and not result.result.isocrtranslate
+            ):
+                blocks = [tuple(_.box) for _ in result.result.blocks]
+                sources = [
+                    OCRRegionText(
+                        _.text, self, revision, owner=None, block_index=i
+                    )
+                    for i, _ in enumerate(result.result.blocks)
+                    if _.text and _.text.strip()
+                ]
+                if sources:
+                    result.ocr_overlay_block_sources = sources
+            self.publish_overlay_layout(revision, blocks)
+        if not text:
+            return
+        if result.result.isocrtranslate:
+            gobject.base.displayinfomessage(
+                result.ocr_overlay_source, "<notrans>"
+            )
+        elif result.ocr_overlay_block_sources:
+            gobject.base.textgetmethod(
+                OCRRegionBatch(result.ocr_overlay_block_sources),
+                is_auto_run=False,
+            )
+        else:
+            gobject.base.textgetmethod(
+                result.ocr_overlay_source, is_auto_run=False
+            )
+
+
 class ocrtext(basetext):
     def hwndChanged(self, hwnd):
         self.hwnd = hwnd

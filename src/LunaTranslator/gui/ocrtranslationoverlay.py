@@ -74,15 +74,28 @@ def overlay_source_is_current(source):
 class OCRRegionTask:
     # The translator queue treats this as a protected request. Its validity is
     # per region, so a newer request from another region cannot cancel it.
+    # 不再看 ocr_translation_overlay 全局开关：单次OCR常驻容器等场景没有
+    # 开关也要保证任务有效（是否上屏由显示侧各自决定）。
     ocr_overlay_task = True
 
     def __init__(self, source):
         self.source = source
 
     def is_current(self):
-        return globalconfig.get(
-            "ocr_translation_overlay", False
-        ) and overlay_source_is_current(self.source)
+        return overlay_source_is_current(self.source)
+
+
+def overlay_source_displays(source):
+    """该来源的译文是否应走覆盖层：全局 原地显示翻译 开关开启，或来源
+    所在容器强制原地显示（单次OCR常驻容器）。"""
+    if not overlay_source_is_current(source):
+        return False
+    if globalconfig.get("ocr_translation_overlay", False):
+        return True
+    target, _ = source.ocr_overlay_context
+    target = target()
+    overlay = getattr(target, "translation_overlay", None)
+    return overlay is not None and overlay.display_always
 
 
 def route_overlay_translation(source, engine, text):
@@ -438,6 +451,8 @@ class OCRTranslationOverlay(QWidget):
         # 走整框绘制（self.text）。
         self.block_rects = None
         self.block_results = {}
+        # 单次OCR常驻容器等：不受全局 原地显示翻译 开关控制，强制上屏
+        self.display_always = False
         self.setWindowFlags(
             Qt.WindowType.Tool
             | Qt.WindowType.FramelessWindowHint
@@ -577,7 +592,10 @@ class OCRTranslationOverlay(QWidget):
     def sync(self):
         rect = self.region.getrect()
         if (
-            not globalconfig.get("ocr_translation_overlay", False)
+            not (
+                globalconfig.get("ocr_translation_overlay", False)
+                or self.display_always
+            )
             or not (self.text or self._blocktexts())
             or not rect.isValid()
             or not self.region.isVisible()

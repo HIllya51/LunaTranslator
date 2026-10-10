@@ -48,6 +48,7 @@ from textio.textsource.texthook import texthook
 from textio.textsource.ocrtext import ocrtext
 from gui.ocrtranslationoverlay import (
     route_overlay_translation,
+    overlay_source_displays,
     overlay_source_is_current,
     OCRRegionTask,
 )
@@ -525,7 +526,7 @@ class BASEOBJECT(QObject):
 
     def displayinfomessage(self, text, infotype):
         if infotype == "<notrans>":
-            overlay_live = overlay_source_is_current(text)
+            overlay_live = overlay_source_displays(text)
             route_overlay_translation(text, "ocr", text)
             if not overlay_live:  # 原地显示时主窗口不显示
                 self.translation_ui.displayres.emit(
@@ -645,14 +646,12 @@ class BASEOBJECT(QObject):
             return
         origin = text
         # 原地显示翻译：本条文本的译文走 OCR 覆盖层，主窗口不再显示
-        # 原文/译文（TTS、输出、历史、翻译记录不受影响）
+        # 原文/译文（TTS、输出、历史、翻译记录不受影响）。全局开关或
+        # 来源容器强制原地显示（单次OCR常驻容器）均算
         ocr_overlay_source = None
-        if (
-            globalconfig.get("ocr_translation_overlay", False)
-            and not waitforresultcallback
-        ):
+        if not waitforresultcallback:
             candidate = self.currenttext_raw if isRefresh else origin
-            if overlay_source_is_current(candidate):
+            if overlay_source_displays(candidate):
                 ocr_overlay_source = candidate
         __erroroutput = functools.partial(self.__erroroutput, None, erroroutput, None)
         currentsignature = uuid.uuid4() if not isRefresh else self.currentsignature

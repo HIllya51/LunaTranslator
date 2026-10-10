@@ -352,6 +352,19 @@ class TranslatorWindow(resizableframeless):
 
         rangeselct_function(ocroncefunction, hideshow=True)
 
+    def ocr_once_box_function(self):
+        """右键单次OCR：框选后创建常驻容器（范围框同款），框内原地
+        显示翻译，右上角关闭。"""
+
+        def createbox(rect, img=None):
+            if not rect.isValid():
+                return
+            from textio.textsource.ocrtext import ocrbox
+
+            gobject.base.safeinvokefunction.emit(lambda: ocrbox(QRect(rect)))
+
+        rangeselct_function(createbox, hideshow=True)
+
     @threader
     def simulate_key_ctrl(self):
         windows.SetForegroundWindow(gobject.base.hwnd)
@@ -582,7 +595,13 @@ class TranslatorWindow(resizableframeless):
                 "open_game_setting",
                 lambda: opengamesettings(gobject.base.gameuid, 1),
             ),
-            ("ocr_once", self.ocr_once_signal.emit),
+            (
+                "ocr_once",
+                buttonfunctions(
+                    clicked=self.ocr_once_signal.emit,
+                    rightclick=self.ocr_once_box_function,
+                ),
+            ),
             (
                 "ocr_once_follow",
                 lambda: self.ocr_do_function(self.ocr_once_follow_rect),
