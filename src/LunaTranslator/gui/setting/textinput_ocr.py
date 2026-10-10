@@ -644,7 +644,8 @@ def internal(self):
     tab, dotab = makesubtab_lazy(
         ["OCR引擎", "其他设置"],
         [
-            lambda l: makescrollgrid(engines, l),
+            # 顶边距 16，与其他设置页首卡一致
+            lambda l: makescrollgrid(engines, l, topmargin=16),
             functools.partial(_otherspage, self),
         ],
         delay=True,
