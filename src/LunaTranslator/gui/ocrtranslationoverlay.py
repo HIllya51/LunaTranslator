@@ -4,6 +4,7 @@ No changes to translation engines or user credentials are required.
 """
 
 import ctypes
+import math
 import sys
 import threading
 import weakref
@@ -671,9 +672,10 @@ class OCRTranslationOverlay(QWidget):
             and bounds.height() <= text_rect.height()
         )
 
-    def _expanded_text_rect(self, inner, font, text):
+    def _expanded_text_rect(self, inner, font, text, bounds=None):
         """块内放不下时的扩展绘制区：按块宽换行所需的尺寸放大、按对齐
-        锚点定位、再平移回选框内——译文必须完整显示，不能被裁掉。"""
+        锚点定位、再平移回绘制范围内——译文必须完整显示，不能被裁掉。
+        bounds：当前坐标系的可用范围（水平块=选框，倾斜块=局部范围）。"""
         fm = QFontMetrics(font)
         needed = fm.boundingRect(
             QRect(0, 0, inner.width(), 1 << 20), _OVERLAY_MEASURE_FLAGS, text
@@ -696,17 +698,19 @@ class OCRTranslationOverlay(QWidget):
         else:
             top_left = inner.topLeft()
         new = QRect(top_left, QSize(w, h))
-        # 平移进选框（覆盖层与选框同尺寸）；选框本身放不下时才裁边
-        if self.width() > 0 and self.height() > 0:
-            if new.right() >= self.width():
-                new.moveRight(self.width() - 1)
-            if new.left() < 0:
-                new.moveLeft(0)
-            if new.bottom() >= self.height():
-                new.moveBottom(self.height() - 1)
-            if new.top() < 0:
-                new.moveTop(0)
-            new = new.intersected(QRect(0, 0, self.width(), self.height()))
+        # 平移进绘制范围；范围本身放不下时才裁边
+        if bounds is None:
+            bounds = self.rect()
+        if bounds.width() > 0 and bounds.height() > 0:
+            if new.right() > bounds.right():
+                new.moveRight(bounds.right())
+            if new.left() < bounds.left():
+                new.moveLeft(bounds.left())
+            if new.bottom() > bounds.bottom():
+                new.moveBottom(bounds.bottom())
+            if new.top() < bounds.top():
+                new.moveTop(bounds.top())
+            new = new.intersected(bounds)
         return new
 
     def _alignment_flags(self):
@@ -718,6 +722,67 @@ class OCRTranslationOverlay(QWidget):
             _OVERLAY_ALIGN_FLAGS[_OVERLAY_ALIGN_DEFAULT],
         )
 
+    def _local_widget_bounds(self, p0, ang):
+        """选框（覆盖层）四角逆变换到旋转局部坐标的 AABB——倾斜块
+        扩展/绘制时的可用范围。"""
+        ca, sa = math.cos(math.radians(ang)), math.sin(math.radians(ang))
+        W, H = self.width(), self.height()
+        us, vs = [], []
+        for x, y in ((0, 0), (W, 0), (W, H), (0, H)):
+            dx, dy = x - p0.x(), y - p0.y()
+            us.append(dx * ca + dy * sa)
+            vs.append(-dx * sa + dy * ca)
+        u1, u2, v1, v2 = min(us), max(us), min(vs), max(vs)
+        if u2 <= u1 or v2 <= v1:
+            return self.rect()
+        return QRect(round(u1), round(v1), round(u2 - u1), round(v2 - v1))
+
+    def _block_layout(self, i, text, cap, dpr):
+        """单块绘制布局：返回 (transform, inner, outer, font)。
+
+        transform=None 为近水平块（AABB 绘制，行为同旧版）；否则
+        (p0, angle)——在 p0 平移、angle 旋转的坐标系中绘制，倾斜的
+        OCR 结果让译文同样倾斜。块过小放不下时向外扩展保证完整。"""
+        quad = self.block_rects[i]
+        pts = [QPointF(quad[j] / dpr, quad[j + 1] / dpr) for j in (0, 2, 4, 6)]
+        p0, p1, p2, p3 = pts
+        ang = math.degrees(math.atan2(p1.y() - p0.y(), p1.x() - p0.x()))
+        w = (
+            math.hypot(p1.x() - p0.x(), p1.y() - p0.y())
+            + math.hypot(p2.x() - p3.x(), p2.y() - p3.y())
+        ) / 2
+        h = (
+            math.hypot(p3.x() - p0.x(), p3.y() - p0.y())
+            + math.hypot(p2.x() - p1.x(), p2.y() - p1.y())
+        ) / 2
+        if abs(ang) < 0.3 or w <= 1 or h <= 1:
+            # 近水平：AABB 绘制（避免变换取整带来的漂移）
+            xs = [p.x() for p in pts]
+            ys = [p.y() for p in pts]
+            rect = QRectF(
+                min(xs), min(ys), max(xs) - min(xs), max(ys) - min(ys)
+            )
+            transform = None
+            bounds = self.rect()
+        else:
+            rect = QRectF(0, 0, w, h)
+            transform = (p0, ang)
+            bounds = self._local_widget_bounds(p0, ang)
+        margin = min(4, max(1, int(min(rect.width(), rect.height()) // 12)))
+        inner = rect.adjusted(margin, margin, -margin, -margin).toAlignedRect()
+        if inner.isEmpty():
+            # 极小块：不留边距，整块作绘制区
+            margin = 0
+            inner = rect.toAlignedRect()
+        if inner.isEmpty():
+            return None
+        font = self.fitted_font(inner, text, cap)
+        if not self._text_fits(font, inner, text):
+            # 块过小放不下：字号保持（≥下限），向外扩展绘制区
+            inner = self._expanded_text_rect(inner, font, text, bounds)
+        outer = inner.adjusted(-margin, -margin, margin, margin)
+        return transform, inner, outer, font
+
     def paintEvent(self, event):
         painter = QPainter(self)
         flags = self._alignment_flags()
@@ -727,31 +792,32 @@ class OCRTranslationOverlay(QWidget):
         if blocks:
             dpr = self.devicePixelRatioF() or 1.0
             cap = max(6, min(100, QFontInfo(self._translation_font()).pixelSize()))
+            bg = self.background_color()
+            pen = self.text_color()
+            layouts = []
             for i, text in blocks:
-                x1, y1, x2, y2 = self.block_rects[i]
-                rect = QRectF(
-                    x1 / dpr, y1 / dpr, (x2 - x1) / dpr, (y2 - y1) / dpr
-                )
-                margin = min(4, max(1, int(min(rect.width(), rect.height()) // 12)))
-                inner = rect.adjusted(
-                    margin, margin, -margin, -margin
-                ).toAlignedRect()
-                if inner.isEmpty():
-                    # 极小块：不留边距，整块作绘制区
-                    margin = 0
-                    inner = rect.toAlignedRect()
-                if inner.isEmpty():
-                    continue
-                font = self.fitted_font(inner, text, cap)
-                if not self._text_fits(font, inner, text):
-                    # 块过小放不下：字号保持（≥下限），向外扩展绘制区
-                    inner = self._expanded_text_rect(inner, font, text)
-                outer = inner.adjusted(-margin, -margin, margin, margin)
+                layout = self._block_layout(i, text, cap, dpr)
+                if layout is not None:
+                    layouts.append((layout, text))
+            # 先画所有背景、再画所有文字：相邻块的背景不会遮挡另一块的文字
+            for (transform, inner, outer, font), text in layouts:
+                painter.save()
+                if transform is not None:
+                    painter.translate(transform[0])
+                    painter.rotate(transform[1])
                 painter.setClipRect(outer)
-                painter.fillRect(outer, self.background_color())
+                painter.fillRect(outer, bg)
+                painter.restore()
+            for (transform, inner, outer, font), text in layouts:
+                painter.save()
+                if transform is not None:
+                    painter.translate(transform[0])
+                    painter.rotate(transform[1])
+                painter.setClipRect(outer)
                 painter.setFont(font)
-                painter.setPen(self.text_color())
+                painter.setPen(pen)
                 painter.drawText(inner, flags, text)
+                painter.restore()
             painter.end()
             return
         # 无坐标（图片翻译、不输出坐标的 OCR）：整框绘制（原行为）

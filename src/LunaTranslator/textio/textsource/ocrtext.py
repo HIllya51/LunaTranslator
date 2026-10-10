@@ -95,7 +95,8 @@ class rangemanger:
                 and result.result.hasboxs
                 and not result.result.isocrtranslate
             ):
-                blocks = [tuple(_.box4) for _ in result.result.blocks]
+                # 布局发布用完整四点（保留倾斜），覆盖层据此旋转绘制
+                blocks = [tuple(_.box) for _ in result.result.blocks]
                 sources = [
                     OCRRegionText(
                         _.text, self.range_ui, revision,
