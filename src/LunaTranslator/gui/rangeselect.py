@@ -358,28 +358,24 @@ class rangeadjust(Mainw):
         menu.setWindowFlags(
             menu.windowFlags() | Qt.WindowType.WindowStaysOnTopHint
         )
+        # 多重 / 原地 / 鼠标 | 样式 | 关闭（聚焦保留双击切换）
         multiregion = LAction("多重区域模式", menu)
         multiregion.setCheckable(True)
         multiregion.setChecked(globalconfig.get("multiregion", False))
         menu.addAction(multiregion)
-        focus = None
-        if globalconfig.get("multiregion", False):
-            focus = LAction("聚焦", menu)
-            focus.setCheckable(True)
-            focus.setChecked(self.isfocus)
-            menu.addAction(focus)
-        menu.addSeparator()
-        style = LAction("样式", menu)
-        menu.addAction(style)
         overlay = LAction("原地显示翻译", menu)
         overlay.setCheckable(True)
         overlay.setChecked(globalconfig.get("ocr_translation_overlay", False))
         menu.addAction(overlay)
-        close = LAction("关闭", menu)
         mousetransp = LAction("鼠标穿透窗口", menu)
         mousetransp.setCheckable(True)
         mousetransp.setChecked(self._mousetransp)
         menu.addAction(mousetransp)
+        menu.addSeparator()
+        style = LAction("样式", menu)
+        menu.addAction(style)
+        menu.addSeparator()
+        close = LAction("关闭", menu)
         menu.addAction(close)
         with suspend_ocr_capture():
             action = menu.exec(QCursor.pos())
@@ -395,9 +391,6 @@ class rangeadjust(Mainw):
             gobject.base.textsource.setstyle()
         elif action == style:
             yangshisetting(self)
-        elif focus is not None and action == focus:
-            self.isfocus = focus.isChecked()
-            gobject.base.translation_ui.startTranslater()
         elif action == mousetransp:
             self.setmousetransp(mousetransp.isChecked())
         elif action == close:
