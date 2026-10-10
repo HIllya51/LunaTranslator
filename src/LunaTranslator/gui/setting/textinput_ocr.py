@@ -580,8 +580,7 @@ def internal(self):
                     ["原文内容", "替换为"],
                 )
             ),
-        ],
-        [
+            "",
             "原地显示翻译",
             _inplace_switch,
         ],

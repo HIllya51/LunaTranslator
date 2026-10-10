@@ -144,6 +144,14 @@ class Mainw(QMainWindow):
         self.updateGrips()
 
 
+def _hover_fill_color():
+    """悬停高亮色（含透明度，用户配置；默认黑 @10%，同原 不透明度）。"""
+    color = QColor(globalconfig.get("ocrrangehovercolor", "#1a000000"))
+    if not color.isValid():
+        color = QColor("#1a000000")
+    return color
+
+
 @Singleton_activate
 class yangshisetting(LDialog):
     def __init__(self, p):
@@ -153,21 +161,24 @@ class yangshisetting(LDialog):
         vlay.setContentsMargins(12, 12, 12, 12)
         vlay.setSpacing(8)
         setstyle = gobject.base.textsource.setstyle
+        # ---- 鼠标悬停 ----
+        hover = GroupCardWidget("鼠标悬停")
+        hoverform = LFormLayout(hover.contentWidget())
+        hoverform.addRow(
+            "背景颜色",
+            ColorButton(
+                self,
+                globalconfig,
+                "ocrrangehovercolor",
+                callback=setstyle,
+                alpha=True,
+                default="#1a000000",
+            ),
+        )
+        vlay.addWidget(hover)
         # ---- 边框（选框框线） ----
         border = GroupCardWidget("边框")
         borderform = LFormLayout(border.contentWidget())
-        borderform.addRow(
-            "不透明度",
-            getspinbox(
-                0,
-                1,
-                globalconfig,
-                "ocrrangealpha",
-                default=0.1,
-                double=True,
-                callback=setstyle,
-            ),
-        )
         borderform.addRow(
             "宽度",
             getspinbox(
@@ -398,8 +409,8 @@ class rangeadjust(Mainw):
         hwnd = int(self.winId())
         if not hwnd:
             return
-        # 鼠标穿透或透明度为 0 时，仅保留四条边框可响应鼠标，内部鼠标穿透。
-        if self._mousetransp or globalconfig.get("ocrrangealpha", 0.1) == 0:
+        # 鼠标穿透或悬停高亮全透明时，仅保留四条边框可响应鼠标，内部鼠标穿透。
+        if self._mousetransp or _hover_fill_color().alpha() == 0:
             geo = self.geometry()
             if geo.width() > 0 and geo.height() > 0:
                 border = round(
@@ -531,9 +542,8 @@ class rangeadjust(Mainw):
         if self._mousetransp:
             return
         self.drag_label.setStyleSheet(
-            "background-color:rgba(0,0,0, {})".format(
-                globalconfig.get("ocrrangealpha", 0.1)
-            )
+            "background-color: %s;" % _hover_fill_color().name(
+                QColor.NameFormat.HexArgb)
         )
 
     def leaveEvent(self, _):
