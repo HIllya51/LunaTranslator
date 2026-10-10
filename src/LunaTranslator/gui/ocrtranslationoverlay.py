@@ -113,6 +113,10 @@ _OVERLAY_ALIGN_FLAGS = {
     "center": int(Qt.AlignmentFlag.AlignHCenter) | int(Qt.AlignmentFlag.AlignVCenter),
 }
 _OVERLAY_ALIGN_DEFAULT = "topleft"
+# 适配/扩展共用的测量旗标（左对齐换行测量所需宽高）
+_OVERLAY_MEASURE_FLAGS = int(Qt.TextFlag.TextWordWrap) | int(
+    Qt.AlignmentFlag.AlignLeft
+)
 
 
 def ocr_popup_is_visible():
@@ -635,7 +639,7 @@ class OCRTranslationOverlay(QWidget):
 
     def fitted_font(self, text_rect, text=None, maximum=100, minimum=12):
         """按区域尺寸二分适配字号；下限 minimum——分析出的字号不能过小，
-        放不下时宁可溢出裁剪也不缩小到不可读。"""
+        放不下时由调用方扩展绘制区域（见 _expanded_text_rect）。"""
         if text is None:
             text = self.text
         font = QFont(globalconfig.get("fonttype2", "") or "Microsoft YaHei")
@@ -656,6 +660,54 @@ class OCRTranslationOverlay(QWidget):
                 high = size - 1
         font.setPixelSize(low)
         return font
+
+    @staticmethod
+    def _text_fits(font, text_rect, text):
+        bounds = QFontMetrics(font).boundingRect(
+            text_rect, _OVERLAY_MEASURE_FLAGS, text
+        )
+        return (
+            bounds.width() <= text_rect.width()
+            and bounds.height() <= text_rect.height()
+        )
+
+    def _expanded_text_rect(self, inner, font, text):
+        """块内放不下时的扩展绘制区：按块宽换行所需的尺寸放大、按对齐
+        锚点定位、再平移回选框内——译文必须完整显示，不能被裁掉。"""
+        fm = QFontMetrics(font)
+        needed = fm.boundingRect(
+            QRect(0, 0, inner.width(), 1 << 20), _OVERLAY_MEASURE_FLAGS, text
+        )
+        w = max(inner.width(), needed.width())
+        needed = fm.boundingRect(
+            QRect(0, 0, w, 1 << 20), _OVERLAY_MEASURE_FLAGS, text
+        )
+        h = max(inner.height(), needed.height())
+        align = globalconfig.get(
+            "ocr_translation_overlay_alignment", _OVERLAY_ALIGN_DEFAULT
+        )
+        if align == "topright":
+            top_left = QPoint(inner.right() - w + 1, inner.top())
+        elif align == "topcenter":
+            top_left = QPoint(inner.center().x() - w // 2, inner.top())
+        elif align == "center":
+            center = inner.center()
+            top_left = QPoint(center.x() - w // 2, center.y() - h // 2)
+        else:
+            top_left = inner.topLeft()
+        new = QRect(top_left, QSize(w, h))
+        # 平移进选框（覆盖层与选框同尺寸）；选框本身放不下时才裁边
+        if self.width() > 0 and self.height() > 0:
+            if new.right() >= self.width():
+                new.moveRight(self.width() - 1)
+            if new.left() < 0:
+                new.moveLeft(0)
+            if new.bottom() >= self.height():
+                new.moveBottom(self.height() - 1)
+            if new.top() < 0:
+                new.moveTop(0)
+            new = new.intersected(QRect(0, 0, self.width(), self.height()))
+        return new
 
     def _alignment_flags(self):
         # 原地显示翻译自己的对齐设置（不共用文本设置的居中显示）
@@ -681,16 +733,25 @@ class OCRTranslationOverlay(QWidget):
                     x1 / dpr, y1 / dpr, (x2 - x1) / dpr, (y2 - y1) / dpr
                 )
                 margin = min(4, max(1, int(min(rect.width(), rect.height()) // 12)))
-                text_rect = rect.adjusted(
+                inner = rect.adjusted(
                     margin, margin, -margin, -margin
                 ).toAlignedRect()
-                if text_rect.isEmpty():
+                if inner.isEmpty():
+                    # 极小块：不留边距，整块作绘制区
+                    margin = 0
+                    inner = rect.toAlignedRect()
+                if inner.isEmpty():
                     continue
-                painter.setClipRect(rect.toAlignedRect())
-                painter.fillRect(rect, self.background_color())
-                painter.setFont(self.fitted_font(text_rect, text, cap))
+                font = self.fitted_font(inner, text, cap)
+                if not self._text_fits(font, inner, text):
+                    # 块过小放不下：字号保持（≥下限），向外扩展绘制区
+                    inner = self._expanded_text_rect(inner, font, text)
+                outer = inner.adjusted(-margin, -margin, margin, margin)
+                painter.setClipRect(outer)
+                painter.fillRect(outer, self.background_color())
+                painter.setFont(font)
                 painter.setPen(self.text_color())
-                painter.drawText(text_rect, flags, text)
+                painter.drawText(inner, flags, text)
             painter.end()
             return
         # 无坐标（图片翻译、不输出坐标的 OCR）：整框绘制（原行为）
