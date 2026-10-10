@@ -2,7 +2,7 @@ from qtsymbols import *
 import windows, NativeUtils, gobject, threading
 from myutils.config import globalconfig
 from myutils.hwnd import safepixmap
-from gui.dynalang import LAction, LFormLayout
+from gui.dynalang import LAction, LFormLayout, LLabel
 from gui.usefulwidget import (
     getspinbox,
     ColorButton,
@@ -152,10 +152,11 @@ def _hover_fill_color():
     return color
 
 
-def add_overlay_style_rows(form: LFormLayout):
-    """原地显示翻译 的样式行（背景颜色/文字颜色/对齐）——OCR 设置的
-    原地显示翻译折叠卡与选框右键菜单的样式飞层共用；任一侧修改经
-    ocr_style_sync 信号同步另一侧的控件（弱引用，控件销毁后跳过）。"""
+def add_overlay_style_rows(container):
+    """原地显示翻译 的样式子项（背景颜色/文字颜色/对齐，每行一个卡
+    子项）——OCR 设置的原地显示翻译折叠卡与选框右键菜单的样式飞层
+    共用；任一侧修改经 ocr_style_sync 信号同步另一侧的控件（弱引用，
+    控件销毁后跳过）。container 须支持 addContentWidget。"""
     import weakref
 
     def setstyle():
@@ -190,6 +191,15 @@ def add_overlay_style_rows(form: LFormLayout):
 
         gobject.base.ocr_style_sync.connect(_)
 
+    def row(label, w):
+        r = QWidget()
+        lay = QHBoxLayout(r)
+        lay.setContentsMargins(0, 0, 0, 0)
+        lay.addWidget(LLabel(label))
+        lay.addStretch(1)
+        lay.addWidget(w)
+        container.addContentWidget(r)
+
     bgbtn = ColorButton(
         None,
         globalconfig,
@@ -200,7 +210,7 @@ def add_overlay_style_rows(form: LFormLayout):
         default="#ffffffff",
     )
     syncfrom("ocr_translation_overlay_background", bgbtn, "#ffffffff")
-    form.addRow("背景颜色", bgbtn)
+    row("背景颜色", bgbtn)
     textbtn = ColorButton(
         None,
         globalconfig,
@@ -210,7 +220,7 @@ def add_overlay_style_rows(form: LFormLayout):
         default="#000000",
     )
     syncfrom("ocr_translation_overlay_textcolor", textbtn, "#000000")
-    form.addRow("文字颜色", textbtn)
+    row("文字颜色", textbtn)
     aligncombo = getsimplecombobox(
         ["左上", "右上", "中上", "居中"],
         globalconfig,
@@ -220,7 +230,7 @@ def add_overlay_style_rows(form: LFormLayout):
         default="topleft",
     )
     syncfrom("ocr_translation_overlay_alignment", aligncombo, "topleft")
-    form.addRow("对齐", aligncombo)
+    row("对齐", aligncombo)
 
 
 class yangshisetting(PopupWidget):
@@ -273,10 +283,9 @@ class yangshisetting(PopupWidget):
             ),
         )
         vlay.addWidget(border)
-        # ---- 原地显示翻译（样式行与 OCR 设置共用，双向同步） ----
+        # ---- 原地显示翻译（样式子项与 OCR 设置共用，双向同步） ----
         overlay = GroupCardWidget("原地显示翻译")
-        overlayform = LFormLayout(overlay.contentWidget())
-        add_overlay_style_rows(overlayform)
+        add_overlay_style_rows(overlay)
         vlay.addWidget(overlay)
         vlay.addStretch(1)
         self.display()

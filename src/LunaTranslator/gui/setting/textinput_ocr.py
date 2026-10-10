@@ -11,10 +11,8 @@ from gui.usefulwidget import (
     yuitsu_switch,
     D_getsimpleswitch,
     getsimpleswitch,
-    clearlayout,
     D_getdoclink,
     ClickableLabel,
-    getboxlayout,
     createfoldgrid,
     TableViewW,
     saveposwindow,
@@ -36,7 +34,7 @@ from gui.rangeselect import add_overlay_style_rows
 from gui.specialwidget import KeyPressDetector
 from traceback import print_exc
 import gobject, qtawesome, importlib
-from gui.dynalang import LFormLayout, LDialog, LAction, LLabel
+from gui.dynalang import LDialog, LAction, LLabel
 from myutils.ocrutil import ocr_end, ocr_init, ocr_run
 from myutils.wrapper import threader, Singleton
 from ocrengines.baseocrclass import OCRResultParsed
@@ -259,91 +257,84 @@ def initgridsources(self, names):
 
 
 def _ocrparam_create(self, f):
-    clearlayout(self._ocrparaml)
+    exp = self._ocrparamexp
+    exp.clearContentWidgets()
+
+    def row(label, *controls):
+        r = QWidget()
+        lay = QHBoxLayout(r)
+        lay.setContentsMargins(0, 0, 0, 0)
+        lay.addWidget(LLabel(label))
+        lay.addStretch(1)
+        for c in controls:
+            if callable(c):
+                c = c()
+            if c is not None:
+                lay.addWidget(c)
+        exp.addContentWidget(r)
+
     if f == "period":
-        self._ocrparaml.addRow(
+        row(
             "执行周期_(s)",
-            getboxlayout(
-                [
-                    D_getspinbox(
-                        0.1, 100, globalconfig, "ocr_interval", double=True, default=1.5
-                    ),
-                    QLabel,
-                ]
+            D_getspinbox(
+                0.1, 100, globalconfig, "ocr_interval", double=True, default=1.5
             ),
         )
     if f == "trigger":
-        self._ocrparaml.addRow(
+        row(
             "触发事件",
-            getboxlayout([D_getIconButton(functools.partial(triggereditor, self))]),
+            D_getIconButton(functools.partial(triggereditor, self)),
         )
-        self._ocrparaml.addRow(
+        row(
             "延迟_(s)",
-            getboxlayout(
-                [
-                    D_getspinbox(
-                        0,
-                        100,
-                        globalconfig,
-                        "ocr_trigger_delay",
-                        double=True,
-                        default=0,
-                    ),
-                    QLabel,
-                ]
+            D_getspinbox(
+                0,
+                100,
+                globalconfig,
+                "ocr_trigger_delay",
+                double=True,
+                default=0,
             ),
         )
     if f in ["analysis", "trigger"]:
-        self._ocrparaml.addRow(
+        row(
             "图像稳定性阈值",
-            getboxlayout(
-                [
-                    D_getspinbox(
-                        0,
-                        1,
-                        globalconfig,
-                        ("ocr_stable_sim_v2", "ocr_stable_sim2_v2")[f == "trigger"],
-                        double=True,
-                        step=0.001,
-                        default=(0.5, 0.95)[f == "trigger"],
-                    ),
-                    functools.partial(__label1, self),
-                ]
+            D_getspinbox(
+                0,
+                1,
+                globalconfig,
+                ("ocr_stable_sim_v2", "ocr_stable_sim2_v2")[f == "trigger"],
+                double=True,
+                step=0.001,
+                default=(0.5, 0.95)[f == "trigger"],
             ),
+            functools.partial(__label1, self),
         )
     if f == "analysis":
-        self._ocrparaml.addRow(
+        row(
             "图像一致性阈值",
-            getboxlayout(
-                [
-                    D_getspinbox(
-                        0,
-                        1,
-                        globalconfig,
-                        "ocr_diff_sim_v2",
-                        double=True,
-                        step=0.001,
-                        default=0.95,
-                    ),
-                    functools.partial(__label2, self),
-                ]
+            D_getspinbox(
+                0,
+                1,
+                globalconfig,
+                "ocr_diff_sim_v2",
+                double=True,
+                step=0.001,
+                default=0.95,
             ),
+            functools.partial(__label2, self),
         )
-    self._ocrparaml.addRow(
+    row(
         "文本相似度阈值",
-        getboxlayout(
-            [D_getspinbox(0, 100000, globalconfig, "ocr_text_diff", default=3), QLabel]
-        ),
+        D_getspinbox(0, 100000, globalconfig, "ocr_text_diff", default=3),
     )
 
 
-def _ocrparam(self):
-    """自动化执行方法的参数区（折叠卡内容，方法切换时经
-    _ocrparam_create 重建行）。"""
-    w = QWidget()
-    self._ocrparaml = LFormLayout(w)
+def _ocrparam(self, exp):
+    """自动化执行方法的参数子项（每行一个卡子项，方法切换时经
+    _ocrparam_create 重建）。"""
+    self._ocrparamexp = exp
     _ocrparam_create(self, globalconfig.get("ocr_auto_method_v2", "period"))
-    return w
 
 
 @Singleton
@@ -533,14 +524,12 @@ def _otherspage(self, l):
         )
     )
     # 原地显示翻译：折叠卡，头部开关，子项 = 与右键菜单样式飞层共用
-    # 的样式行（双向同步）
+    # 的样式子项（双向同步）
     inplace = ExExpander(content_pad=True)
     inplace.setHeaderWidget(
         _expander_header("原地显示翻译", _inplace_switch)
     )
-    inplacehost = QWidget()
-    add_overlay_style_rows(LFormLayout(inplacehost))
-    inplace.addContentWidget(inplacehost)
+    add_overlay_style_rows(inplace)
     vlay.addWidget(inplace)
     vlay.addWidget(
         makecardrow(
@@ -572,7 +561,7 @@ def _otherspage(self, l):
             after_title=D_getdoclink("ocrparam.html"),
         )
     )
-    auto.addContentWidget(_ocrparam(self))
+    _ocrparam(self, auto)
     auto.setExpanded(True)
     vlay.addWidget(auto)
     vlay.addStretch(1)
