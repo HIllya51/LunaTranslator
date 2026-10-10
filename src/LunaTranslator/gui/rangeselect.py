@@ -241,6 +241,10 @@ class yangshisetting(PopupWidget):
         super().__init__(p)
         self.setMinimumWidth(340)
         vlay = QVBoxLayout(self)
+        # 上下对称（PopupWidget.showEvent 默认改边距为 16/16/16/12，
+        # 底部会少 4px；置属性阻止其再改）
+        vlay.setContentsMargins(16, 16, 16, 16)
+        self.setProperty("_fluent_flyout_padded", True)
         vlay.setSpacing(8)
         setstyle = gobject.base.textsource.setstyle
         # ---- 鼠标悬停 ----

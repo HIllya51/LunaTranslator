@@ -299,6 +299,7 @@ def _ocrparam_create(self, f):
     if f in ["analysis", "trigger"]:
         row(
             "图像稳定性阈值",
+            functools.partial(__label1, self),
             D_getspinbox(
                 0,
                 1,
@@ -308,11 +309,11 @@ def _ocrparam_create(self, f):
                 step=0.001,
                 default=(0.5, 0.95)[f == "trigger"],
             ),
-            functools.partial(__label1, self),
         )
     if f == "analysis":
         row(
             "图像一致性阈值",
+            functools.partial(__label2, self),
             D_getspinbox(
                 0,
                 1,
@@ -322,7 +323,6 @@ def _ocrparam_create(self, f):
                 step=0.001,
                 default=0.95,
             ),
-            functools.partial(__label2, self),
         )
     row(
         "文本相似度阈值",
@@ -512,6 +512,14 @@ def _otherspage(self, l):
     dlay.addWidget(getsmalllabel("x")())
     merge.addContentWidget(distrow)
     vlay.addWidget(merge)
+    # 原地显示翻译：折叠卡，头部开关，子项 = 与右键菜单样式飞层共用
+    # 的样式子项（双向同步）
+    inplace = ExExpander(content_pad=True)
+    inplace.setHeaderWidget(
+        _expander_header("原地显示翻译", _inplace_switch)
+    )
+    add_overlay_style_rows(inplace)
+    vlay.addWidget(inplace)
     vlay.addWidget(
         makecardrow(
             "多重区域模式",
@@ -523,18 +531,9 @@ def _otherspage(self, l):
             ),
         )
     )
-    # 原地显示翻译：折叠卡，头部开关，子项 = 与右键菜单样式飞层共用
-    # 的样式子项（双向同步）
-    inplace = ExExpander(content_pad=True)
-    inplace.setHeaderWidget(
-        _expander_header("原地显示翻译", _inplace_switch)
-    )
-    add_overlay_style_rows(inplace)
-    vlay.addWidget(inplace)
     vlay.addWidget(
         makecardrow(
             "易错内容修正",
-            D_getsimpleswitch(ocrerrorfix, "use"),
             D_getIconButton(
                 callback=functools.partial(
                     postconfigdialog,
@@ -544,6 +543,7 @@ def _otherspage(self, l):
                     ["原文内容", "替换为"],
                 )
             ),
+            D_getsimpleswitch(ocrerrorfix, "use"),
         )
     )
     auto = ExExpander(content_pad=True)
