@@ -476,7 +476,13 @@ def _expander_header(title, *controls, after_title=None):
 def _otherspage(self, l):
     """OCR 其他设置页：每项一张卡（合并临近行/自动化执行方法为折叠卡，
     子项经折叠展开）。"""
-    content = QWidget()
+    # 滚动内容控件必须用 QSS 类做透明：否则会被 autofill 以 Window 色
+    # 盖掉页面卡底色（同 gamemanager/setting 的 ___tabf 注释）
+    class _othersscrollcontent(QWidget):
+        pass
+
+    content = _othersscrollcontent()
+    content.setStyleSheet("_othersscrollcontent{background-color:transparent;}")
     vlay = QVBoxLayout(content)
     vlay.setContentsMargins(16, 16, 16, 12)
     vlay.setSpacing(8)
