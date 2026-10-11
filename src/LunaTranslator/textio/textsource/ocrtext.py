@@ -19,6 +19,37 @@ from CVUtils import cvMat
 from traceback import print_exc
 
 
+def _hwnd_imageCut(hwnd, rectX: QRect):
+    """hwnd 截图，并归一化到选区物理尺寸。
+
+    目标窗口的 DPI 与本软件不同时（典型：DPI 不感知的老游戏在高分屏
+    上，GetDC 的 GDI 虚拟化返回低密度位图——像素数少于屏幕物理像素），
+    OCR 块坐标与原地显示的字号/位置换算（物理像素 / 覆盖层 DPR）会
+    整体偏小。统一缩放到选区物理尺寸，恢复 1:1 对应。
+    返回值同 imageCut：hwnd 时 (succ, img)，否则 img。"""
+    img = imageCut(hwnd, rectX)
+    if not hwnd:
+        return img
+    succ, img = img
+    if (
+        succ
+        and not img.isNull()
+        and rectX.width() > 0
+        and rectX.height() > 0
+        and (
+            abs(img.width() - rectX.width()) > 1
+            or abs(img.height() - rectX.height()) > 1
+        )
+    ):
+        img = img.scaled(
+            rectX.width(),
+            rectX.height(),
+            Qt.AspectRatioMode.IgnoreAspectRatio,
+            Qt.TransformationMode.SmoothTransformation,
+        )
+    return succ, img
+
+
 def imageCutEx(hwnd, rectX: QRect, background_callback=None):
     if hwnd:
         # 绑定游戏窗口时先裸截：GetDC(hwnd)+BitBlt 只截游戏自身内容，
@@ -26,12 +57,13 @@ def imageCutEx(hwnd, rectX: QRect, background_callback=None):
         # 无需因窗口遮挡而暂停（与系统版本无关，菜单展开同理）。
         # 失败（如 DirectX 全屏黑屏，GdiCropImage 落桌面截图）时才
         # 走下方守卫路径重新截取。
-        succ, img = imageCut(hwnd, rectX)
+        succ, img = _hwnd_imageCut(hwnd, rectX)
         if succ and not img.isNull():
             if background_callback is not None:
                 background_callback(img, rectX)
             return _ocrpreprocess(img, rectX)
-    img = capture_without_overlays(lambda: imageCut(hwnd, rectX), rectX)
+    img = capture_without_overlays(
+        lambda: _hwnd_imageCut(hwnd, rectX), rectX)
     if img is None:
         return QImage()
     succ = True
