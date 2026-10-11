@@ -11,7 +11,8 @@ from gui.ocrtranslationoverlay import (
 )
 from myutils.wrapper import threader
 from myutils.ocrutil import imageCut, ocr_run, ocr_init
-import time, gobject
+import gobject
+
 from qtsymbols import *
 from textio.textsource.textsourcebase import basetext
 from ocrengines.baseocrclass import OCRResultParsed
@@ -50,7 +51,7 @@ def _hwnd_imageCut(hwnd, rectX: QRect):
     return succ, img
 
 
-def imageCutEx(hwnd, rectX: QRect, background_callback=None):
+def imageCutEx(hwnd, rectX: QRect):
     if hwnd:
         # 绑定游戏窗口时先裸截：GetDC(hwnd)+BitBlt 只截游戏自身内容，
         # 覆盖层与本程序窗口都不在画面里——成功时无需隐藏覆盖层、也
@@ -59,8 +60,6 @@ def imageCutEx(hwnd, rectX: QRect, background_callback=None):
         # 走下方守卫路径重新截取。
         succ, img = _hwnd_imageCut(hwnd, rectX)
         if succ and not img.isNull():
-            if background_callback is not None:
-                background_callback(img, rectX)
             return _ocrpreprocess(img)
     img = capture_without_overlays(
         lambda: _hwnd_imageCut(hwnd, rectX), rectX)
@@ -73,12 +72,9 @@ def imageCutEx(hwnd, rectX: QRect, background_callback=None):
         succ = False
     if img.isNull():
         return img
-    if not succ and not windows.is_excluded_from_capture(
-        gobject.base.translation_ui.winid
-    ):
-        # 主窗口未被截图排除（旧系统）时白化遮挡；已排除（Win10 2004+，
-        # showEvent 里设置过 affinity）时桌面截图本来就不含它，白化
-        # 只会把底下的游戏内容涂白
+    if not succ:
+        # 桌面截图兜底：主窗口若压在选区上，白化遮挡部分，避免把
+        # 自己的界面识别进去
         rect2 = windows.GetWindowRect(gobject.base.translation_ui.winid)
         rect = QRect(rect2[0], rect2[1], rect2[2] - rect2[0], rect2[3] - rect2[1])
         if rectX.intersected(rect):
@@ -88,9 +84,6 @@ def imageCutEx(hwnd, rectX: QRect, background_callback=None):
             painter.setPen(Qt.PenStyle.NoPen)
             painter.drawRect(rect)
             painter.end()
-
-    if background_callback is not None:
-        background_callback(img, rectX)
     return _ocrpreprocess(img)
 
 
@@ -103,6 +96,43 @@ def _ocrpreprocess(img: QImage):
         except:
             print_exc()
     return img
+
+
+def _attach_overlay_sources(result, range_ui, revision, owner, blocks_enabled):
+    """把识别结果挂上原地显示来源并发布布局（范围框与单次OCR容器共用）：
+    整框来源恒有；块级来源（原地按位置绘制）仅在 blocks_enabled（且
+    有坐标、非图片翻译）时按块拆分。"""
+    result.ocr_overlay_source = OCRRegionText(
+        result.textonly, range_ui, revision, owner=owner
+    )
+    result.ocr_overlay_block_sources = None
+    blocks = None
+    if blocks_enabled and result.result.hasboxs and not result.result.isocrtranslate:
+        # 布局发布用完整四点（保留倾斜），覆盖层据此旋转绘制
+        blocks = [tuple(_.box) for _ in result.result.blocks]
+        sources = [
+            OCRRegionText(
+                _.text, range_ui, revision, owner=owner, block_index=i
+            )
+            for i, _ in enumerate(result.result.blocks)
+            if _.text and _.text.strip()
+        ]
+        if sources:
+            result.ocr_overlay_block_sources = sources
+    range_ui.publish_overlay_layout(revision, blocks)
+
+
+def _flatten_overlay_sources(result):
+    """单条识别结果 → 原地显示来源列表：块级来源优先展开，无则整框
+    一条；来源过期（选区已变）返回空。"""
+    source = result.ocr_overlay_source
+    if not overlay_source_is_current(source):
+        return []
+    source.ocr_direct_translation = result.result.isocrtranslate
+    blocksources = getattr(result, "ocr_overlay_block_sources", None)
+    if blocksources:
+        return [_ for _ in blocksources if overlay_source_is_current(_)]
+    return [source]
 
 
 class rangemanger:
@@ -120,6 +150,24 @@ class rangemanger:
     def __del__(self):
         self.range_ui.closesignal.emit()
 
+    def _capture_region(self, img=None):
+        """选区截图（getresmanual/getresauto/waitforstable 公共开场）：
+        返回 (snapshot, img)；选区无效或截图失败返回 (None, None)。
+        img 给定时（框选完成时的触发图）直接使用，仅做 OCR 预处理。"""
+        snapshot = self.range_ui.capture_snapshot()
+        rect = QRect(*snapshot.rect)
+        if not rect.isValid():
+            return None, None
+        if img is None:
+            img = imageCutEx(self.ref.hwnd, rect)
+            if img.isNull():
+                return None, None
+        else:
+            if img.isNull():
+                return None, None
+            img = _ocrpreprocess(img)
+        return snapshot, img
+
     def _commit_ocr_result(self, result, snapshot, image=None):
         with self.range_ui.ocr_source_lock:
             revision = self.range_ui.remember_overlay_source(
@@ -135,55 +183,30 @@ class rangemanger:
             self._last_capture_rect = snapshot.rect
             # Freeze provenance here; batch assembly must not read a newer
             # selection revision and attach it to this older OCR result.
-            result.ocr_overlay_source = OCRRegionText(
-                result.textonly, self.range_ui, revision, owner=self.ref
-            )
-            # 块级来源（原地按位置绘制）：有坐标且非图片翻译时，每个
+            # 块级来源（原地按位置绘制）：全局开关开启且未出错时，每个
             # OCR 结果区域（合并临近行之后）各自翻译、各回各自位置；
             # 否则整框一条译文（见 OCRTranslationOverlay）。
-            result.ocr_overlay_block_sources = None
-            blocks = None
-            if (
-                globalconfig.get("ocr_translation_overlay", False)
-                and not result.error
-                and result.result.hasboxs
-                and not result.result.isocrtranslate
-            ):
-                # 布局发布用完整四点（保留倾斜），覆盖层据此旋转绘制
-                blocks = [tuple(_.box) for _ in result.result.blocks]
-                sources = [
-                    OCRRegionText(
-                        _.text, self.range_ui, revision,
-                        owner=self.ref, block_index=i,
-                    )
-                    for i, _ in enumerate(result.result.blocks)
-                    if _.text and _.text.strip()
-                ]
-                if sources:
-                    result.ocr_overlay_block_sources = sources
-            self.range_ui.publish_overlay_layout(revision, blocks)
+            _attach_overlay_sources(
+                result, self.range_ui, revision, owner=self.ref,
+                blocks_enabled=(
+                    globalconfig.get("ocr_translation_overlay", False)
+                    and not result.error
+                ),
+            )
             return result
 
-    def getresmanual(self):
-        snapshot = self.range_ui.capture_snapshot()
-        rect = QRect(*snapshot.rect)
-        if not rect.isValid():
-            return
-        imgr = imageCutEx(self.ref.hwnd, rect)
-        if imgr.isNull():
+    def getresmanual(self, img=None):
+        snapshot, img = self._capture_region(img)
+        if snapshot is None:
             return
         if snapshot != self.range_ui.capture_snapshot():
             return
-        result = ocr_run(imgr)
-        return self._commit_ocr_result(result, snapshot, imgr)
+        result = ocr_run(img)
+        return self._commit_ocr_result(result, snapshot, img)
 
     def getresauto(self):
-        snapshot = self.range_ui.capture_snapshot()
-        rect = QRect(*snapshot.rect)
-        if not rect.isValid():
-            return
-        imgr = imageCutEx(self.ref.hwnd, rect)
-        if imgr.isNull():
+        snapshot, imgr = self._capture_region()
+        if snapshot is None:
             return
         with self.range_ui.ocr_source_lock:
             if snapshot != self.range_ui.capture_snapshot():
@@ -244,12 +267,8 @@ class rangemanger:
             return self._commit_ocr_result(result, snapshot)
 
     def waitforstable(self):
-        snapshot = self.range_ui.capture_snapshot()
-        rect = QRect(*snapshot.rect)
-        if not rect.isValid():
-            return False
-        imgr = imageCutEx(self.ref.hwnd, rect)
-        if imgr.isNull():
+        snapshot, imgr = self._capture_region()
+        if snapshot is None:
             return False
         with self.range_ui.ocr_source_lock:
             if snapshot != self.range_ui.capture_snapshot():
@@ -308,27 +327,11 @@ class ocrbox(rangeadjust):
             if self._closing:
                 return
             revision = self.remember_overlay_source(text)
-            result.ocr_overlay_source = OCRRegionText(
-                text, self, revision, owner=None
+            # 块级原地显示：有坐标且非图片翻译时按块拆分（不受全局
+            # 开关控制，display_always）
+            _attach_overlay_sources(
+                result, self, revision, owner=None, blocks_enabled=True
             )
-            # 块级原地显示：有坐标且非图片翻译时按块拆分
-            result.ocr_overlay_block_sources = None
-            blocks = None
-            if (
-                result.result.hasboxs
-                and not result.result.isocrtranslate
-            ):
-                blocks = [tuple(_.box) for _ in result.result.blocks]
-                sources = [
-                    OCRRegionText(
-                        _.text, self, revision, owner=None, block_index=i
-                    )
-                    for i, _ in enumerate(result.result.blocks)
-                    if _.text and _.text.strip()
-                ]
-                if sources:
-                    result.ocr_overlay_block_sources = sources
-            self.publish_overlay_layout(revision, blocks)
         if not text:
             return
         if result.result.isocrtranslate:
@@ -526,7 +529,7 @@ class ocrtext(basetext):
                 return [r]
         return self.ranges
 
-    def getallres(self, auto, region=None):
+    def getallres(self, auto, region=None, img=None):
         if region is not None and (self.ending or region not in self.ranges):
             return
         __text: "list[OCRResultParsed]" = []
@@ -540,7 +543,8 @@ class ocrtext(basetext):
             if auto:
                 _ = r.getresauto()
             else:
-                _ = r.getresmanual()
+                # img：框选触发图，只给对应区域的首次识别用
+                _ = r.getresmanual(img if r is region else None)
             if region is not None and (self.ending or region not in self.ranges):
                 return
             if _ is None:
@@ -562,18 +566,8 @@ class ocrtext(basetext):
         if independent:
             sources = []
             for result in __text:
-                source = result.ocr_overlay_source
-                if not overlay_source_is_current(source):
-                    continue
-                source.ocr_direct_translation = result.result.isocrtranslate
                 # 块级来源（原地按位置绘制）：展开为各块独立翻译
-                blocksources = getattr(result, "ocr_overlay_block_sources", None)
-                if blocksources:
-                    sources.extend(
-                        _ for _ in blocksources if overlay_source_is_current(_)
-                    )
-                else:
-                    sources.append(source)
+                sources.extend(_flatten_overlay_sources(result))
             return OCRRegionBatch(sources) if sources else None
         if (
             globalconfig.get("ocr_translation_overlay", False)
@@ -581,21 +575,17 @@ class ocrtext(basetext):
             and len(recognized_ranges) == 1
         ):
             # 块级来源（原地按位置绘制）：各块独立翻译
-            blocksources = getattr(__text[0], "ocr_overlay_block_sources", None)
-            if blocksources:
-                valid = [_ for _ in blocksources if overlay_source_is_current(_)]
-                if valid:
-                    return OCRRegionBatch(valid)
-            text = __text[0].ocr_overlay_source
-            if not overlay_source_is_current(text):
-                return
+            sources = _flatten_overlay_sources(__text[0])
+            if sources:
+                return OCRRegionBatch(sources)
+            return
         if __text[0].result.isocrtranslate:
             gobject.base.displayinfomessage(text, "<notrans>")
         else:
             return text
 
-    def gettextonce(self, region=None):
-        return self.getallres(False, region)
+    def gettextonce(self, region=None, img=None):
+        return self.getallres(False, region, img)
 
     def pause_recognition(self):
         self._pause_state = True

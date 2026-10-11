@@ -244,7 +244,7 @@ class TranslatorWindow(resizableframeless):
             if flag:
                 self.show_()
         elif globalconfig.get("autodisappear_which", 0) == 1:
-            if globalconfig["disappear_delay"] == 0:
+            if globalconfig.get("disappear_delay", 5) == 0:
                 if self.isMouseHover:
                     self.translate_text.textbrowser.setVisible(True)
             else:
@@ -303,7 +303,7 @@ class TranslatorWindow(resizableframeless):
             if globalconfig.get("autodisappear", False):
                 if self.autohidestart and (
                     time.time() - self.lastrefreshtime
-                    >= globalconfig["disappear_delay"]
+                    >= globalconfig.get("disappear_delay", 5)
                 ):
                     if globalconfig.get("autodisappear_which", 0) == 0:
                         self.hide_()
@@ -1552,7 +1552,8 @@ class TranslatorWindow(resizableframeless):
             target = (
                 region if globalconfig.get("ocr_translation_overlay", False) else None
             )
-            t = source.gettextonce(target)
+            # img：框选完成时的触发图，首次识别用它（不现场重截）
+            t = source.gettextonce(target, img if target is not None else None)
             if t and gobject.base.textsource is source and not source.ending:
                 gobject.base.textgetmethod(t, False)
 

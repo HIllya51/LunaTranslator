@@ -502,15 +502,22 @@ class OCRTranslationOverlay(QWidget):
                 out.append((i, text))
         return out
 
-    def receive(self, payload):
-        revision, engine, text, blockidx = payload
+    def _accept_revision(self, revision, clear=False):
+        """载荷的 revision 与当前选区一致才接受；revision 推进（或
+        clear）时清空旧译文。"""
         if revision != self.region._ocr_overlay_revision:
-            return
-        if revision != self.revision or engine is None:
+            return False
+        if revision != self.revision or clear:
             self.results.clear()
             self.text = ""
             self.block_results.clear()
             self.revision = revision
+        return True
+
+    def receive(self, payload):
+        revision, engine, text, blockidx = payload
+        if not self._accept_revision(revision, engine is None):
+            return
         if engine is not None and text:
             if blockidx is None:
                 self.results[engine] = text
@@ -525,13 +532,8 @@ class OCRTranslationOverlay(QWidget):
         rects：各块 box4（选框图像物理像素）；None = 本轮无坐标，退回
         整框绘制。布局先于块译文到达。"""
         revision, rects = payload
-        if revision != self.region._ocr_overlay_revision:
+        if not self._accept_revision(revision):
             return
-        if revision != self.revision:
-            self.results.clear()
-            self.text = ""
-            self.block_results.clear()
-            self.revision = revision
         self.block_rects = tuple(tuple(r) for r in rects) if rects else None
         self.sync()
 
@@ -619,20 +621,20 @@ class OCRTranslationOverlay(QWidget):
         font.setBold(globalconfig.get("showbold_trans", False))
         return font
 
-    def fitted_font(self, text_rect, text=None, maximum=100, minimum=12):
-        """按区域尺寸二分适配字号；下限 minimum——分析出的字号不能过小，
+    def fitted_font(self, text_rect, text=None, maximum=100):
+        """按区域尺寸二分适配字号；下限 12——分析出的字号不能过小，
         放不下时由调用方扩展绘制区域（见 _expanded_text_rect）。"""
         if text is None:
             text = self.text
-        font = QFont(globalconfig.get("fonttype2", "") or "Microsoft YaHei")
-        font.setBold(globalconfig.get("showbold_trans", False))
-        flags = int(Qt.TextFlag.TextWordWrap | Qt.AlignmentFlag.AlignLeft)
+        font = self._translation_font()
         # Fit by pixel size so the requested size has the same meaning across Qt versions.
-        low, high = min(minimum, maximum), maximum
+        low, high = min(12, maximum), maximum
         while low < high:
             size = (low + high + 1) // 2
             font.setPixelSize(size)
-            bounds = QFontMetrics(font).boundingRect(text_rect, flags, text)
+            bounds = QFontMetrics(font).boundingRect(
+                text_rect, _OVERLAY_MEASURE_FLAGS, text
+            )
             if (
                 bounds.height() <= text_rect.height()
                 and bounds.width() <= text_rect.width()

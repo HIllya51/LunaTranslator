@@ -97,12 +97,6 @@ class Mainw(QMainWindow):
     def gripSize(self):
         return self._gripSize
 
-    def setGripSize(self, size):
-        if size == self._gripSize:
-            return
-        self._gripSize = max(2, size)
-        self.updateGrips()
-
     def updateGrips(self):
         self.setContentsMargins(*[self.gripSize] * 4)
 

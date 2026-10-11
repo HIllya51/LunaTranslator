@@ -1,6 +1,6 @@
 import NativeUtils, queue, hashlib, threading
 from myutils.config import globalconfig, static_data, _TR
-from gobject import runtime_for_xp, runtime_bit_64, runtime_for_win10, runtimedir
+from gobject import runtime_bit_64, runtime_for_win10, runtimedir
 from myutils.wrapper import threader, tryprint, trypass
 from myutils.hwnd import getcurrexe
 from myutils.utils import format_bytes
@@ -24,13 +24,19 @@ def testdocconnect():
         @threader
         @trypass
         def __(i, main_server, proxy):
-            res = requests.get(main_server, proxies=proxy)
-            if res.status_code == 200:
-                results.append((i, res))
+            try:
+                res = requests.get(main_server, proxies=proxy)
+                if res.status_code == 200:
+                    results.append((i, res))
+            finally:
+                # 请求失败也要放行：否则 wait.wait() 永久挂起，
+                # 更新线程启动即卡死
                 wait.set()
 
         __(i, main_server, proxy)
     wait.wait()
+    if not results:
+        return
     gobject.serverindex2 = results[0][0]
 
 
@@ -68,6 +74,8 @@ def tryqueryfromhost():
         if proxy.get("https"):
             __(i, main_server, None)
     wait.wait()
+    if not results:
+        return None
     gobject.serverindex = results[0][0]
     return results[0][1]
 
@@ -75,6 +83,8 @@ def tryqueryfromhost():
 def trygetupdate():
     try:
         result = tryqueryfromhost()
+        if not result:
+            return None
         # 返回 {version, url, sha256}
         return result["version"], result["url"], result["sha256"]
     except:

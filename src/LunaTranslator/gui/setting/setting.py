@@ -2,6 +2,7 @@ from qtsymbols import *
 import functools
 import qtawesome
 import gobject
+import time
 from myutils.config import globalconfig
 from gui.usefulwidget import closeashidewindow, makesubtab_lazy, create_centered_rect
 from gui.setting.textinput import setTabOne_lazy
@@ -130,3 +131,8 @@ class Setting(_SettingBase):
         gobject.base.switchtotspage.connect(
             lambda: (self.tab_widget.setCurrentIndex(1), show_tscolor_setting_guide())
         )
+
+        if time.time() - globalconfig.get("lasttime4", 0) > 3600 * 24 * 3:
+            self.tab_widget.setCurrentIndex(7)
+        globalconfig["lasttime4"] = time.time()
+

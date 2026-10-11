@@ -5,9 +5,6 @@ chevron 按钮随展开进度旋转 180°。"""
 from gui.fluent.icons import ICON_CHEVRON_DOWN_MED
 
 from qtsymbols import (
-    QAbstractSpinBox,
-    QComboBox,
-    
     QEvent,
     QEasingCurve,
     

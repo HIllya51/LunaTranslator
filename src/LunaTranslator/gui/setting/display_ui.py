@@ -279,7 +279,7 @@ def createdynamicswitch(self):
     def __(x):
         self.disappear_delay.setMinimum([1, 0][x])
         globalconfig["disappear_delay"] = max(
-            globalconfig["disappear_delay"], [1, 0][x]
+            globalconfig.get("disappear_delay", 5), [1, 0][x]
         )
 
     return D_getsimplecombobox(
@@ -297,6 +297,7 @@ def createdynamicdelay(self):
         100,
         globalconfig,
         "disappear_delay",
+        default=5,
     )()
     return self.disappear_delay
 
