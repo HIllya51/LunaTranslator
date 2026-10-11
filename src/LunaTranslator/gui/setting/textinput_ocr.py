@@ -558,7 +558,7 @@ def _otherspage(self, l):
                 callback=functools.partial(_ocrparam_create, self),
                 default="period",
             ),
-            after_title=D_getdoclink("ocrparam.html"),
+            after_title=D_getdoclink("ocrparam.html#anchor-auto"),
         )
     )
     _ocrparam(self, auto)

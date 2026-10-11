@@ -101,7 +101,7 @@ export const zh = defineConfig({
                         collapsed: true,
                         items: [
                             { text: 'OCR接口设置', link: '/zh/useapis/ocrapi' },
-                            { text: 'OCR自动化执行方法', link: '/zh/ocrparam' },
+                            { text: 'OCR功能设置', link: '/zh/ocrparam' },
                         ]
                     },
                     {
