@@ -1112,6 +1112,10 @@ class TranslatorWindow(resizableframeless):
 
     def showEvent(self, e):
         super().showEvent(e)
+        # 截图排除（Win10 2004+）：主窗口不进桌面截图，OCR 桌面回退
+        # 截图不再需要对其白化遮挡。每次 show 重设（置顶切换等会重建
+        # 原生窗口，幂等）
+        windows.exclude_from_capture(self.winId())
         if not self.firstshow:
             return self.enterfunction()
         self.firstshow = False

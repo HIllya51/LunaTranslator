@@ -73,7 +73,12 @@ def imageCutEx(hwnd, rectX: QRect, background_callback=None):
         succ = False
     if img.isNull():
         return img
-    if not succ:
+    if not succ and not windows.is_excluded_from_capture(
+        gobject.base.translation_ui.winid
+    ):
+        # 主窗口未被截图排除（旧系统）时白化遮挡；已排除（Win10 2004+，
+        # showEvent 里设置过 affinity）时桌面截图本来就不含它，白化
+        # 只会把底下的游戏内容涂白
         rect2 = windows.GetWindowRect(gobject.base.translation_ui.winid)
         rect = QRect(rect2[0], rect2[1], rect2[2] - rect2[0], rect2[3] - rect2[1])
         if rectX.intersected(rect):

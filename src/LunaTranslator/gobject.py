@@ -119,6 +119,7 @@ runtimedir = os.path.join("files", runtimedir)
 platformversion = tuple(int(_) for _ in platform.version().split("."))
 sys_le_xp = platformversion[0] <= 5
 sys_ge_win_11 = platformversion[2] >= 22000  # 21h2
+sys_ge_win10_2004 = platformversion[2] >= 19041  # 2004（WDA_EXCLUDEFROMCAPTURE）
 sys_ge_win_10 = platformversion[0] >= 10
 sys_ge_win8 = platformversion[:2] >= (6, 2)
 sys_le_win7 = platformversion[:2] <= (6, 1)

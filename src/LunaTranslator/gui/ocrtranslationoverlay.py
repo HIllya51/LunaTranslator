@@ -5,11 +5,9 @@ No changes to translation engines or user credentials are required.
 
 import ctypes
 import math
-import sys
 import threading
 import weakref
 from contextlib import contextmanager
-from ctypes.wintypes import HWND, DWORD, BOOL
 from typing import NamedTuple
 
 from qtsymbols import *
@@ -157,45 +155,6 @@ def suspend_ocr_capture():
             pass
         _capture_epoch += 1
         _capture_suspensions -= 1
-
-
-def _windows_build():
-    # The embedded launcher may lack a supportedOS manifest. GetVersionEx (and
-    # sys.getwindowsversion().build) can then report 9200 on a modern Windows OS.
-    class VersionInfo(ctypes.Structure):
-        _fields_ = [
-            ("size", DWORD),
-            ("major", DWORD),
-            ("minor", DWORD),
-            ("build", DWORD),
-            ("platform", DWORD),
-            ("service_pack", ctypes.c_wchar * 128),
-        ]
-
-    try:
-        version = VersionInfo()
-        version.size = ctypes.sizeof(version)
-        api = ctypes.windll.ntdll.RtlGetVersion
-        api.argtypes = (ctypes.POINTER(VersionInfo),)
-        api.restype = ctypes.c_long
-        if api(ctypes.byref(version)) == 0:
-            return version.build
-    except (AttributeError, OSError):
-        pass
-    return sys.getwindowsversion().build
-
-
-def _exclude_from_capture(hwnd):
-    # Older systems interpret 0x11 as a black rectangle, which would hide OCR text.
-    if _windows_build() < 19041:
-        return False
-    try:
-        api = ctypes.windll.user32.SetWindowDisplayAffinity
-        api.argtypes = (HWND, DWORD)
-        api.restype = BOOL
-        return bool(api(int(hwnd), 0x11))
-    except (AttributeError, OSError):
-        return False
 
 
 class _CaptureRequest:
@@ -485,7 +444,8 @@ class OCRTranslationOverlay(QWidget):
                 self._geometry_window_handle = handle
             windows.WindowFocus.giveup(hwnd)
             windows.MouseTrans.set(hwnd)
-            self.capture_excluded = _exclude_from_capture(hwnd)
+            # 截图排除（与选框/主窗口共用的全局机制，见 windows.py）
+            self.capture_excluded = windows.exclude_from_capture(hwnd)
         finally:
             self._applying_native_flags = False
 

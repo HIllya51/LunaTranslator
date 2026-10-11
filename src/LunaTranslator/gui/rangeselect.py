@@ -416,6 +416,9 @@ class rangeadjust(Mainw):
         for s in self.cornerGrips:
             s.raise_()
         windows.WindowFocus.giveup(self.winId())
+        # 截图排除（Win10 2004+）：选框边框/悬停高亮不进 OCR 截图，
+        # 与覆盖层/主窗口共用 windows.exclude_from_capture
+        windows.exclude_from_capture(self.winId())
         self.translation_overlay = OCRTranslationOverlay(self)
         self.overlaytranslationsignal.connect(self.translation_overlay.receive)
         self.overlaylayoutsignal.connect(self.translation_overlay.receive_layout)
