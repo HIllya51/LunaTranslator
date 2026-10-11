@@ -1008,11 +1008,11 @@ DestroyWindow = _user32.DestroyWindow
 DestroyWindow.argtypes = (HWND,)
 
 
-def exclude_from_capture(hwnd) -> bool:
+def exclude_from_capture(hwnd, on=True) -> bool:
     """WDA_EXCLUDEFROMCAPTURE（Win10 2004+）：窗口对用户照常可见，
     但不出现在 BitBlt/PrintWindow 等截图里（OCR 选框 / 覆盖层 /
-    主窗口共用，防止识别到自己的界面）。旧系统上 0x11 会被当成
-    黑矩形，返回 False 不设置。"""
+    主窗口共用，防止识别到自己的界面）。on=False 恢复（WDA_NONE）。
+    旧系统上 0x11 会被当成黑矩形，返回 False 不设置。"""
     import gobject
     if not gobject.sys_ge_win10_2004:
         return False
@@ -1020,7 +1020,7 @@ def exclude_from_capture(hwnd) -> bool:
         api = windll.user32.SetWindowDisplayAffinity
         api.argtypes = (HWND, DWORD)
         api.restype = BOOL
-        return bool(api(int(hwnd), 0x11))
+        return bool(api(int(hwnd), 0x11 if on else 0))
     except (AttributeError, OSError):
         return False
 
