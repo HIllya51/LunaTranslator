@@ -2553,7 +2553,7 @@ class dialog_savedgame_v3(QWidget):
             [(makecardrow(
                 "启动游戏不修改顺序",
                 D_getsimpleswitch(
-                    globalconfig, "startgamenotop", default=True)(),
+                    globalconfig, "startgamenototop", default=True)(),
             ), 0)],
         ]
         makescrollgrid(grid, _host)
