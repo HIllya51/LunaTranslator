@@ -35,6 +35,14 @@ def testdocconnect():
 
 
 def tryqueryfromhost():
+    # /version?arch=x64&target=win7 —— 按构建目标查询版本与更新信息
+    if runtime_for_win10:
+        target = "win10"
+    elif runtime_bit_64:
+        target = "win7"
+    else:
+        target = "winxp"
+    arch = ("x86", "x64")[runtime_bit_64]
     wait = threading.Event()
     results = []
     proxy = getproxy()
@@ -43,21 +51,18 @@ def tryqueryfromhost():
         @threader
         @trypass
         def __(i, main_server, proxy):
-
-            if runtime_for_win10:
-                target = "win10"
-            elif runtime_bit_64:
-                target = "win7"
-            else:
-                target = "winxp"
-            res = requests.get(
-                "{main_server}/version".format(main_server=main_server),
-                params={"arch": ("x86", "x64")[runtime_bit_64], "target": target},
-                proxies=proxy,
-            )
-            res = res.json()
-            results.append((i, res))
-            wait.set()
+            try:
+                res = requests.get(
+                    "{main_server}/version?arch={arch}&target={target}".format(
+                        main_server=main_server, arch=arch, target=target
+                    ),
+                    proxies=proxy,
+                )
+                results.append((i, res.json()))
+            finally:
+                # 请求失败也要放行：否则 wait.wait() 永久挂起，
+                # 版本线程卡在"获取中"
+                wait.set()
 
         __(i, main_server, proxy)
         if proxy.get("https"):
@@ -70,8 +75,8 @@ def tryqueryfromhost():
 def trygetupdate():
     try:
         result = tryqueryfromhost()
-        version, link, sha256 = result["version"], result["link"], result["sha256"]
-        return version, link, sha256
+        # 返回 {version, url, sha256}
+        return result["version"], result["url"], result["sha256"]
     except:
         print_exc()
         return None
