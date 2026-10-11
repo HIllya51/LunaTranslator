@@ -970,5 +970,6 @@
     "边框": "Borde",
     "左上": "Arriba a la izquierda",
     "右上": "Arriba a la derecha",
-    "中上": "Arriba al centro"
+    "中上": "Arriba al centro",
+    "鼠标穿透范围框": "Clic a través del recuadro"
 }

@@ -970,5 +970,6 @@
     "边框": "Border",
     "左上": "Top Left",
     "右上": "Top Right",
-    "中上": "Top Center"
+    "中上": "Top Center",
+    "鼠标穿透范围框": "Range Box Click-through"
 }

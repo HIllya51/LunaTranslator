@@ -970,5 +970,6 @@
     "边框": "Rámeček",
     "左上": "Vlevo nahoře",
     "右上": "Vpravo nahoře",
-    "中上": "Nahoře ve středu"
+    "中上": "Nahoře ve středu",
+    "鼠标穿透范围框": "Klikání skrz rámeček"
 }

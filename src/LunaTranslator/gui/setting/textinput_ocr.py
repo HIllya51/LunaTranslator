@@ -30,7 +30,7 @@ from gui.usefulwidget import (
     makescroll,
 )
 from gui.fluent.expander import ExExpander
-from gui.rangeselect import add_overlay_style_rows
+from gui.rangeselect import add_overlay_style_rows, set_global_mousetransp
 from gui.specialwidget import KeyPressDetector
 from traceback import print_exc
 import gobject, qtawesome, importlib
@@ -520,6 +520,7 @@ def _otherspage(self, l):
     )
     add_overlay_style_rows(inplace)
     vlay.addWidget(inplace)
+    vlay.addWidget(makecardrow("鼠标穿透范围框", _mousetransp_switch))
     vlay.addWidget(
         makecardrow(
             "多重区域模式",
@@ -568,6 +569,18 @@ def _otherspage(self, l):
     scroll = makescroll()
     scroll.setWidget(content)
     l.addWidget(scroll)
+
+
+def _mousetransp_switch():
+    """鼠标穿透范围框开关：全局恒定，与范围框右键菜单互相同步。"""
+    btn = getsimpleswitch(
+        globalconfig,
+        "ocrrangemousetransp",
+        default=False,
+        callback=lambda v: set_global_mousetransp(v, update_switch=False),
+    )
+    gobject.base.ocr_mousetransp_sync.connect(btn.setChecked)
+    return btn
 
 
 def _inplace_switch():

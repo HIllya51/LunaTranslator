@@ -970,5 +970,6 @@
     "边框": "Rand",
     "左上": "Linksboven",
     "右上": "Rechtsboven",
-    "中上": "Midden boven"
+    "中上": "Midden boven",
+    "鼠标穿透范围框": "Klik door het selectiekader"
 }

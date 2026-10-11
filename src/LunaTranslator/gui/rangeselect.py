@@ -16,6 +16,7 @@ from gui.ocrtranslationoverlay import (
     suspend_ocr_capture,
 )
 from traceback import print_exc
+import weakref
 
 
 class SideGrip(QWidget):
@@ -142,6 +143,22 @@ class Mainw(QMainWindow):
     def resizeEvent(self, event):
         QMainWindow.resizeEvent(self, event)
         self.updateGrips()
+
+
+_all_rangeadjusts = weakref.WeakSet()
+
+
+def set_global_mousetransp(b, update_switch=True):
+    """全局设置 鼠标穿透范围框：写配置并应用到所有存活的范围框；
+    update_switch 时同步 OCR 设置页的开关（右键菜单路径）。"""
+    globalconfig["ocrrangemousetransp"] = b
+    for r in list(_all_rangeadjusts):
+        try:
+            r._mousetransp_changed()
+        except RuntimeError:
+            pass
+    if update_switch:
+        gobject.base.ocr_mousetransp_sync.emit(b)
 
 
 def _hover_fill_color():
@@ -375,7 +392,7 @@ class rangeadjust(Mainw):
         self._ocr_overlay_revision = 0
         self._ocr_overlay_original = None
         self.translation_overlay = None
-        self._mousetransp = False
+        _all_rangeadjusts.add(self)
         self.__isfocus = False
         self.ranges: list = ranges
         self.traceoffsetsignal.connect(self.traceoffset)
@@ -419,7 +436,7 @@ class rangeadjust(Mainw):
         overlay.setCheckable(True)
         overlay.setChecked(globalconfig.get("ocr_translation_overlay", False))
         menu.addAction(overlay)
-        mousetransp = LAction("鼠标穿透窗口", menu)
+        mousetransp = LAction("鼠标穿透范围框", menu)
         mousetransp.setCheckable(True)
         mousetransp.setChecked(self._mousetransp)
         menu.addAction(mousetransp)
@@ -444,7 +461,7 @@ class rangeadjust(Mainw):
         elif action == style:
             yangshisetting(self)
         elif action == mousetransp:
-            self.setmousetransp(mousetransp.isChecked())
+            set_global_mousetransp(mousetransp.isChecked())
         elif action == close:
             self._set_ocr_rect(QRect())
             self.isfocus = False
@@ -471,9 +488,13 @@ class rangeadjust(Mainw):
         else:
             windows.WindowRgn.clear(hwnd)
 
-    def setmousetransp(self, b):
-        self._mousetransp = b
-        if b:
+    @property
+    def _mousetransp(self):
+        # 全局设置（右键菜单 / OCR 设置页共用），跨范围框恒定生效
+        return globalconfig.get("ocrrangemousetransp", False)
+
+    def _mousetransp_changed(self):
+        if self._mousetransp:
             # 穿透模式下不显示悬停半透明高亮，避免边框内侧出现额外半透明带
             self.drag_label.setStyleSheet("background-color:none")
         if getattr(self, "_ready", False):

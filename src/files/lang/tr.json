@@ -970,5 +970,6 @@
     "边框": "Kenarlık",
     "左上": "Sol üst",
     "右上": "Sağ üst",
-    "中上": "Üst orta"
+    "中上": "Üst orta",
+    "鼠标穿透范围框": "Aralık kutusu tıklamayı geç"
 }

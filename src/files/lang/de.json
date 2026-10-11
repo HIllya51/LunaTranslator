@@ -970,5 +970,6 @@
     "边框": "Rahmen",
     "左上": "Oben links",
     "右上": "Oben rechts",
-    "中上": "Oben mittig"
+    "中上": "Oben mittig",
+    "鼠标穿透范围框": "Klickdurchlass für Auswahlrahmen"
 }

@@ -970,5 +970,6 @@
     "边框": "Bordure",
     "左上": "En haut à gauche",
     "右上": "En haut à droite",
-    "中上": "En haut au centre"
+    "中上": "En haut au centre",
+    "鼠标穿透范围框": "Clic à travers la zone de sélection"
 }

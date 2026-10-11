@@ -225,6 +225,11 @@ class ocrbox(rangeadjust):
         self.setrect(rect)
         self.__recognition_loop()
 
+    @property
+    def _mousetransp(self):
+        # 点击即关的容器不参与鼠标穿透（否则内部点击会穿到游戏）
+        return False
+
     def closebox(self):
         self._closing = True
         try:
@@ -378,8 +383,6 @@ class ocrtext(basetext):
                 self.setrect(QRect(*region))
             return
         for _ in self.ranges:
-            _.range_ui.setmousetransp(False)
-
             if b:
                 _r = _.range_ui.getrect()
                 if _r:

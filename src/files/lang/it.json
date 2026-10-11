@@ -970,5 +970,6 @@
     "边框": "Bordo",
     "左上": "In alto a sinistra",
     "右上": "In alto a destra",
-    "中上": "In alto al centro"
+    "中上": "In alto al centro",
+    "鼠标穿透范围框": "Click-through del riquadro"
 }

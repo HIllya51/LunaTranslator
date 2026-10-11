@@ -970,5 +970,6 @@
     "边框": "Borda",
     "左上": "Canto superior esquerdo",
     "右上": "Canto superior direito",
-    "中上": "Topo ao centro"
+    "中上": "Topo ao centro",
+    "鼠标穿透范围框": "Clique através da caixa de seleção"
 }
