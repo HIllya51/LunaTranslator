@@ -20,6 +20,17 @@ from traceback import print_exc
 
 
 def imageCutEx(hwnd, rectX: QRect, background_callback=None):
+    if hwnd:
+        # 绑定游戏窗口时先裸截：GetDC(hwnd)+BitBlt 只截游戏自身内容，
+        # 覆盖层与本程序窗口都不在画面里——成功时无需隐藏覆盖层、也
+        # 无需因窗口遮挡而暂停（与系统版本无关，菜单展开同理）。
+        # 失败（如 DirectX 全屏黑屏，GdiCropImage 落桌面截图）时才
+        # 走下方守卫路径重新截取。
+        succ, img = imageCut(hwnd, rectX)
+        if succ and not img.isNull():
+            if background_callback is not None:
+                background_callback(img, rectX)
+            return _ocrpreprocess(img, rectX)
     img = capture_without_overlays(lambda: imageCut(hwnd, rectX), rectX)
     if img is None:
         return QImage()
@@ -43,6 +54,10 @@ def imageCutEx(hwnd, rectX: QRect, background_callback=None):
 
     if background_callback is not None:
         background_callback(img, rectX)
+    return _ocrpreprocess(img, rectX)
+
+
+def _ocrpreprocess(img: QImage, rectX: QRect):
     if globalconfig.get("use_ocr_preprocess", False):
         try:
             img = checkmd5reloadmodule(
