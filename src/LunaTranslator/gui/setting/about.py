@@ -19,7 +19,6 @@ from gui.usefulwidget import (
     getboxwidget,
     LinkLabel,
     SClickableLabel,
-    VisLFormLayout,
     makecardrow,
     getsimplecombobox,
 )
@@ -136,26 +135,6 @@ def updatexx(self):
             "",
         ]
     )
-
-
-def progress___(self):
-
-    downloadprogress = QProgressBar(self)
-    downloadprogress.setRange(0, 10000)
-    downloadprogress.setAlignment(
-        Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter
-    )
-    self.downloadprogress = downloadprogress
-    return downloadprogress
-
-
-def _progresssignal4(
-    updatelayout: VisLFormLayout, downloadprogress: QProgressBar, text, val
-):
-    downloadprogress.setValue(val)
-    downloadprogress.setFormat(text)
-    if (val or text) and globalconfig.get("autoupdate", True):
-        updatelayout.setRowVisible(2, True)
 
 
 class MDLabel(LinkLabel):
@@ -501,13 +480,6 @@ def setTab_about(self: QWidget, basel):
     self.downloadprogress.setVisible(False)
     version_link = createversionlabel()
 
-    # 自动更新进度回调
-    gobject.base.connectsignal(
-        gobject.base.progresssignal4,
-        lambda text, val: _progresssignal4_card(
-            self.downloadprogress, text, val),
-    )
-
     # 自动更新折叠卡（子项 = 最新版本）
 
     updateexp = ExExpander()
@@ -524,6 +496,15 @@ def setTab_about(self: QWidget, basel):
     uhlay.addWidget(update_switch)
     updateexp.setHeaderWidget(updateheader)
     updateexp.addContentWidget(getboxwidget(["最新版本", 1, version_link]))
+    updateexp.addContentWidget(self.downloadprogress)
+    updateexp.setContentPanelVisible(self.downloadprogress, False)
+    # 自动更新进度回调（进度条是折叠卡子项，连带面板显隐）——须在
+    # updateexp 创建后连接：connectsignal 对缓存信号会立即回调
+    gobject.base.connectsignal(
+        gobject.base.progresssignal4,
+        lambda text, val: _progresssignal4_card(
+            updateexp, self.downloadprogress, text, val),
+    )
 
     # LICENSE 折叠（ExExpander，同 Gallery 强调色折叠面板的用法）
 
@@ -591,16 +572,19 @@ def setTab_about(self: QWidget, basel):
         [(makecardrow("界面语言", lang_holder), 0)],
         [(makecardrow("应用主题", make_trailing_combo(darklight_combo)), 0)],
         [(updateexp, 0)],
-        # 下载进度条：显示时出现在卡片下方（隐藏时布局不占位）
-        [(self.downloadprogress, 0)],
         [(aboutwidget(), 0)],
         [(license_expander, 0)],
     ]
     makescrollgrid(grid, basel)
 
 
-def _progresssignal4_card(progressbar: QProgressBar, text, val):
+def _progresssignal4_card(expander, progressbar: QProgressBar, text, val):
     progressbar.setValue(val)
     progressbar.setFormat(text)
-    progressbar.setVisible(bool(val or text))
+    visible = bool(val or text)
+    progressbar.setVisible(visible)
+    # 子项面板随进度条显隐；出现时自动展开，免得藏在折叠里看不见
+    expander.setContentPanelVisible(progressbar, visible)
+    if visible and not expander.isExpanded():
+        expander.setExpanded(True)
 
