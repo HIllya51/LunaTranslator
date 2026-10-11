@@ -1,20 +1,42 @@
-# OCR Automation Execution Methods
+# OCR Feature Settings
+
+
+## In-place Translation
+
+When enabled, the translation is displayed directly inside the OCR selection box, covering the original text. It can also be toggled at any time from the right-click menu of the OCR box.
+
+- Each recognized text area shows its translation in place; the font size adapts to the area size, and tilted text is displayed at the same angle.
+- The translation background only covers the text, not the whole selection box. Background color, text color and alignment are adjusted in **Style** from the right-click menu (the same options are also available in the OCR settings, and the two stay in sync).
+- The overlay does not intercept the mouse, so the game underneath remains operable; the software will not recognize its own translation again.
+- In multi-region mode, each selection box recognizes and displays independently.
+
+
+## Automation Execution Methods {#anchor-auto}
 
 To accommodate the different text refresh methods of various games, the software offers four distinct methods to automatically capture screenshots from the game at a certain frequency.
 
+::: tabs
 
-## Periodic Execution
+== Periodic Execution
 
-::: tip
-If you find the parameters of the other settings difficult to understand, please use this method instead, as it is the simplest approach.
-:::
+> [!TIP]
+> If you find the parameters of the other settings difficult to understand, please use this method instead, as it is the simplest approach.
 
 This method executes periodically based on the “Execution Interval”.
 
+1. #### Execution Interval
 
-## Analyze Image Update
+    The interval between OCR executions.
 
-This method utilizes parameters such as “Image Stability Threshold” and “Image Consistency Threshold”.
+1. #### Text Similarity Threshold
+
+    The results of OCR are unstable, and minor disturbances in the image can cause slight changes in the text, leading to repeated translations.
+
+    After each OCR invocation, the current OCR result is compared to the previous OCR result (using edit distance). Only when the edit distance is greater than the threshold will the text be outputted.
+
+== Analyze Image Update
+
+This method executes when the image stops changing frequently.
 
 1. #### Image Stability Threshold
 
@@ -30,9 +52,17 @@ This method utilizes parameters such as “Image Stability Threshold” and “I
 
     After the image stabilizes, the current image is compared to the image at the last OCR execution (not the last screenshot). When the similarity is lower than this threshold, it is considered that the game text has changed, and OCR is performed.
 
-    If the OCR frequency is too high, this value can be appropriately increased; conversely, if it is too sluggish, it can be appropriately decreased.
+    If the OCR frequency is too high, this value can be appropriately increased; conversely, if it is sluggish, it can be appropriately decreased.
 
-## Mouse/Keyboard Trigger + Wait for Stability
+1. #### Text Similarity Threshold
+
+    The results of OCR are unstable, and minor disturbances in the image can cause slight changes in the text, leading to repeated translations.
+
+    After each OCR invocation, the current OCR result is compared to the previous OCR result (using edit distance). Only when the edit distance is greater than the threshold will the text be outputted.
+
+== Mouse/Keyboard Trigger + Wait for Stability
+
+This method first waits for a user-triggered event, then waits until the image stops changing frequently before executing.
 
 1. #### Trigger Events
 
@@ -54,9 +84,10 @@ This method utilizes parameters such as “Image Stability Threshold” and “I
 
     Due to the unpredictable rendering times of slower text speeds, a specified fixed delay might not suffice. The action is executed when the similarity between the image and the previous screenshot is higher than the threshold.
 
-## Text Similarity Threshold
+1. #### Text Similarity Threshold
 
-The results of OCR are unstable, and minor disturbances in the image can cause slight changes in the text, leading to repeated translations.
+    The results of OCR are unstable, and minor disturbances in the image can cause slight changes in the text, leading to repeated translations.
 
-After each OCR invocation, the current OCR result is compared to the previous OCR result (using edit distance). Only when the edit distance is greater than the threshold will the text be outputted.
+    After each OCR invocation, the current OCR result is compared to the previous OCR result (using edit distance). Only when the edit distance is greater than the threshold will the text be outputted.
 
+:::

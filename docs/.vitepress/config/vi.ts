@@ -83,7 +83,7 @@ export const vi = defineConfig({
             collapsed: true,
             items: [
               { text: 'Cài đặt giao diện OCR', link: '/vi/useapis/ocrapi' },
-              { text: 'Phương pháp thực thi tự động OCR', link: '/vi/ocrparam' },
+              { text: 'Cài đặt tính năng OCR', link: '/vi/ocrparam' },
             ]
           },
           {

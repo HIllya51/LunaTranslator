@@ -90,6 +90,10 @@ Một số nút có hai biểu tượng để biểu thị hai trạng thái kh�
 
     Nút này thường được sử dụng trong chế độ HOOK, khi gặp các lựa chọn, để tạm thời sử dụng OCR để dịch các lựa chọn. Hoặc trong chế độ OCR, để tạm thời nhận diện một vị trí mới thỉnh thoảng xuất hiện.
 
+
+    Theo mặc định, nhấp chuột trái hiển thị kết quả OCR và bản dịch trong cửa sổ chính, còn nhấp chuột phải hiển thị bản dịch ngay tại chỗ.
+
+    Chức năng của chuột trái và chuột phải có thể hoán đổi cho nhau trong cài đặt.
 1. #### <i class="fa fa-spinner"></i> <i class="fa fa-icon fa-rotate-right"></i> Thực hiện OCR lần nữa {#anchor-ocr_once_follow}
     Sau khi sử dụng `Thực hiện OCR một lần`, sử dụng nút này để thực hiện OCR lại tại vị trí ban đầu mà không cần phải chọn lại khu vực nhận diện.
     

@@ -98,7 +98,7 @@ export const ja = defineConfig({
                         collapsed: true,
                         items: [
                             { text: 'OCRインターフェース設定', link: '/ja/useapis/ocrapi' },
-                            { text: 'OCR自動化実行方法', link: '/ja/ocrparam' },
+                            { text: 'OCR機能設定', link: '/ja/ocrparam' },
                         ]
                     },
                     {

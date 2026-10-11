@@ -1,18 +1,42 @@
-# Các Phương Pháp Thực Thi Tự Động OCR
+# Cài Đặt Tính Năng OCR
+
+
+## Hiển thị bản dịch tại chỗ
+
+Khi bật, bản dịch sẽ hiển thị ngay trong khung chọn OCR, phủ lên văn bản gốc. Có thể bật/tắt bất kỳ lúc nào qua menu chuột phải của khung OCR.
+
+- Mỗi vùng văn bản được nhận dạng sẽ hiển thị bản dịch tương ứng ngay tại vị trí cũ; cỡ chữ tự động phù hợp với kích thước vùng, văn bản nghiêng cũng được hiển thị theo cùng góc nghiêng.
+- Nền của bản dịch chỉ phủ phần văn bản, không phủ toàn bộ khung chọn. Màu nền, màu chữ và căn chỉnh được điều chỉnh trong **Kiểu dáng** của menu chuột phải (trong cài đặt OCR cũng có một bản tương tự, hai bên đồng bộ theo thời gian thực).
+- Lớp phủ không chặn chuột, trò chơi phía dưới vẫn thao tác bình thường; phần mềm cũng không nhận dạng lại bản dịch của chính mình.
+- Ở chế độ đa vùng, mỗi khung chọn nhận dạng và hiển thị độc lập.
+
+
+## Phương Pháp Thực Thi Tự Động {#anchor-auto}
 
 Để phù hợp với các phương pháp làm mới văn bản khác nhau của các trò chơi, phần mềm cung cấp bốn phương pháp khác nhau để tự động chụp ảnh màn hình từ trò chơi theo một tần suất nhất định.
 
-## Thực Thi Định Kỳ
+::: tabs
 
-::: tip
-Nếu bạn thấy các tham số của các cài đặt khác khó hiểu, vui lòng sử dụng phương pháp này, vì đây là cách đơn giản nhất.
-:::
+== Thực Thi Định Kỳ
+
+> [!TIP]
+> Nếu bạn thấy các tham số của các cài đặt khác khó hiểu, vui lòng sử dụng phương pháp này, vì đây là cách đơn giản nhất.
 
 Phương pháp này thực thi định kỳ dựa trên “Khoảng Thời Gian Thực Thi”.
 
-## Phân Tích Cập Nhật Hình Ảnh
+1. #### Khoảng Thời Gian Thực Thi
 
-Phương pháp này sử dụng các tham số như “Ngưỡng Ổn Định Hình Ảnh” và “Ngưỡng Nhất Quán Hình Ảnh”.
+    Khoảng thời gian giữa các lần thực thi OCR.
+
+1. #### Ngưỡng Tương Đồng Văn Bản
+
+    Kết quả OCR không ổn định, và các nhiễu nhỏ trong hình ảnh có thể gây ra những thay đổi nhỏ trong văn bản, dẫn đến việc dịch lặp lại.
+
+    Sau mỗi lần gọi OCR, kết quả OCR hiện tại được so sánh với kết quả OCR trước đó (sử dụng khoảng cách chỉnh sửa). Chỉ khi khoảng cách chỉnh sửa lớn hơn ngưỡng, văn bản mới được xuất ra.
+
+== Phân Tích Cập Nhật Hình Ảnh
+
+Phương pháp này thực thi khi hình ảnh không còn thay đổi thường xuyên.
 
 1. #### Ngưỡng Ổn Định Hình Ảnh
 
@@ -30,7 +54,15 @@ Phương pháp này sử dụng các tham số như “Ngưỡng Ổn Định H�
 
     Nếu tần suất OCR quá cao, giá trị này có thể được tăng lên một cách phù hợp; ngược lại, nếu quá chậm, giá trị này có thể được giảm xuống một cách phù hợp.
 
-## Kích Hoạt Chuột/Bàn Phím + Chờ Ổn Định
+1. #### Ngưỡng Tương Đồng Văn Bản
+
+    Kết quả OCR không ổn định, và các nhiễu nhỏ trong hình ảnh có thể gây ra những thay đổi nhỏ trong văn bản, dẫn đến việc dịch lặp lại.
+
+    Sau mỗi lần gọi OCR, kết quả OCR hiện tại được so sánh với kết quả OCR trước đó (sử dụng khoảng cách chỉnh sửa). Chỉ khi khoảng cách chỉnh sửa lớn hơn ngưỡng, văn bản mới được xuất ra.
+
+== Kích Hoạt Chuột/Bàn Phím + Chờ Ổn Định
+
+Phương pháp này trước tiên chờ sự kiện do người dùng kích hoạt, sau đó chờ đến khi hình ảnh không còn thay đổi thường xuyên rồi mới thực thi.
 
 1. #### Sự Kiện Kích Hoạt
 
@@ -52,8 +84,10 @@ Phương pháp này sử dụng các tham số như “Ngưỡng Ổn Định H�
 
     Do thời gian hiển thị không thể đoán trước của tốc độ văn bản chậm hơn, một khoảng thời gian trễ cố định có thể không đủ. Hành động được thực hiện khi độ tương đồng giữa hình ảnh và ảnh chụp màn hình trước đó cao hơn ngưỡng.
 
-## Ngưỡng Tương Đồng Văn Bản
+1. #### Ngưỡng Tương Đồng Văn Bản
 
-Kết quả OCR không ổn định, và các nhiễu nhỏ trong hình ảnh có thể gây ra những thay đổi nhỏ trong văn bản, dẫn đến việc dịch lặp lại.
+    Kết quả OCR không ổn định, và các nhiễu nhỏ trong hình ảnh có thể gây ra những thay đổi nhỏ trong văn bản, dẫn đến việc dịch lặp lại.
 
-Sau mỗi lần gọi OCR, kết quả OCR hiện tại được so sánh với kết quả OCR trước đó (sử dụng khoảng cách chỉnh sửa). Chỉ khi khoảng cách chỉnh sửa lớn hơn ngưỡng, văn bản mới được xuất ra.
+    Sau mỗi lần gọi OCR, kết quả OCR hiện tại được so sánh với kết quả OCR trước đó (sử dụng khoảng cách chỉnh sửa). Chỉ khi khoảng cách chỉnh sửa lớn hơn ngưỡng, văn bản mới được xuất ra.
+
+:::
