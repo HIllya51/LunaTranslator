@@ -583,8 +583,6 @@ def _progresssignal4_card(expander, progressbar: QProgressBar, text, val):
     progressbar.setFormat(text)
     visible = bool(val or text)
     progressbar.setVisible(visible)
-    # 子项面板随进度条显隐；出现时自动展开，免得藏在折叠里看不见
+    # 子项面板随进度条显隐；不自动展开卡片（用户想看自己点开）
     expander.setContentPanelVisible(progressbar, visible)
-    if visible and not expander.isExpanded():
-        expander.setExpanded(True)
 
