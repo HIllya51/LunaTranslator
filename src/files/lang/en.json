@@ -965,5 +965,10 @@
     "展开/收起导航": "Expand/collapse navigation",
     "隐藏目标": "Hidden target",
     "隐藏延迟": "Hidden latency",
-    "编辑颜色": "Edit Color"
+    "编辑颜色": "Edit Color",
+    "原地显示翻译": "In-place Translation",
+    "边框": "Border",
+    "左上": "Top Left",
+    "右上": "Top Right",
+    "中上": "Top Center"
 }
