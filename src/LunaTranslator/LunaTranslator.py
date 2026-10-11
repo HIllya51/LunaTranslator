@@ -737,7 +737,12 @@ class BASEOBJECT(QObject):
                 pass
         self.maybesetedittext(text)
 
-        if not waitforresultcallback and not globalconfig.get("showfanyi", True):
+        if (
+            not waitforresultcallback
+            and not globalconfig.get("showfanyi", True)
+            # 显示翻译 关闭时不翻译——但走覆盖层（原地显示）的文本除外
+            and ocr_overlay_source is None
+        ):
             return _showrawfunction()
 
         text_solved, optimization_params = self.solvebeforetrans(text)
@@ -960,7 +965,15 @@ class BASEOBJECT(QObject):
                 and currentsignature != self.currentsignature
             ):
                 # Other OCR regions remain current when the main window advances.
-                if ocr_overlay_source is None or iserror:
+                if ocr_overlay_source is None:
+                    return
+                if iserror:
+                    # 原地显示（多块派发时非末块的迟到错误）也要在
+                    # 主窗口报出来，不能静默丢弃
+                    self.__erroroutput(
+                        classname, erroroutput, _showrawfunction,
+                        res, TextType.Error_translator,
+                    )
                     return
                 res = self.solveaftertrans(res, optimization_params)
                 if res:

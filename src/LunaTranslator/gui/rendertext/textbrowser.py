@@ -806,10 +806,13 @@ class TextBrowser(QWidget, dataget):
             not globalconfig.get("isshowrawtext", True)
         ):
             return True
-        if (texttype in (TextType.Translate, TextType.Error_translator)) and (
+        if (texttype in (TextType.Translate,)) and (
             not globalconfig.get("showfanyi", True)
         ):
             return True
+        # 错误行不受 显示翻译 开关控制（原地显示时常关闭 显示翻译，
+        # 但错误仍要报给用户），只受 显示错误信息 控制（同 webview 渲染
+        # 的 .lunatranslator_error 独立开关）
         if (texttype in (TextType.Error_translator, TextType.Error_origin)) and (
             not globalconfig.get("showtranexception", True)
         ):

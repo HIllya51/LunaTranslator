@@ -217,6 +217,7 @@ class ocrbox(rangeadjust):
         super().__init__(gobject.base.settin_ui, self._boxranges)
         self._closing = False
         self._lasttext = ""
+        self._lastocrerror = None
         self.translation_overlay.display_always = True
         self.setContextMenuPolicy(Qt.ContextMenuPolicy.NoContextMenu)
         # 不需要拖动/缩放：隐藏全部手柄，任何点击都用于关闭
@@ -270,7 +271,23 @@ class ocrbox(rangeadjust):
         if snapshot != self.capture_snapshot():
             return
         result = ocr_run(img)
-        text = "" if result.error else result.textonly
+        if result.error:
+            # OCR 出错：报错到主窗口（同一错误只报一次，成功后重置），
+            # 并清掉容器里的旧译文
+            if self._lastocrerror != result.error:
+                self._lastocrerror = result.error
+                with self.ocr_source_lock:
+                    if snapshot != self.capture_snapshot():
+                        return
+                    self._lasttext = ""
+                    revision = self.remember_overlay_source("", snapshot)
+                    if revision is not None:
+                        self.publish_overlay_layout(revision, None)
+                gobject.base.displayinfomessage(
+                    result.errorstring(), "<msg_error_Origin>")
+            return
+        self._lastocrerror = None
+        text = result.textonly
         with self.ocr_source_lock:
             if snapshot != self.capture_snapshot():
                 return
