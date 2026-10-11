@@ -2420,7 +2420,7 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // どこでもいっしょ
     {0x8819C88, {0, 1, 0, 0, NewLineCharFilterA, "UCJS10002"}},
     // テイルズ オブ ファンタジア なりきりダンジョンX
-    {0x88F45D0, {0, 5, 0, 0, ULJS00293, "ULJS00293"}},
+    {0x88F45D0, {FULL_STRING, 5, 0, 0, ULJS00293, "ULJS00293"}},
 
 };
 

@@ -353,8 +353,8 @@ class TranslatorWindow(resizableframeless):
         rangeselct_function(ocroncefunction, hideshow=True)
 
     def ocr_once_box_function(self):
-        """右键单次OCR：框选后创建常驻容器（范围框同款），框内原地
-        显示翻译，右上角关闭。"""
+        """单次OCR的原地模式（默认右键，可在工具按钮设置里换到左键）：
+        框选后创建常驻容器（范围框同款），框内原地显示翻译。"""
 
         def createbox(rect, img=None):
             if not rect.isValid():
@@ -364,6 +364,19 @@ class TranslatorWindow(resizableframeless):
             gobject.base.safeinvokefunction.emit(lambda: ocrbox(QRect(rect)))
 
         rangeselct_function(createbox, hideshow=True)
+
+    def ocr_once_leftclick(self):
+        # 左/右键哪个触发原地显示由工具按钮设置决定（默认右键）
+        if globalconfig.get("ocr_once_left_inplace", False):
+            self.ocr_once_box_function()
+        else:
+            self.ocr_once_signal.emit()
+
+    def ocr_once_rightclick(self):
+        if globalconfig.get("ocr_once_left_inplace", False):
+            self.ocr_once_signal.emit()
+        else:
+            self.ocr_once_box_function()
 
     @threader
     def simulate_key_ctrl(self):
@@ -598,8 +611,8 @@ class TranslatorWindow(resizableframeless):
             (
                 "ocr_once",
                 buttonfunctions(
-                    clicked=self.ocr_once_signal.emit,
-                    rightclick=self.ocr_once_box_function,
+                    clicked=self.ocr_once_leftclick,
+                    rightclick=self.ocr_once_rightclick,
                 ),
             ),
             (
