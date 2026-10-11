@@ -300,6 +300,7 @@ class yangshisetting(PopupWidget):
                 globalconfig,
                 "ocrrangecolor",
                 callback=setstyle,
+                alpha=True,
                 default="#000000",
             ),
         )
@@ -394,6 +395,7 @@ class rangeadjust(Mainw):
         self.translation_overlay = None
         _all_rangeadjusts.add(self)
         self.__isfocus = False
+        self._borderhidden = False
         self.ranges: list = ranges
         self.traceoffsetsignal.connect(self.traceoffset)
         self.label = QLabel(self)
@@ -503,13 +505,21 @@ class rangeadjust(Mainw):
         if getattr(self, "_ready", False):
             self._updateWindowRgn()
 
+    def set_border_hidden(self, hidden: bool):
+        """仅藏边框（原地显示翻译模式的 隐藏范围框）：边框宽度视为 0，
+        框与原地译文保持可见；不影响选区（截图矩形不变）。"""
+        if self._borderhidden == hidden:
+            return
+        self._borderhidden = hidden
+        self.setstyle()
+
     def setstyle(self):
         if self.translation_overlay is not None:
             self.translation_overlay.sync()
         self.label.setStyleSheet(
             " border:%spx solid %s; background-color: rgba(0,0,0, %s); border-radius:0;"
             % (
-                globalconfig.get("ocrrangewidth", 1),
+                0 if self._borderhidden else globalconfig.get("ocrrangewidth", 1),
                 "red" if self.isfocus else globalconfig.get("ocrrangecolor", "#000000"),
                 1 / 255,
             )

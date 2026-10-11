@@ -423,12 +423,16 @@ class ocrtext(basetext):
                 self.newrangeadjustor()
                 self.setrect(QRect(*region))
             return
+        # 原地显示翻译模式下，隐藏范围框 = 仅藏边框（宽度视作 0），框与
+        # 原地译文保持可见；其余模式仍整框隐藏
+        hideborder = (not b) and globalconfig.get("ocr_translation_overlay", False)
         for _ in self.ranges:
             if b:
                 _r = _.range_ui.getrect()
                 if _r:
                     _.range_ui.setrect(_r)
-            else:
+            _.range_ui.set_border_hidden(hideborder)
+            if not b and not hideborder:
                 _.range_ui.hide()
 
     @threader
