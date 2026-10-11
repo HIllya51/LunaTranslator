@@ -101,7 +101,7 @@ export const ko = defineConfig({
                         collapsed: true,
                         items: [
                             { text: 'OCR 인터페이스 설정', link: '/ko/useapis/ocrapi' },
-                            { text: 'OCR 자동 실행 방법', link: '/ko/ocrparam' },
+                            { text: 'OCR 기능 설정', link: '/ko/ocrparam' },
                         ]
                     },
                     {

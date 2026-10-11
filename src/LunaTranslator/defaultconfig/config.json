@@ -1,10 +1,5 @@
 {
     "showna": true,
-    "ocr_translation_overlay": false,
-    "ocr_translation_overlay_show_main": false,
-    "ocr_translation_overlay_fontsize": 22,
-    "ocr_translation_overlay_opacity": 0.95,
-    "ocr_translation_overlay_adaptive_background": true,
     "llama.cpp": {},
     "screenshot_savepath": "",
     "history": {
@@ -1543,12 +1538,6 @@
             "use": false,
             "color": "#1839f0",
             "name": "ezTrans"
-        },
-        "sugoix": {
-            "type": "offline",
-            "use": false,
-            "color": "#1839f0",
-            "name": "Sugoi"
         },
         "kingsoft": {
             "type": "offline",

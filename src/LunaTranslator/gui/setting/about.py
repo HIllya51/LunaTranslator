@@ -593,8 +593,8 @@ def setTab_about(self: QWidget, basel):
         [(updateexp, 0)],
         # 下载进度条：显示时出现在卡片下方（隐藏时布局不占位）
         [(self.downloadprogress, 0)],
-        [(license_expander, 0)],
         [(aboutwidget(), 0)],
+        [(license_expander, 0)],
     ]
     makescrollgrid(grid, basel)
 

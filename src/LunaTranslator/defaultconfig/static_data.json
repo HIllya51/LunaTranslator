@@ -507,14 +507,6 @@
             }
         },
         {
-            "vis": "Ollama",
-            "value": "http://127.0.0.1:11434",
-            "icon": {
-                "dark": "files/static/llm_icons/ollama_dark.svg",
-                "light": "files/static/llm_icons/ollama.svg"
-            }
-        },
-        {
             "vis": "月之暗面",
             "value": "https://api.moonshot.cn",
             "icon": {

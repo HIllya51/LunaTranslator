@@ -965,5 +965,10 @@
     "应用主题": "Anwendungsthema",
     "隐藏目标": "Verstecktes Ziel",
     "隐藏延迟": "Versteckte Latenz",
-    "编辑颜色": "Farbe bearbeiten"
+    "编辑颜色": "Farbe bearbeiten",
+    "原地显示翻译": "Übersetzung an Ort und Stelle",
+    "边框": "Rahmen",
+    "左上": "Oben links",
+    "右上": "Oben rechts",
+    "中上": "Oben mittig"
 }

@@ -1004,17 +1004,26 @@ class interruptexc(Exception):
     pass
 
 
-def _download_file(key, url, savep, *, digest=None, check_interrupt=None,
-                   octet_stream_only=False, verify_size=True):
+def _download_file(
+    key,
+    url,
+    savep,
+    *,
+    digest=None,
+    check_interrupt=None,
+    octet_stream_only=False,
+    verify_size=True
+):
     """llama.cpp 下载流（downloadgguf / downloadone 共用）：分块写入 +
     中断 + 进度 + 可选 SHA256 校验。异常统一转进度码（-3 取消 / -1
     失败），返回是否成功。"""
     try:
         gobject.base.llamacppdownloadprogress.emit(key, url, 0, 0)
-        with open(savep, "wb") as file:
+        with open(savep + ".tmp", "wb") as file:
             r = requests.get(url, stream=True, proxies=getproxy())
             if octet_stream_only and r.headers.get("Content-Type") not in (
-                None, "application/octet-stream"
+                None,
+                "application/octet-stream",
             ):
                 raise Exception()
             size = int(r.headers["Content-Length"])
@@ -1036,6 +1045,9 @@ def _download_file(key, url, savep, *, digest=None, check_interrupt=None,
                 raise Exception()
             if verify_size and (file_size != size):
                 raise Exception()
+        if os.path.isfile(savep):
+            os.remove(savep)
+        os.rename(savep + ".tmp", savep)
         return True
     except interruptexc:
         gobject.base.llamacppdownloadprogress.emit(key, url, -3, 0)
@@ -1067,8 +1079,14 @@ def downloadone(key, url: str, digest: str, check_interrupt, tag: str):
     except:
         digest = None
     savep = gobject.gettempdir("llamacpp/" + str(uuid.uuid4()) + ".zip")
-    if not _download_file(key, url, savep, digest=digest,
-                          check_interrupt=check_interrupt, verify_size=False):
+    if not _download_file(
+        key,
+        url,
+        savep,
+        digest=digest,
+        check_interrupt=check_interrupt,
+        verify_size=False,
+    ):
         return False
     try:
         with zipfile.ZipFile(savep) as zipf:

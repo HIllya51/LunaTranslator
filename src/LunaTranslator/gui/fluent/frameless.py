@@ -99,6 +99,11 @@ class FluentFramelessWindowMixin:
             self._setup_frameless_native()
             # 标题栏原生化监控（见 eventFilter）
             self._fluent_title_bar.installEventFilter(self)
+            # 首次显示之前标题栏就可能已被提升为原生窗口（如 OCR 选框
+            # 先于本窗口创建：其 giveup(winId()) 会连带把父窗口的重叠
+            # 子控件提升为原生）——那时监控尚未安装，WinIdChange 已
+            # 错过，这里直接检查并重新内嵌
+            QTimer.singleShot(0, self._fluent_reembed_titlebar)
 
     def closeEvent(self, event):
         # 停掉仍在运行的动画（导航宽度动画等），避免销毁期间定时器触发已删对象

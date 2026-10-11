@@ -90,6 +90,10 @@ Some buttons have two icons to indicate two different states. Some buttons only 
 
     This button is generally used in HOOK mode, when encountering choices, to temporarily use OCR for translation of choices. Or in OCR mode, to temporarily recognize a new position that occasionally appears.
 
+
+    By default, a left click shows the OCR result and translation in the main window, while a right click displays the translation in place.
+
+    The left and right click functions can be swapped in the settings.
 1. #### <i class="fa fa-spinner"></i> <i class="fa fa-icon fa-rotate-right"></i> Perform OCR Again {#anchor-ocr_once_follow}
     After using `Perform OCR Once`, use this button to perform OCR again at the original location without having to re-select the recognition area.
     

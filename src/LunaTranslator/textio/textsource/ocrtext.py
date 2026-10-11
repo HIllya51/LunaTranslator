@@ -84,6 +84,30 @@ class rangemanger:
             result.ocr_overlay_source = OCRRegionText(
                 result.textonly, self.range_ui, revision, owner=self.ref
             )
+            # 块级来源（原地按位置绘制）：有坐标且非图片翻译时，每个
+            # OCR 结果区域（合并临近行之后）各自翻译、各回各自位置；
+            # 否则整框一条译文（见 OCRTranslationOverlay）。
+            result.ocr_overlay_block_sources = None
+            blocks = None
+            if (
+                globalconfig.get("ocr_translation_overlay", False)
+                and not result.error
+                and result.result.hasboxs
+                and not result.result.isocrtranslate
+            ):
+                # 布局发布用完整四点（保留倾斜），覆盖层据此旋转绘制
+                blocks = [tuple(_.box) for _ in result.result.blocks]
+                sources = [
+                    OCRRegionText(
+                        _.text, self.range_ui, revision,
+                        owner=self.ref, block_index=i,
+                    )
+                    for i, _ in enumerate(result.result.blocks)
+                    if _.text and _.text.strip()
+                ]
+                if sources:
+                    result.ocr_overlay_block_sources = sources
+            self.range_ui.publish_overlay_layout(revision, blocks)
             return result
 
     def getresmanual(self):
@@ -91,7 +115,7 @@ class rangemanger:
         rect = QRect(*snapshot.rect)
         if not rect.isValid():
             return
-        imgr = imageCutEx(self.ref.hwnd, rect, self.range_ui.update_overlay_background)
+        imgr = imageCutEx(self.ref.hwnd, rect)
         if imgr.isNull():
             return
         if snapshot != self.range_ui.capture_snapshot():
@@ -104,7 +128,7 @@ class rangemanger:
         rect = QRect(*snapshot.rect)
         if not rect.isValid():
             return
-        imgr = imageCutEx(self.ref.hwnd, rect, self.range_ui.update_overlay_background)
+        imgr = imageCutEx(self.ref.hwnd, rect)
         if imgr.isNull():
             return
         with self.range_ui.ocr_source_lock:
@@ -170,7 +194,7 @@ class rangemanger:
         rect = QRect(*snapshot.rect)
         if not rect.isValid():
             return False
-        imgr = imageCutEx(self.ref.hwnd, rect, self.range_ui.update_overlay_background)
+        imgr = imageCutEx(self.ref.hwnd, rect)
         if imgr.isNull():
             return False
         with self.range_ui.ocr_source_lock:
@@ -181,6 +205,116 @@ class rangemanger:
             gobject.base.thresholdsett1.emit(str(float(image_score)))
             self.savelastimg = imgr1
             return image_score > globalconfig.get("ocr_stable_sim2_v2", 0.95)
+
+
+class ocrbox(rangeadjust):
+    """单次OCR右键的常驻容器：与 OCR 范围框同款的边框样式，周期识别
+    框内内容并在框内原地显示翻译；任意鼠标键一碰即关闭（无拖动/缩放）。
+    不受 OCR 设置里 原地显示翻译 开关控制。"""
+
+    def __init__(self, rect: QRect):
+        self._boxranges = []
+        super().__init__(gobject.base.settin_ui, self._boxranges)
+        self._closing = False
+        self._lasttext = ""
+        self.translation_overlay.display_always = True
+        self.setContextMenuPolicy(Qt.ContextMenuPolicy.NoContextMenu)
+        # 不需要拖动/缩放：隐藏全部手柄，任何点击都用于关闭
+        for grip in list(self.cornerGrips) + list(self.sideGrips):
+            grip.hide()
+        self.setrect(rect)
+        self.__recognition_loop()
+
+    def closebox(self):
+        self._closing = True
+        try:
+            self.invalidate_overlay()
+            self.close()
+        finally:
+            self.deleteLater()
+
+    def mousePressEvent(self, e):
+        # 任意键一碰即关（不进入父类的拖动逻辑）
+        self.closebox()
+
+    @threader
+    def __recognition_loop(self):
+        while True:
+            try:
+                if self._closing or not self.isVisible():
+                    return
+                self.__recognize()
+            except RuntimeError:
+                return  # 窗口已销毁
+            except:
+                print_exc()
+            deadline = time.time() + globalconfig.get("ocr_interval", 1.5)
+            while time.time() < deadline:
+                if self._closing:
+                    return
+                time.sleep(0.1)
+
+    def __recognize(self):
+        snapshot = self.capture_snapshot()
+        rect = QRect(*snapshot.rect)
+        if not rect.isValid():
+            return
+        img = imageCutEx(0, rect)
+        if img.isNull():
+            return
+        if snapshot != self.capture_snapshot():
+            return
+        result = ocr_run(img)
+        text = "" if result.error else result.textonly
+        with self.ocr_source_lock:
+            if snapshot != self.capture_snapshot():
+                return
+            # 与范围框相同的噪声门控：编辑距离小于阈值不重新翻译
+            if NativeUtils.distance(self._lasttext, text) < globalconfig.get(
+                "ocr_text_diff", 3
+            ):
+                return
+            self._lasttext = text
+            revision = self.remember_overlay_source(text, snapshot)
+            if revision is None:
+                return
+            result.ocr_overlay_source = OCRRegionText(
+                text, self, revision, owner=None
+            )
+            # 块级原地显示：有坐标且非图片翻译时按块拆分
+            result.ocr_overlay_block_sources = None
+            blocks = None
+            if (
+                not result.error
+                and result.result.hasboxs
+                and not result.result.isocrtranslate
+            ):
+                blocks = [tuple(_.box) for _ in result.result.blocks]
+                sources = [
+                    OCRRegionText(
+                        _.text, self, revision, owner=None, block_index=i
+                    )
+                    for i, _ in enumerate(result.result.blocks)
+                    if _.text and _.text.strip()
+                ]
+                if sources:
+                    result.ocr_overlay_block_sources = sources
+            self.publish_overlay_layout(revision, blocks)
+        if not text:
+            return
+        if result.result.isocrtranslate:
+            gobject.base.displayinfomessage(
+                result.ocr_overlay_source, "<notrans>"
+            )
+        elif result.ocr_overlay_block_sources:
+            gobject.base.textgetmethod(
+                OCRRegionBatch(result.ocr_overlay_block_sources),
+                is_auto_run=False,
+            )
+        else:
+            gobject.base.textgetmethod(
+                result.ocr_overlay_source, is_auto_run=False
+            )
 
 
 class ocrtext(basetext):
@@ -233,9 +367,6 @@ class ocrtext(basetext):
                 r.savelasttext = None
                 r.savelastrecimg = None
         self._overlay_enabled = enabled
-        ui = getattr(gobject.base, "translation_ui", None)
-        if ui is not None:
-            ui.ocroverlaymodesignal.emit(enabled and not self.ending)
         [_.range_ui.setstyle() for _ in self.ranges]
 
     def showhiderangeui(self, b):
@@ -387,13 +518,26 @@ class ocrtext(basetext):
                 if not overlay_source_is_current(source):
                     continue
                 source.ocr_direct_translation = result.result.isocrtranslate
-                sources.append(source)
+                # 块级来源（原地按位置绘制）：展开为各块独立翻译
+                blocksources = getattr(result, "ocr_overlay_block_sources", None)
+                if blocksources:
+                    sources.extend(
+                        _ for _ in blocksources if overlay_source_is_current(_)
+                    )
+                else:
+                    sources.append(source)
             return OCRRegionBatch(sources) if sources else None
         if (
             globalconfig.get("ocr_translation_overlay", False)
             and len(active_ranges) == 1
             and len(recognized_ranges) == 1
         ):
+            # 块级来源（原地按位置绘制）：各块独立翻译
+            blocksources = getattr(__text[0], "ocr_overlay_block_sources", None)
+            if blocksources:
+                valid = [_ for _ in blocksources if overlay_source_is_current(_)]
+                if valid:
+                    return OCRRegionBatch(valid)
             text = __text[0].ocr_overlay_source
             if not overlay_source_is_current(text):
                 return

@@ -965,5 +965,10 @@
     "应用主题": "Tema de la aplicación",
     "隐藏目标": "Objetivo oculto",
     "隐藏延迟": "Latencia oculta",
-    "编辑颜色": "Editar color"
+    "编辑颜色": "Editar color",
+    "原地显示翻译": "Traducción en el lugar",
+    "边框": "Borde",
+    "左上": "Arriba a la izquierda",
+    "右上": "Arriba a la derecha",
+    "中上": "Arriba al centro"
 }

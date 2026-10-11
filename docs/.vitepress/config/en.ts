@@ -40,7 +40,7 @@ export const en = defineConfig({
                         collapsed: true,
                         items: [
                             { text: 'OCR interface settings', link: '/en/useapis/ocrapi' },
-                            { text: 'OCR Automation Execution Methods', link: '/en/ocrparam' },
+                            { text: 'OCR Feature Settings', link: '/en/ocrparam' },
                         ]
                     },
                     {

@@ -101,7 +101,7 @@ export const ru = defineConfig({
                         collapsed: true,
                         items: [
                             { text: 'Настройки интерфейса OCR', link: '/ru/useapis/ocrapi' },
-                            { text: 'Методы автоматизации OCR', link: '/ru/ocrparam' },
+                            { text: 'Настройки функций OCR', link: '/ru/ocrparam' },
                         ]
                     },
                     {

@@ -102,7 +102,7 @@ export const cht = defineConfig({
                         collapsed: true,
                         items: [
                             { text: 'OCR 介面設定', link: '/cht/useapis/ocrapi' },
-                            { text: 'OCR 自動化執行方法', link: '/cht/ocrparam' },
+                            { text: 'OCR 功能設定', link: '/cht/ocrparam' },
                         ]
                     },
                     {

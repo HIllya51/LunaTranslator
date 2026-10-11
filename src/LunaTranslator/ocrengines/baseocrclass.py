@@ -73,15 +73,28 @@ class _OCRBlockS:
     def merge(self, box: "_OCRBlockS"):
         self.blocks.extend(box.blocks)
 
-    @staticmethod
-    def four_point_box_union(aabb1, aabb2):
-
-        x_min = min(aabb1[0], aabb2[0])
-        y_min = min(aabb1[1], aabb2[1])
-        x_max = max(aabb1[2], aabb2[2])
-        y_max = max(aabb1[3], aabb2[3])
-
-        return [x_min, y_min, x_max, y_max]
+    def __unionbox(self):
+        """组内块的并集盒：单块直接用原始四点（保留倾斜）；多块以第一
+        块方向为基准，在其旋转坐标系里取 AABB 再转回四点——合并临近行
+        不再丢失倾斜信息。"""
+        first = self.blocks[0].box
+        if len(self.blocks) == 1:
+            return first
+        ang = math.atan2(first[3] - first[1], first[2] - first[0])
+        ca, sa = math.cos(ang), math.sin(ang)
+        xs, ys = [], []
+        for block in self.blocks:
+            for j in (0, 2, 4, 6):
+                x, y = block.box[j], block.box[j + 1]
+                xs.append(x * ca + y * sa)
+                ys.append(-x * sa + y * ca)
+        u1, u2, v1, v2 = min(xs), max(xs), min(ys), max(ys)
+        return [
+            u1 * ca - v1 * sa, u1 * sa + v1 * ca,
+            u2 * ca - v1 * sa, u2 * sa + v1 * ca,
+            u2 * ca - v2 * sa, u2 * sa + v2 * ca,
+            u1 * ca - v2 * sa, u1 * sa + v2 * ca,
+        ]
 
     def asblock(self, vertical, space: str):
         texts = _sort_text_lines(
@@ -90,10 +103,7 @@ class _OCRBlockS:
             vertical,
             space,
         )
-        box0 = self.blocks[0].box4
-        for i in range(1, len(self.blocks)):
-            box0 = self.four_point_box_union(box0, self.blocks[i].box4)
-        return OCRBlock(text=space.join(texts), box=box0)
+        return OCRBlock(text=space.join(texts), box=self.__unionbox())
 
 
 class OCRBlock:

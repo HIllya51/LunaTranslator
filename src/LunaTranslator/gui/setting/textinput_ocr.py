@@ -10,10 +10,9 @@ from gui.usefulwidget import (
     getIconButton,
     yuitsu_switch,
     D_getsimpleswitch,
-    clearlayout,
+    getsimpleswitch,
     D_getdoclink,
     ClickableLabel,
-    getboxlayout,
     createfoldgrid,
     TableViewW,
     saveposwindow,
@@ -21,18 +20,21 @@ from gui.usefulwidget import (
     pixmapviewer,
     LStandardItemModel,
     SuperCombo,
-    GroupCardWidget,
     getsmalllabel,
     manybuttonlayout,
     makesubtab_lazy,
     create_centered_rect,
     makescrollgrid,
     maketabholder,
+    makecardrow,
+    makescroll,
 )
+from gui.fluent.expander import ExExpander
+from gui.rangeselect import add_overlay_style_rows
 from gui.specialwidget import KeyPressDetector
 from traceback import print_exc
 import gobject, qtawesome, importlib
-from gui.dynalang import LFormLayout, LDialog, LAction, LLabel
+from gui.dynalang import LDialog, LAction, LLabel
 from myutils.ocrutil import ocr_end, ocr_init, ocr_run
 from myutils.wrapper import threader, Singleton
 from ocrengines.baseocrclass import OCRResultParsed
@@ -255,90 +257,84 @@ def initgridsources(self, names):
 
 
 def _ocrparam_create(self, f):
-    clearlayout(self._ocrparaml)
+    exp = self._ocrparamexp
+    exp.clearContentWidgets()
+
+    def row(label, *controls):
+        r = QWidget()
+        lay = QHBoxLayout(r)
+        lay.setContentsMargins(0, 0, 0, 0)
+        lay.addWidget(LLabel(label))
+        lay.addStretch(1)
+        for c in controls:
+            if callable(c):
+                c = c()
+            if c is not None:
+                lay.addWidget(c)
+        exp.addContentWidget(r)
+
     if f == "period":
-        self._ocrparaml.addRow(
+        row(
             "执行周期_(s)",
-            getboxlayout(
-                [
-                    D_getspinbox(
-                        0.1, 100, globalconfig, "ocr_interval", double=True, default=1.5
-                    ),
-                    QLabel,
-                ]
+            D_getspinbox(
+                0.1, 100, globalconfig, "ocr_interval", double=True, default=1.5
             ),
         )
     if f == "trigger":
-        self._ocrparaml.addRow(
+        row(
             "触发事件",
-            getboxlayout([D_getIconButton(functools.partial(triggereditor, self))]),
+            D_getIconButton(functools.partial(triggereditor, self)),
         )
-        self._ocrparaml.addRow(
+        row(
             "延迟_(s)",
-            getboxlayout(
-                [
-                    D_getspinbox(
-                        0,
-                        100,
-                        globalconfig,
-                        "ocr_trigger_delay",
-                        double=True,
-                        default=0,
-                    ),
-                    QLabel,
-                ]
+            D_getspinbox(
+                0,
+                100,
+                globalconfig,
+                "ocr_trigger_delay",
+                double=True,
+                default=0,
             ),
         )
     if f in ["analysis", "trigger"]:
-        self._ocrparaml.addRow(
+        row(
             "图像稳定性阈值",
-            getboxlayout(
-                [
-                    D_getspinbox(
-                        0,
-                        1,
-                        globalconfig,
-                        ("ocr_stable_sim_v2", "ocr_stable_sim2_v2")[f == "trigger"],
-                        double=True,
-                        step=0.001,
-                        default=(0.5, 0.95)[f == "trigger"],
-                    ),
-                    functools.partial(__label1, self),
-                ]
+            functools.partial(__label1, self),
+            D_getspinbox(
+                0,
+                1,
+                globalconfig,
+                ("ocr_stable_sim_v2", "ocr_stable_sim2_v2")[f == "trigger"],
+                double=True,
+                step=0.001,
+                default=(0.5, 0.95)[f == "trigger"],
             ),
         )
     if f == "analysis":
-        self._ocrparaml.addRow(
+        row(
             "图像一致性阈值",
-            getboxlayout(
-                [
-                    D_getspinbox(
-                        0,
-                        1,
-                        globalconfig,
-                        "ocr_diff_sim_v2",
-                        double=True,
-                        step=0.001,
-                        default=0.95,
-                    ),
-                    functools.partial(__label2, self),
-                ]
+            functools.partial(__label2, self),
+            D_getspinbox(
+                0,
+                1,
+                globalconfig,
+                "ocr_diff_sim_v2",
+                double=True,
+                step=0.001,
+                default=0.95,
             ),
         )
-    self._ocrparaml.addRow(
+    row(
         "文本相似度阈值",
-        getboxlayout(
-            [D_getspinbox(0, 100000, globalconfig, "ocr_text_diff", default=3), QLabel]
-        ),
+        D_getspinbox(0, 100000, globalconfig, "ocr_text_diff", default=3),
     )
 
 
-def _ocrparam(self):
-    self._ocrparam = GroupCardWidget()
-    self._ocrparaml = LFormLayout(self._ocrparam.contentWidget())
-    self._ocrparam.setContentLayout(self._ocrparaml)
+def _ocrparam(self, exp):
+    """自动化执行方法的参数子项（每行一个卡子项，方法切换时经
+    _ocrparam_create 重建）。"""
+    self._ocrparamexp = exp
     _ocrparam_create(self, globalconfig.get("ocr_auto_method_v2", "period"))
-    return self._ocrparam
 
 
 @Singleton
@@ -443,6 +439,151 @@ class showocrimage(saveposwindow):
         self.originlabel.showboxtext(result.result)
 
 
+def _expander_header(title, *controls, after_title=None):
+    """折叠卡头部行：标题（后可紧跟 after_title 挂件，如 doclink）在左、
+    控件靠右（同设置窗口折叠卡头部）。"""
+    header = QWidget()
+    hlay = QHBoxLayout(header)
+    hlay.setContentsMargins(0, 12, 0, 12)
+    hlay.setSpacing(8)
+    titlelabel = LLabel(title)
+    titlefont = titlelabel.font()
+    titlefont.setPixelSize(15)
+    titlelabel.setFont(titlefont)
+    hlay.addWidget(titlelabel)
+    if after_title is not None:
+        if callable(after_title):
+            after_title = after_title()
+        if after_title is not None:
+            hlay.addWidget(after_title)
+    hlay.addStretch(1)
+    for c in controls:
+        if callable(c):
+            c = c()
+        if c is not None:
+            hlay.addWidget(c)
+    return header
+
+
+def _otherspage(self, l):
+    """OCR 其他设置页：每项一张卡（合并临近行/自动化执行方法为折叠卡，
+    子项经折叠展开）。"""
+    # 滚动内容控件必须用 QSS 类做透明：否则会被 autofill 以 Window 色
+    # 盖掉页面卡底色（同 gamemanager/setting 的 ___tabf 注释）
+    class _othersscrollcontent(QWidget):
+        pass
+
+    content = _othersscrollcontent()
+    content.setStyleSheet("_othersscrollcontent{background-color:transparent;}")
+    vlay = QVBoxLayout(content)
+    vlay.setContentsMargins(16, 16, 16, 12)
+    vlay.setSpacing(8)
+    vlay.addWidget(
+        makecardrow(
+            "识别方向",
+            D_getsimplecombobox(
+                ["横向", "竖向", "自适应"], globalconfig, "verticalocr", default=2
+            ),
+        )
+    )
+    merge = ExExpander(content_pad=True)
+    merge.setHeaderWidget(
+        _expander_header(
+            "合并临近行",
+            D_getsimpleswitch(globalconfig, "ocrmergelines", default=True),
+        )
+    )
+    distrow = QWidget()
+    dlay = QHBoxLayout(distrow)
+    dlay.setContentsMargins(0, 0, 0, 0)
+    dlay.addWidget(LLabel("距离"))
+    dlay.addStretch(1)
+    dlay.addWidget(
+        D_getspinbox(
+            0,
+            3,
+            globalconfig,
+            "ocrmergelines_distance",
+            double=True,
+            step=0.01,
+            default=0.4,
+        )()
+    )
+    dlay.addWidget(getsmalllabel("x")())
+    merge.addContentWidget(distrow)
+    vlay.addWidget(merge)
+    # 原地显示翻译：折叠卡，头部开关，子项 = 与右键菜单样式飞层共用
+    # 的样式子项（双向同步）
+    inplace = ExExpander(content_pad=True)
+    inplace.setHeaderWidget(
+        _expander_header("原地显示翻译", _inplace_switch)
+    )
+    add_overlay_style_rows(inplace)
+    vlay.addWidget(inplace)
+    vlay.addWidget(
+        makecardrow(
+            "多重区域模式",
+            D_getsimpleswitch(
+                globalconfig,
+                "multiregion",
+                callback=lambda _: gobject.base.textsource.leaveone(),
+                default=False,
+            ),
+        )
+    )
+    vlay.addWidget(
+        makecardrow(
+            "易错内容修正",
+            D_getIconButton(
+                callback=functools.partial(
+                    postconfigdialog,
+                    self,
+                    ocrerrorfix["args"]["替换内容"],
+                    "易错内容修正",
+                    ["原文内容", "替换为"],
+                )
+            ),
+            D_getsimpleswitch(ocrerrorfix, "use"),
+        )
+    )
+    auto = ExExpander(content_pad=True)
+    auto.setHeaderWidget(
+        _expander_header(
+            "自动化执行方法",
+            D_getsimplecombobox(
+                ["分析图像更新", "周期执行", "鼠标键盘触发+等待稳定"],
+                globalconfig,
+                "ocr_auto_method_v2",
+                internal=["analysis", "period", "trigger"],
+                callback=functools.partial(_ocrparam_create, self),
+                default="period",
+            ),
+            after_title=D_getdoclink("ocrparam.html#anchor-auto"),
+        )
+    )
+    _ocrparam(self, auto)
+    auto.setExpanded(True)
+    vlay.addWidget(auto)
+    vlay.addStretch(1)
+    scroll = makescroll()
+    scroll.setWidget(content)
+    l.addWidget(scroll)
+
+
+def _inplace_switch():
+    """原地显示翻译开关：与 OCR 选框右键菜单互相同步。"""
+    btn = getsimpleswitch(
+        globalconfig,
+        "ocr_translation_overlay",
+        default=False,
+        callback=lambda _: getattr(
+            gobject.base.textsource, "setstyle", lambda: None
+        )(),
+    )
+    gobject.base.ocr_inplace_switch.connect(btn.setChecked)
+    return btn
+
+
 def internal(self):
     offline, online, other = splitocrtypes(globalconfig["ocr"], other=True)
     outdate = [_ for _ in offline if globalconfig["ocr"][_].get("outdate", False)]
@@ -499,148 +640,12 @@ def internal(self):
             "",
         ],
     ]
-    autorun = [
-        [
-            "自动化执行方法",
-            getboxlayout(
-                [
-                    D_getsimplecombobox(
-                        [
-                            "分析图像更新",
-                            "周期执行",
-                            "鼠标键盘触发+等待稳定",
-                        ],
-                        globalconfig,
-                        "ocr_auto_method_v2",
-                        internal=["analysis", "period", "trigger"],
-                        callback=functools.partial(_ocrparam_create, self),
-                        default="period",
-                    ),
-                ]
-            ),
-        ],
-        [functools.partial(_ocrparam, self)],
-    ]
-    overlay = [
-        [
-            "译文覆盖OCR区域",
-            D_getsimpleswitch(
-                globalconfig,
-                "ocr_translation_overlay",
-                default=False,
-                callback=lambda _: getattr(
-                    gobject.base.textsource, "setstyle", lambda: None
-                )(),
-            ),
-            "",
-            "显示主翻译框",
-            D_getsimpleswitch(
-                globalconfig,
-                "ocr_translation_overlay_show_main",
-                default=False,
-                name="ocrshowmainswitch",
-                parent=self,
-                callback=lambda _: getattr(
-                    gobject.base.textsource, "setstyle", lambda: None
-                )(),
-            ),
-            "",
-            "背景自动取色",
-            D_getsimpleswitch(
-                globalconfig,
-                "ocr_translation_overlay_adaptive_background",
-                default=True,
-                callback=lambda _: getattr(
-                    gobject.base.textsource, "setstyle", lambda: None
-                )(),
-            ),
-        ],
-        [
-            "覆盖译文字号",
-            D_getspinbox(
-                6,
-                100,
-                globalconfig,
-                "ocr_translation_overlay_fontsize",
-                default=22,
-                callback=lambda _: getattr(
-                    gobject.base.textsource, "setstyle", lambda: None
-                )(),
-            ),
-            "",
-            "覆盖背景不透明度",
-            D_getspinbox(
-                0.1,
-                1,
-                globalconfig,
-                "ocr_translation_overlay_opacity",
-                double=True,
-                step=0.05,
-                default=0.95,
-                callback=lambda _: getattr(
-                    gobject.base.textsource, "setstyle", lambda: None
-                )(),
-            ),
-        ],
-    ]
-    reco = [
-        [
-            "识别方向",
-            D_getsimplecombobox(
-                ["横向", "竖向", "自适应"], globalconfig, "verticalocr", default=2
-            ),
-            "",
-            "合并临近行",
-            D_getsimpleswitch(globalconfig, "ocrmergelines", default=True),
-            getsmalllabel("距离"),
-            D_getspinbox(
-                0,
-                3,
-                globalconfig,
-                "ocrmergelines_distance",
-                double=True,
-                step=0.01,
-                default=0.4,
-            ),
-            getsmalllabel("x"),
-            "",
-            "",
-            "",
-        ],
-        [
-            "多重区域模式",
-            D_getsimpleswitch(
-                globalconfig,
-                "multiregion",
-                callback=lambda _: gobject.base.textsource.leaveone(),
-                default=False,
-            ),
-            "",
-            "易错内容修正",
-            D_getsimpleswitch(ocrerrorfix, "use"),
-            D_getIconButton(
-                callback=functools.partial(
-                    postconfigdialog,
-                    self,
-                    ocrerrorfix["args"]["替换内容"],
-                    "易错内容修正",
-                    ["原文内容", "替换为"],
-                )
-            ),
-        ],
-    ]
-
-    allothers = [
-        [dict(title="识别设置", type="grid", grid=reco)],
-        [dict(title="译文覆盖", type="grid", grid=overlay)],
-        [dict(title="自动化执行", grid=autorun, widget=D_getdoclink("ocrparam.html"))],
-    ]
-
     tab, dotab = makesubtab_lazy(
         ["OCR引擎", "其他设置"],
         [
-            lambda l: makescrollgrid(engines, l),
-            lambda l: makescrollgrid(allothers, l),
+            # 顶边距 16，与其他设置页首卡一致
+            lambda l: makescrollgrid(engines, l, topmargin=16),
+            functools.partial(_otherspage, self),
         ],
         delay=True,
     )

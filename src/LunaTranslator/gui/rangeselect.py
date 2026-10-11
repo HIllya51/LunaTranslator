@@ -2,16 +2,20 @@ from qtsymbols import *
 import windows, NativeUtils, gobject, threading
 from myutils.config import globalconfig
 from myutils.hwnd import safepixmap
-from gui.dynalang import LAction, LDialog, LFormLayout
-from gui.usefulwidget import getspinbox, ColorButton, getsimpleswitch
+from gui.dynalang import LAction, LFormLayout, LLabel
+from gui.usefulwidget import (
+    getspinbox,
+    ColorButton,
+    getsimplecombobox,
+    GroupCardWidget,
+    PopupWidget,
+)
 from gui.ocrtranslationoverlay import (
     OCRTranslationOverlay,
     OCRCaptureSnapshot,
-    sample_background,
     suspend_ocr_capture,
 )
 from traceback import print_exc
-from myutils.wrapper import Singleton_activate
 
 
 class SideGrip(QWidget):
@@ -140,88 +144,162 @@ class Mainw(QMainWindow):
         self.updateGrips()
 
 
-@Singleton_activate
-class yangshisetting(LDialog):
+def _hover_fill_color():
+    """悬停高亮色（含透明度，用户配置；默认黑 @10%，同原 不透明度）。"""
+    color = QColor(globalconfig.get("ocrrangehovercolor", "#1a000000"))
+    if not color.isValid():
+        color = QColor("#1a000000")
+    return color
+
+
+def add_overlay_style_rows(container):
+    """原地显示翻译 的样式子项（背景颜色/文字颜色/对齐，每行一个卡
+    子项）——OCR 设置的原地显示翻译折叠卡与选框右键菜单的样式飞层
+    共用；任一侧修改经 ocr_style_sync 信号同步另一侧的控件（弱引用，
+    控件销毁后跳过）。container 须支持 addContentWidget。"""
+    import weakref
+
+    def setstyle():
+        getattr(gobject.base.textsource, "setstyle", lambda: None)()
+
+    def onchanged(key):
+        def _(_val):
+            setstyle()
+            gobject.base.ocr_style_sync.emit(key)
+
+        return _
+
+    def syncfrom(key, w, default):
+        ref = weakref.ref(w)
+
+        def _(k):
+            if k != key:
+                return
+            w = ref()
+            if w is None:
+                return
+            w.blockSignals(True)
+            try:
+                if isinstance(w, ColorButton):
+                    w.setSelectedColor(
+                        QColor(globalconfig.get(key, default) or default)
+                    )
+                else:
+                    w.setCurrentData(globalconfig.get(key, default))
+            finally:
+                w.blockSignals(False)
+
+        gobject.base.ocr_style_sync.connect(_)
+
+    def row(label, w):
+        r = QWidget()
+        lay = QHBoxLayout(r)
+        lay.setContentsMargins(0, 0, 0, 0)
+        lay.addWidget(LLabel(label))
+        lay.addStretch(1)
+        lay.addWidget(w)
+        container.addContentWidget(r)
+
+    bgbtn = ColorButton(
+        None,
+        globalconfig,
+        "ocr_translation_overlay_background",
+        callback=onchanged("ocr_translation_overlay_background"),
+        alpha=True,
+        tips="背景颜色",
+        default="#ffffffff",
+    )
+    syncfrom("ocr_translation_overlay_background", bgbtn, "#ffffffff")
+    row("背景颜色", bgbtn)
+    textbtn = ColorButton(
+        None,
+        globalconfig,
+        "ocr_translation_overlay_textcolor",
+        callback=onchanged("ocr_translation_overlay_textcolor"),
+        tips="文字颜色",
+        default="#000000",
+    )
+    syncfrom("ocr_translation_overlay_textcolor", textbtn, "#000000")
+    row("文字颜色", textbtn)
+    aligncombo = getsimplecombobox(
+        ["左上", "右上", "中上", "居中"],
+        globalconfig,
+        "ocr_translation_overlay_alignment",
+        internal=["topleft", "topright", "topcenter", "center"],
+        callback=onchanged("ocr_translation_overlay_alignment"),
+        default="topleft",
+    )
+    syncfrom("ocr_translation_overlay_alignment", aligncombo, "topleft")
+    row("对齐", aligncombo)
+
+
+class yangshisetting(PopupWidget):
+    """样式飞层（右键菜单-样式）：鼠标悬停/边框/原地显示翻译 三张卡，
+    在光标处弹出，点外部关闭。"""
+
     def __init__(self, p):
-        super().__init__(p, Qt.WindowType.WindowCloseButtonHint)
-        self.setWindowTitle("样式")
-        form = LFormLayout(self)
-        spin = getspinbox(
-            0,
-            1,
-            globalconfig,
-            "ocrrangealpha",
-            default=0.1,
-            double=True,
-            callback=gobject.base.textsource.setstyle,
-        )
-        form.addRow("不透明度", spin)
-        spin = getspinbox(
-            1,
-            20,
-            globalconfig,
-            "ocrrangewidth",
-            default=1,
-            callback=gobject.base.textsource.setstyle,
-        )
-        form.addRow("宽度", spin)
-        colorbtn = ColorButton(
-            self,
-            globalconfig,
-            "ocrrangecolor",
-            callback=gobject.base.textsource.setstyle,
-            default="#000000",
-        )
-        form.addRow("颜色", colorbtn)
-        form.addRow(
-            "译文覆盖OCR区域",
-            getsimpleswitch(
+        super().__init__(p)
+        self.setMinimumWidth(340)
+        vlay = QVBoxLayout(self)
+        # 上下对称（PopupWidget.showEvent 默认改边距为 16/16/16/12，
+        # 底部会少 4px；置属性阻止其再改）
+        vlay.setContentsMargins(16, 16, 16, 16)
+        self.setProperty("_fluent_flyout_padded", True)
+        vlay.setSpacing(8)
+        setstyle = gobject.base.textsource.setstyle
+        # ---- 鼠标悬停 ----
+        hover = GroupCardWidget("鼠标悬停")
+        hoverform = LFormLayout(hover.contentWidget())
+        hoverform.addRow(
+            "背景颜色",
+            ColorButton(
+                self,
                 globalconfig,
-                "ocr_translation_overlay",
-                default=False,
-                callback=gobject.base.textsource.setstyle,
+                "ocrrangehovercolor",
+                callback=setstyle,
+                alpha=True,
+                default="#1a000000",
             ),
         )
-        form.addRow(
-            "覆盖译文字号",
+        vlay.addWidget(hover)
+        # ---- 边框（选框框线） ----
+        border = GroupCardWidget("边框")
+        borderform = LFormLayout(border.contentWidget())
+        borderform.addRow(
+            "宽度",
             getspinbox(
-                6,
-                100,
-                globalconfig,
-                "ocr_translation_overlay_fontsize",
-                default=22,
-                callback=gobject.base.textsource.setstyle,
-            ),
-        )
-        form.addRow(
-            "覆盖背景不透明度",
-            getspinbox(
-                0.1,
                 1,
+                20,
                 globalconfig,
-                "ocr_translation_overlay_opacity",
-                default=0.95,
-                double=True,
-                callback=gobject.base.textsource.setstyle,
+                "ocrrangewidth",
+                default=1,
+                callback=setstyle,
             ),
         )
-        form.addRow(
-            "背景自动取色",
-            getsimpleswitch(
+        borderform.addRow(
+            "颜色",
+            ColorButton(
+                self,
                 globalconfig,
-                "ocr_translation_overlay_adaptive_background",
-                default=True,
-                callback=gobject.base.textsource.setstyle,
+                "ocrrangecolor",
+                callback=setstyle,
+                default="#000000",
             ),
         )
-        self.show()
+        vlay.addWidget(border)
+        # ---- 原地显示翻译（样式子项与 OCR 设置共用，双向同步） ----
+        overlay = GroupCardWidget("原地显示翻译")
+        add_overlay_style_rows(overlay)
+        vlay.addWidget(overlay)
+        vlay.addStretch(1)
+        self.display()
 
 
 class rangeadjust(Mainw):
     closesignal = pyqtSignal()
     traceoffsetsignal = pyqtSignal(QPoint)
     overlaytranslationsignal = pyqtSignal(object)
-    overlaybackgroundsignal = pyqtSignal(object)
+    overlaylayoutsignal = pyqtSignal(object)
 
     @property
     def isfocus(self):
@@ -323,9 +401,7 @@ class rangeadjust(Mainw):
         windows.WindowFocus.giveup(self.winId())
         self.translation_overlay = OCRTranslationOverlay(self)
         self.overlaytranslationsignal.connect(self.translation_overlay.receive)
-        self.overlaybackgroundsignal.connect(
-            self.translation_overlay.receive_background
-        )
+        self.overlaylayoutsignal.connect(self.translation_overlay.receive_layout)
         self._ready = True
         self._updateWindowRgn()
 
@@ -334,28 +410,24 @@ class rangeadjust(Mainw):
         menu.setWindowFlags(
             menu.windowFlags() | Qt.WindowType.WindowStaysOnTopHint
         )
+        # 多重 / 原地 / 鼠标 | 样式 | 关闭（聚焦保留双击切换）
         multiregion = LAction("多重区域模式", menu)
         multiregion.setCheckable(True)
         multiregion.setChecked(globalconfig.get("multiregion", False))
         menu.addAction(multiregion)
-        focus = None
-        if globalconfig.get("multiregion", False):
-            focus = LAction("聚焦", menu)
-            focus.setCheckable(True)
-            focus.setChecked(self.isfocus)
-            menu.addAction(focus)
-        menu.addSeparator()
-        style = LAction("样式", menu)
-        menu.addAction(style)
-        overlay = LAction("译文覆盖OCR区域", menu)
+        overlay = LAction("原地显示翻译", menu)
         overlay.setCheckable(True)
         overlay.setChecked(globalconfig.get("ocr_translation_overlay", False))
         menu.addAction(overlay)
-        close = LAction("关闭", menu)
         mousetransp = LAction("鼠标穿透窗口", menu)
         mousetransp.setCheckable(True)
         mousetransp.setChecked(self._mousetransp)
         menu.addAction(mousetransp)
+        menu.addSeparator()
+        style = LAction("样式", menu)
+        menu.addAction(style)
+        menu.addSeparator()
+        close = LAction("关闭", menu)
         menu.addAction(close)
         with suspend_ocr_capture():
             action = menu.exec(QCursor.pos())
@@ -366,12 +438,11 @@ class rangeadjust(Mainw):
                 gobject.base.textsource.leaveone()
         elif action == overlay:
             globalconfig["ocr_translation_overlay"] = overlay.isChecked()
+            # 同步 OCR 设置页里的开关
+            gobject.base.ocr_inplace_switch.emit(overlay.isChecked())
             gobject.base.textsource.setstyle()
         elif action == style:
             yangshisetting(self)
-        elif focus is not None and action == focus:
-            self.isfocus = focus.isChecked()
-            gobject.base.translation_ui.startTranslater()
         elif action == mousetransp:
             self.setmousetransp(mousetransp.isChecked())
         elif action == close:
@@ -383,8 +454,8 @@ class rangeadjust(Mainw):
         hwnd = int(self.winId())
         if not hwnd:
             return
-        # 鼠标穿透或透明度为 0 时，仅保留四条边框可响应鼠标，内部鼠标穿透。
-        if self._mousetransp or globalconfig.get("ocrrangealpha", 0.1) == 0:
+        # 鼠标穿透或悬停高亮全透明时，仅保留四条边框可响应鼠标，内部鼠标穿透。
+        if self._mousetransp or _hover_fill_color().alpha() == 0:
             geo = self.geometry()
             if geo.width() > 0 and geo.height() > 0:
                 border = round(
@@ -422,18 +493,6 @@ class rangeadjust(Mainw):
         if getattr(self, "_ready", False):
             self._updateWindowRgn()
 
-    def update_overlay_background(self, image, rect):
-        # Runs in the OCR worker, sampling raw color before OCR preprocessing.
-        if not globalconfig.get("ocr_translation_overlay", False):
-            return
-        rgb = sample_background(image)
-        if rgb is None:
-            return
-        sample = (rect.getRect(), rgb)
-        if sample != getattr(self, "_last_background_sample", None):
-            self._last_background_sample = sample
-            self.overlaybackgroundsignal.emit(sample)
-
     def capture_snapshot(self):
         # Called by workers; no native/Qt widget access under this lock.
         with self.ocr_source_lock:
@@ -447,14 +506,21 @@ class rangeadjust(Mainw):
             if text != self._ocr_overlay_original:
                 self._ocr_overlay_original = text
                 self._ocr_overlay_revision += 1
-                self.overlaytranslationsignal.emit((self._ocr_overlay_revision, None, ""))
+                self.overlaytranslationsignal.emit(
+                    (self._ocr_overlay_revision, None, "", None))
             return self._ocr_overlay_revision
+
+    def publish_overlay_layout(self, revision, rects):
+        """发布本轮识别的块区域布局（OCR 工作线程调用，经信号排队回
+        GUI 线程；rects 为各块 box4，None = 无坐标退回整框绘制）。"""
+        self.overlaylayoutsignal.emit((revision, rects))
 
     def invalidate_overlay(self):
         with self.ocr_source_lock:
             self._ocr_overlay_original = None
             self._ocr_overlay_revision += 1
-            self.overlaytranslationsignal.emit((self._ocr_overlay_revision, None, ""))
+            self.overlaytranslationsignal.emit(
+                (self._ocr_overlay_revision, None, "", None))
 
     def _set_ocr_rect(self, rect):
         with self.ocr_source_lock:
@@ -521,9 +587,8 @@ class rangeadjust(Mainw):
         if self._mousetransp:
             return
         self.drag_label.setStyleSheet(
-            "background-color:rgba(0,0,0, {})".format(
-                globalconfig.get("ocrrangealpha", 0.1)
-            )
+            "background-color: %s;" % _hover_fill_color().name(
+                QColor.NameFormat.HexArgb)
         )
 
     def leaveEvent(self, _):

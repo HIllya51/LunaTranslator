@@ -2659,9 +2659,11 @@ def makescroll():
     return scroll
 
 
-def makescrollgrid(grid, lay: QLayout, savelist=None, savelay=None, hiderows=None):
+def makescrollgrid(grid, lay: QLayout, savelist=None, savelay=None, hiderows=None,
+                   topmargin=None):
     # 子页签页（tabadd_lazy 标记）的网格顶部紧贴 tabbar；
-    # 卡内网格（pagecard / 主页卡）顶边距统一为 16（与左边距一致）
+    # 卡内网格（pagecard / 主页卡）顶边距统一为 16（与左边距一致）；
+    # topmargin 显式指定时覆盖默认
     flush = bool(getattr(lay, "property", lambda *_: None)("_fluent_tabbar_page"))
     incard = bool(getattr(lay, "property", lambda *_: None)("_fluent_card_grid"))
     mainpg = bool(getattr(lay, "property", lambda *_: None)("_fluent_main_grid"))
@@ -2672,7 +2674,8 @@ def makescrollgrid(grid, lay: QLayout, savelist=None, savelay=None, hiderows=Non
         delay=True,
         hiderows=hiderows,
         toptouch=flush,
-        topmargin=16 if (incard or mainpg) else None,
+        topmargin=topmargin if topmargin is not None
+        else (16 if (incard or mainpg) else None),
     )
     swid = makescroll()
     lay.addWidget(swid)

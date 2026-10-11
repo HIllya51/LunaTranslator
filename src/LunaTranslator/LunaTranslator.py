@@ -48,6 +48,7 @@ from textio.textsource.texthook import texthook
 from textio.textsource.ocrtext import ocrtext
 from gui.ocrtranslationoverlay import (
     route_overlay_translation,
+    overlay_source_displays,
     overlay_source_is_current,
     OCRRegionTask,
 )
@@ -86,6 +87,18 @@ from gui.qevent import DarkLightChangedEvent
 from gui.setting.translate import autostartllamacpp
 from collections import OrderedDict
 from itertools import islice
+
+
+def _same_ocr_source(a, b):
+    """同一 OCR 来源判同：区域+修订（ocr_overlay_context）再加块序号。
+    同一选框里内容相同的两个块是不同来源，不能因文本相同被判重复；
+    普通字符串（无来源）之间仍按文本去重。"""
+    return (
+        getattr(a, "ocr_overlay_context", None)
+        == getattr(b, "ocr_overlay_context", None)
+        and getattr(a, "ocr_block_index", None)
+        == getattr(b, "ocr_block_index", None)
+    )
 
 
 class HistoryHelper:
@@ -171,6 +184,10 @@ class BASEOBJECT(QObject):
     llamacppposttask = pyqtSignal(str, object)
     wheelhistory = pyqtSignal(int)
     switchdisplayengine = pyqtSignal(str)
+    # OCR 选框右键菜单切换 原地显示翻译 -> 同步设置页开关（btn.setChecked）
+    ocr_inplace_switch = pyqtSignal(bool)
+    # 原地显示翻译 样式（背景色/文字色/对齐）任一侧修改 -> 同步另一侧控件
+    ocr_style_sync = pyqtSignal(str)
 
     def connectsignal(self, signal: pyqtBoundSignal, callback):
         if signal in self.__cachesignal:
@@ -418,12 +435,6 @@ class BASEOBJECT(QObject):
             self.hwnd = None
             self.gameuid = 0
         self.textsource_p = _
-        ui = getattr(self, "translation_ui", None)
-        if ui is not None:
-            ui.ocroverlaymodesignal.emit(
-                isinstance(_, ocrtext)
-                and globalconfig.get("ocr_translation_overlay", False)
-            )
 
     @threader
     def safeloadprocessmodels(self):
@@ -517,15 +528,17 @@ class BASEOBJECT(QObject):
 
     def displayinfomessage(self, text, infotype):
         if infotype == "<notrans>":
+            overlay_live = overlay_source_displays(text)
             route_overlay_translation(text, "ocr", text)
-            self.translation_ui.displayres.emit(
-                dict(
-                    color=SpecialColor.RawTextColor,
-                    res=text,
-                    clear=True,
-                    klass=str(uuid.uuid4()),
+            if not overlay_live:  # 原地显示时主窗口不显示
+                self.translation_ui.displayres.emit(
+                    dict(
+                        color=SpecialColor.RawTextColor,
+                        res=text,
+                        clear=True,
+                        klass=str(uuid.uuid4()),
+                    )
                 )
-            )
             self.currenttext_raw = text
             self.currenttext = text
             self.statusok = True
@@ -630,11 +643,18 @@ class BASEOBJECT(QObject):
             is_auto_run
             and text == self.currenttext_raw
             and statusok == self.statusok
-            and getattr(text, "ocr_overlay_context", None)
-            == getattr(self.currenttext_raw, "ocr_overlay_context", None)
+            and _same_ocr_source(text, self.currenttext_raw)
         ):
             return
         origin = text
+        # 原地显示翻译：本条文本的译文走 OCR 覆盖层，主窗口不再显示
+        # 原文/译文（TTS、输出、历史、翻译记录不受影响）。全局开关或
+        # 来源容器强制原地显示（单次OCR常驻容器）均算
+        ocr_overlay_source = None
+        if not waitforresultcallback:
+            candidate = self.currenttext_raw if isRefresh else origin
+            if overlay_source_displays(candidate):
+                ocr_overlay_source = candidate
         __erroroutput = functools.partial(self.__erroroutput, None, erroroutput, None)
         currentsignature = uuid.uuid4() if not isRefresh else self.currentsignature
         try:
@@ -657,8 +677,7 @@ class BASEOBJECT(QObject):
             is_auto_run
             and text == self.currenttext
             and statusok == self.statusok
-            and getattr(origin, "ocr_overlay_context", None)
-            == getattr(self.currenttext_raw, "ocr_overlay_context", None)
+            and _same_ocr_source(origin, self.currenttext_raw)
         ):
             return
         self.currentsignature = currentsignature
@@ -670,7 +689,10 @@ class BASEOBJECT(QObject):
             if len(text) > globalconfig["maxlength"]:
                 text = text[: globalconfig["maxlength"]] + "……"
 
-            self.translation_ui.displayraw1.emit(text, updateTranslate, is_auto_run)
+            if ocr_overlay_source is None:
+                self.translation_ui.displayraw1.emit(
+                    text, updateTranslate, is_auto_run
+                )
             if statusok and not isRefresh:
                 self.transhis.getnewsentencesignal.emit(text)
             self.maybesetedittext(text)
@@ -689,9 +711,13 @@ class BASEOBJECT(QObject):
                     self.readcurrent()
                 self.dispatchoutputer(text, True)
 
-            _showrawfunction_unsafe = functools.partial(
-                self.translation_ui.displayraw1.emit, text, updateTranslate, is_auto_run
-            )
+            if ocr_overlay_source is None:
+                _showrawfunction_unsafe = functools.partial(
+                    self.translation_ui.displayraw1.emit,
+                    text,
+                    updateTranslate,
+                    is_auto_run,
+                )
 
         def __(_, uid, text):
             if _:
@@ -775,8 +801,10 @@ class BASEOBJECT(QObject):
                 return
 
         usefultranslators = set(real_fix_rank)
-        if globalconfig.get("fix_translate_rank", False) and (
-            not waitforresultcallback
+        if (
+            globalconfig.get("fix_translate_rank", False)
+            and (not waitforresultcallback)
+            and ocr_overlay_source is None  # 原地显示时主窗口不显示
         ):
             _showrawfunction = functools.partial(
                 self._delaypreparefixrank, _showrawfunction, real_fix_rank, is_auto_run
@@ -784,14 +812,7 @@ class BASEOBJECT(QObject):
         if not (updateTranslate or globalconfig.get("refresh_on_get_trans", False)):
             _showrawfunction()
             _showrawfunction = None
-        ocr_overlay_source = None
-        if (
-            globalconfig.get("ocr_translation_overlay", False)
-            and not waitforresultcallback
-        ):
-            candidate = self.currenttext_raw if isRefresh else origin
-            if overlay_source_is_current(candidate):
-                ocr_overlay_source = candidate
+        # ocr_overlay_source 已在函数开头计算（原地显示时主窗口不显示）
         read_trans_once_check = []
         for engine in real_fix_rank:
             if engine in globalconfig["fanyi"]:
@@ -982,6 +1003,7 @@ class BASEOBJECT(QObject):
                 and (iter_res_status in (0, 1))
                 and (not waitforresultcallback)
                 and (self.history.viewptr == -1)
+                and ocr_overlay_source is None  # 原地显示时主窗口不显示译文
             ):
                 displayreskwargs = dict(
                     name=_TR(dynamicapiname(classname)),
