@@ -1300,10 +1300,37 @@ namespace
     return NewHook(hp, "KiriKiriZX");
   }
 }
+bool layerExDraw()
+{
+  // ランドセルシンドローム
+  auto m = GetModuleHandle(L"layerExDraw.dll");
+  if (!m)
+    return false;
+  auto [s, e] = Util::QueryModuleLimits(m, 0, PAGE_READONLY);
+  wchar_t tjs[] = L"measureStringInternal";
+  auto addr = MemDbg::findBytes(tjs, sizeof(tjs), s, e);
+  if (!addr)
+    return false;
+  addr = MemDbg::find_leaorpush_addr(addr, s, e);
+  if (!addr)
+    return false;
+  BYTE check[] = {
+      0x68, XX4,
+      0x68, XX4,
+      0x8b, XX, XX,
+      0xe8, XX4};
+  if (!MatchPattern(addr - 5, check, sizeof(check)))
+    return false;
+  HookParam hp;
+  hp.address = *(int *)(addr - 4);
+  hp.offset = stackoffset(3);
+  hp.type = USING_STRING | CODEC_UTF16;
+  return NewHook(hp, "measureStringInternal");
+}
 bool InsertKiriKiriZHook()
 {
   auto ok = Krkrtextrenderdll();
-  ok = kagparser() || ok;
+  ok = kagparser() || ok || layerExDraw();
   return krkrzx() | (InsertKiriKiriZHook2() || InsertKiriKiriZHook1()) || ok;
 }
 namespace

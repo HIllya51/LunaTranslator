@@ -2712,6 +2712,13 @@ namespace
             buffer->from_t(ch);
         }
     }
+    void SLPM66841(TextBuffer *buffer, HookParam *hp)
+    {
+        if ((DWORD)PCSX2_REG(t2) != 0)
+            return buffer->clear();
+        FSLPM65997(buffer, hp);
+        all_ascii_Filter(buffer, hp);
+    }
 }
 struct emfuncinfoX
 {
@@ -2719,6 +2726,16 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // 緋色の欠片 ～玉依姫奇譚～
+    {0x16C960, {FULL_STRING, PCSX2_REG_OFFSET(a1), 0, 0, FSLPM65997, std::vector<const char *>{"SLPM-66453", "SLPM-66454"}}},
+    // 緋色の欠片 愛蔵版 ～玉依姫奇譚～
+    {0x12BBC0, {FULL_STRING, PCSX2_REG_OFFSET(a1), 0, 0, FSLPM55216, "SLPM-55216"}},
+    // 翡翠の雫 ～緋色の欠片2～
+    {0x1AAB60, {FULL_STRING, PCSX2_REG_OFFSET(a1), 0, 0, FSLPM65997, std::vector<const char *>{"SLPM-66824", "SLPM-66825"}}},
+    // 真翡翠の雫 ～緋色の欠片2～
+    {0x172990, {FULL_STRING, PCSX2_REG_OFFSET(a3), 0, 0, FSLPM65997, "SLPM-55217"}},
+    // ウィル・オ・ウィスプ
+    {0x1056E8, {FULL_STRING, PCSX2_REG_OFFSET(a1), 0, 0, SLPM66841, std::vector<const char *>{"SLPM-66841", "SLPM-66842"}}},
     // THE 鑑識官
     {0x118958, {USING_CHAR | CODEC_UTF16, PCSX2_REG_OFFSET(a0), 0, SLPM62586, 0, "SLPM-62586"}},
     // Darling Special Backlash ～恋のエキゾースト・ヒート～
@@ -2783,10 +2800,6 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x1b6b70, {FULL_STRING, 0, 0, SLPM66351<0x1e7d400>, 0, "SLPM-66659"}},
     // 暴れん坊プリンセス
     {0x2D6490, {FULL_STRING, PCSX2_REG_OFFSET(a1), 0, 0, SLPM65054, "SLPM-65054"}},
-    // 緋色の欠片 ～玉依姫奇譚～
-    {0x16C960, {FULL_STRING, PCSX2_REG_OFFSET(a1), 0, 0, FSLPM65997, std::vector<const char *>{"SLPM-66453", "SLPM-66454"}}},
-    // 緋色の欠片 愛蔵版 ～玉依姫奇譚～
-    {0x12BBC0, {FULL_STRING, PCSX2_REG_OFFSET(a1), 0, 0, FSLPM55216, "SLPM-55216"}},
     // ギャラクシーエンジェルⅡ 無限回廊の鍵
     {0x284D08, {0, PCSX2_REG_OFFSET(a1), 0, 0, SLPM66779, std::vector<const char *>{"SLPM-66779", "SLPM-66780"}}},
     // 漢のためのバイブル THE 友情アドベンチャー ～炎多留・魂～
