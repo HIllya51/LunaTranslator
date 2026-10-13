@@ -31,12 +31,14 @@ add_library(NativeUtils SHARED
     memory.cpp
     devices.cpp
     dllanalysis.cpp
-    globalmessagelistener.cpp AreoAcrylic.cpp screenshot.cpp hwnd.cpp theme.cpp lnk.cpp muteprocess.cpp sapi_dll.cpp tools.cpp icon.cpp adapters.cpp
+    globalmessagelistener.cpp AreoAcrylic.cpp screenshot.cpp hwnd.cpp theme.cpp lnk.cpp muteprocess.cpp sapi_dll.cpp tools.cpp icon.cpp adapters.cpp winutils.cpp
     ${loopbackaudio} ${winrt} ${versioninfo}
 )
 target_precompile_headers(NativeUtils REUSE_FROM pch)
 target_link_libraries(NativeUtils PRIVATE 
                     pdh 
+                    Mpr
+                    Psapi
                     tiny-aes 
                     Dbghelp 
                     libmecab 

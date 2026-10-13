@@ -11,7 +11,7 @@ from contextlib import contextmanager
 from typing import NamedTuple
 
 from qtsymbols import *
-import windows, gobject
+import windows, NativeUtils, gobject
 from myutils.config import globalconfig
 
 if isqt5:
@@ -445,7 +445,7 @@ class OCRTranslationOverlay(QWidget):
             windows.WindowFocus.giveup(hwnd)
             windows.MouseTrans.set(hwnd)
             # 截图排除（与选框/主窗口共用的全局机制，见 windows.py）
-            self.capture_excluded = windows.exclude_from_capture(hwnd)
+            self.capture_excluded = NativeUtils.ExcludeFromCapture(hwnd)
         finally:
             self._applying_native_flags = False
 

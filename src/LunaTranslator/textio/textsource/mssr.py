@@ -77,7 +77,7 @@ class LiveCaptions:
         for pid, exebase in NativeUtils.ListProcesses():
             if exebase.lower() != "livecaptions.exe":
                 continue
-            name_ = windows.GetProcessFileName(pid)
+            name_ = NativeUtils.GetProcessFileName(pid)
             if name_.lower() == self.lcexe.lower():
                 return pid
         return None
@@ -96,7 +96,7 @@ class MSSR:
                 continue
             kv[ls[0]] = ls[1]
         locale_id = kv["locale-id"]
-        locale = windows.LCIDToLocaleName(int(locale_id))
+        locale = NativeUtils.LCIDToLocaleNameEx(int(locale_id))
         lv = kv.get("license-version", "0")
         return locale, lv
 
@@ -178,13 +178,13 @@ class MSSR:
         pid = windows.GetWindowThreadProcessId(hwnd)
         if not pid:
             return 0
-        pexe = windows.GetProcessFileName(pid)
+        pexe = NativeUtils.GetProcessFileName(pid)
         ppid = pid
         while True:
             _ = NativeUtils.GetParentProcessID(ppid)
             if _ in (0, ppid):
                 break
-            if windows.GetProcessFileName(_) != pexe:
+            if NativeUtils.GetProcessFileName(_) != pexe:
                 break
             ppid = _
         return ppid
@@ -237,7 +237,7 @@ class MSSR:
                     text = _TR("系统不支持环回录制")
                     if err:
                         hr = int(err)
-                        text += ": {} {}".format(hex(hr)[2:], windows.FormatMessage(hr))
+                        text += ": {} {}".format(hex(hr)[2:], NativeUtils.WinErrorMessage(hr))
                 gobject.base.displayinfomessage(text, "<msg_error_Origin>")
                 raise Exception(text)
             elif kind == "result":

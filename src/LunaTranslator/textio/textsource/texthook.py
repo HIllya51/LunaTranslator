@@ -349,7 +349,7 @@ class texthook(basetext):
         pid = windows.GetWindowThreadProcessId(hwnd)
         if pid == os.getpid():
             return
-        name_ = windows.GetProcessFileName(pid)
+        name_ = NativeUtils.GetProcessFileName(pid)
         if not name_:
             return
         if name_ in self.autohookblacklist:
@@ -502,7 +502,7 @@ class texthook(basetext):
                 gobject.base.translation_ui.showMarkDownSig.emit(
                     _TR("权限不足，请以管理员权限运行！")
                 )
-            raise Exception(windows.FormatMessage(ret))
+            raise Exception(NativeUtils.WinErrorMessage(ret))
 
     @threader
     def injectproc(self, injecttimeout, pids):

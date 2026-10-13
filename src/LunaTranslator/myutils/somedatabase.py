@@ -1,4 +1,4 @@
-import sqlite3, gobject, time, windows
+import sqlite3, gobject, time, windows, NativeUtils
 import time
 import os
 from qtsymbols import *
@@ -167,7 +167,7 @@ class somedatabase:
     def stricttraceexe(self):
         hwnd = windows.GetForegroundWindow()
         pid = windows.GetWindowThreadProcessId(hwnd)
-        exe = windows.GetProcessFileName(pid)
+        exe = NativeUtils.GetProcessFileName(pid)
         exes = set()
         exes.add(exe)
 
@@ -175,7 +175,7 @@ class somedatabase:
         if gamehwnd:
             gamepid = windows.GetWindowThreadProcessId(gamehwnd)
             if gamepid and pid == os.getpid():
-                exes.add(windows.GetProcessFileName(gamepid))
+                exes.add(NativeUtils.GetProcessFileName(gamepid))
         return exes
 
     def finduids(self, exes):

@@ -17,7 +17,6 @@ from ctypes import (
     sizeof,
     c_char,
     byref,
-    cast,
 )
 from ctypes.wintypes import (
     LPVOID,
@@ -25,8 +24,6 @@ from ctypes.wintypes import (
     POINT,
     HWND,
     BOOL,
-    LCID,
-    LCTYPE,
     DWORD,
     LONG,
     HMONITOR,
@@ -38,6 +35,8 @@ from ctypes.wintypes import (
     UINT,
     HMODULE,
     LPLONG,
+    LCID,
+    LCTYPE,
     HDC,
     SHORT,
 )
@@ -180,32 +179,6 @@ class MouseTrans:
         )
 
 
-class WindowRgn:
-    @staticmethod
-    def set_frame(hwnd, w, h, border):
-        # 将窗口命中测试区域限制为宽度为 border 的四条边框，内部鼠标穿透。
-        hwnd = int(hwnd)
-        border = max(1, int(border))
-        w = int(w)
-        h = int(h)
-        rgn = CreateRectRgn(0, 0, border, h)  # 左
-        tmp = CreateRectRgn(0, 0, w, border)  # 上
-        CombineRgn(rgn, rgn, tmp, RGN_OR)
-        DeleteObject(tmp)
-        tmp = CreateRectRgn(max(0, w - border), 0, w, h)  # 右
-        CombineRgn(rgn, rgn, tmp, RGN_OR)
-        DeleteObject(tmp)
-        tmp = CreateRectRgn(0, max(0, h - border), w, h)  # 下
-        CombineRgn(rgn, rgn, tmp, RGN_OR)
-        DeleteObject(tmp)
-        # SetWindowRgn 后系统接管 rgn，不可再 DeleteObject
-        SetWindowRgn(hwnd, rgn, True)
-
-    @staticmethod
-    def clear(hwnd):
-        SetWindowRgn(int(hwnd), 0, True)
-
-
 class STARTUPINFO(Structure):
     _fields_ = [
         ("cb", c_uint),
@@ -238,15 +211,10 @@ class PROCESS_INFORMATION(Structure):
     ]
 
 
-class UNIVERSAL_NAME_INFO(Structure):
-    _fields_ = [("lpUniversalName", c_wchar_p)]
-
-
 _user32 = windll.User32
 _gdi32 = windll.Gdi32
 _shell32 = windll.Shell32
 _kernel32 = windll.Kernel32
-_psapi = windll.Psapi
 _Advapi32 = windll.Advapi32
 _Shlwapi = windll.Shlwapi
 _Ole32 = windll.Ole32
@@ -285,9 +253,6 @@ GetWindowLong.restype = LONG
 SetWindowLong = _user32.SetWindowLongW
 SetWindowLong.argtypes = HWND, c_int, LONG
 SetWindowLong.restype = LONG
-SetWindowRgn = _user32.SetWindowRgn
-SetWindowRgn.argtypes = HWND, HANDLE, c_bool
-SetWindowRgn.restype = c_int
 BringWindowToTop = _user32.BringWindowToTop
 BringWindowToTop.argtypes = (HWND,)
 GetDC = _user32.GetDC
@@ -308,15 +273,6 @@ SetCursorPos.argtypes = (c_int, c_int)
 GetDeviceCaps = _gdi32.GetDeviceCaps
 GetDeviceCaps.argtypes = HDC, c_int
 GetDeviceCaps.restype = c_int
-CreateRectRgn = _gdi32.CreateRectRgn
-CreateRectRgn.argtypes = c_int, c_int, c_int, c_int
-CreateRectRgn.restype = HANDLE
-CombineRgn = _gdi32.CombineRgn
-CombineRgn.argtypes = HANDLE, HANDLE, HANDLE, c_int
-CombineRgn.restype = c_int
-DeleteObject = _gdi32.DeleteObject
-DeleteObject.argtypes = (HANDLE,)
-DeleteObject.restype = BOOL
 _SetWindowPos = _user32.SetWindowPos
 _SetWindowPos.argtypes = c_int, c_void_p, c_int, c_int, c_int, c_int, c_uint
 _GetWindowText = _user32.GetWindowTextW
@@ -356,96 +312,6 @@ _GetWindowThreadProcessId = _user32.GetWindowThreadProcessId
 _GetWindowThreadProcessId.argtypes = HWND, c_void_p
 GetClipboardOwner = _user32.GetClipboardOwner
 GetClipboardOwner.restype = HWND
-try:
-    _GetModuleFileNameExW = _kernel32.K32GetModuleFileNameExW
-except:
-    _GetModuleFileNameExW = _psapi.GetModuleFileNameExW
-_GetModuleFileNameExW.argtypes = HANDLE, HMODULE, LPWSTR, DWORD
-_GetModuleFileNameExW.restype = DWORD
-
-
-_QueryDosDeviceW = _kernel32.QueryDosDeviceW
-_QueryDosDeviceW.argtypes = c_wchar_p, c_wchar_p, c_uint
-
-try:
-    _GetProcessImageFileNameW = _kernel32.K32GetProcessImageFileNameW
-except:
-    _GetProcessImageFileNameW = _psapi.GetProcessImageFileNameW
-_GetProcessImageFileNameW.argtypes = c_void_p, c_wchar_p, c_uint
-
-_Mpr = windll.Mpr
-_WNetGetConnectionW = _Mpr.WNetGetConnectionW
-_WNetGetConnectionW.argtypes = c_wchar_p, c_wchar_p, c_void_p
-
-_WNetGetUniversalNameW = _Mpr.WNetGetUniversalNameW
-_WNetGetUniversalNameW.argtypes = c_wchar_p, c_uint, c_wchar_p, POINTER(c_uint)
-
-_GetLogicalDriveStringsW = _kernel32.GetLogicalDriveStringsW
-_GetLogicalDriveStringsW.argtypes = DWORD, LPWSTR
-_GetLogicalDriveStringsW.restype = DWORD
-
-_GetCurrentDirectoryW = _kernel32.GetCurrentDirectoryW
-_GetCurrentDirectoryW.argtypes = c_uint, c_wchar_p
-
-try:
-    _QueryFullProcessImageNameW = _kernel32.QueryFullProcessImageNameW
-    _QueryFullProcessImageNameW.argtypes = c_void_p, c_uint, c_wchar_p, c_void_p
-except:
-    _QueryFullProcessImageNameW = 0
-
-_GetLongPathName = _kernel32.GetLongPathNameW
-_GetLongPathName.argtypes = (LPCWSTR, LPWSTR, DWORD)
-_GetLongPathName.restype = DWORD
-
-
-def GetLongPathName(file):
-    succ = _GetLongPathName(file, None, 0)
-    if succ == 0:
-        return file
-    buff = create_unicode_buffer(succ + 1)
-    succ = _GetLongPathName(file, buff, succ)
-    path = buff.value
-    return path
-
-
-def get_logical_drivers():
-    buffsize = 300
-    buffer = create_unicode_buffer(buffsize)
-
-    result = _GetLogicalDriveStringsW(buffsize, buffer)
-
-    if not result:
-        return []
-
-    if buffsize < result:
-        buffer = create_unicode_buffer(result + 1)
-        result = _GetLogicalDriveStringsW(result, buffer)
-
-    drivers = buffer[:result].split("\0")
-    if drivers and not drivers[-1]:
-        drivers.pop()
-    return drivers
-
-
-def check_unc_file(v: str):
-    buf = create_unicode_buffer(65535)
-    for A in get_logical_drivers():
-        A = A[:-1]
-        if _QueryDosDeviceW(A, buf, 65535) != 0:
-            prefixdos = buf.value
-            if v.startswith(prefixdos):
-                return A + v[len(prefixdos) :]
-
-        # 我操了，使用管理员权限时，这个玩意会失败
-        if _WNetGetUniversalNameW(A, 1, buf, byref(c_uint(65535))) == 0:
-            prefixnetwork = cast(
-                buf, POINTER(UNIVERSAL_NAME_INFO)
-            ).contents.lpUniversalName
-            if v.startswith(prefixnetwork):
-                return A + v[len(prefixnetwork) :]
-    return None
-
-
 _CreateFileW = _kernel32.CreateFileW
 _CreateFileW.argtypes = (LPCWSTR, DWORD, DWORD, LPCVOID, DWORD, DWORD, HANDLE)
 _CreateFileW.restype = AutoHandle
@@ -469,99 +335,6 @@ def CreateFile(
         flagsAndAttributes,
         hTemplateFile,
     )
-
-
-try:
-    GetFinalPathNameByHandleW = _kernel32.GetFinalPathNameByHandleW
-    GetFinalPathNameByHandleW.argtypes = (HANDLE, LPWSTR, DWORD, DWORD)
-    GetFinalPathNameByHandleW.restype = DWORD
-except:
-    GetFinalPathNameByHandleW = None
-
-
-def parseuncex(v: str, t) -> str:
-    hFile = CreateFile(
-        v,
-        GENERIC_READ,
-        FILE_SHARE_READ,
-        None,
-        OPEN_EXISTING,
-        FILE_ATTRIBUTE_NORMAL,
-        None,
-    )
-    if not GetFinalPathNameByHandleW:
-        return
-    if not hFile:
-        return
-    sz = GetFinalPathNameByHandleW(hFile, None, 0, t)
-    if not sz:
-        return
-    buff = create_unicode_buffer(sz + 1)
-    GetFinalPathNameByHandleW(hFile, buff, sz, t)
-    return buff.value
-
-
-def check_maybe_unc_file(v: str):
-    if not v.startswith("\\"):
-        return v
-    res = check_unc_file(v)
-    if res:
-        return res
-    # 有时候GetModuleFileNameExW返回的就是VOLUME_NAME_GUID（例如sshfs），无法CreateFile，但是可以QueryDosDevice查询到
-    # mac上parallel返回的NT路径无法用QueryDosDevice查询到（应该是需要再额外查注册表处理一下才行的，所以只好用GetFinalPathNameByHandleW去查DOS路径
-    dos = parseuncex(v, VOLUME_NAME_DOS)
-    # 按照文档所说，VOLUME_NAME_NT之后QueryDosDevice是可以转成X:\xxxx的，然而实测经常查不到根本没卵用
-    # 获取的结果是\\?\的UNC路径。虽然没办法转成X:\xxxx，但实测可以管用。
-    if dos:
-        if dos.startswith("\\\\?\\"):
-            # 虽然这个东西很真实，但实际上大部分程序根本不适配，他只在长路径下实际有意义，否则反而使一些东西运行不正常
-            dos = dos[4:]
-        return dos
-    return v
-
-
-def _GetProcessFileName(hHandle):
-    w = create_unicode_buffer(65535)
-    # 我佛了，太混乱了，不同权限获取的东西完全不一样
-    size = DWORD(65535)
-    # 这三者越前面的越直接得到好路径，后面的经常得到辣鸡路径
-    if (
-        (_GetModuleFileNameExW(hHandle, None, w, 65535) == 0)
-        and (
-            _QueryFullProcessImageNameW == 0
-            or _QueryFullProcessImageNameW(hHandle, 0, w, pointer(size)) == 0
-        )
-        and (_GetProcessImageFileNameW(hHandle, w, 65535) == 0)
-    ):
-        return
-
-    v: str = w.value
-
-    return check_maybe_unc_file(v)
-
-
-def ___GetProcessFileName(hHandle):
-    p = _GetProcessFileName(hHandle)
-    if p:
-        # GetModuleFileNameExW有可能莫名其妙得到短路径，导致部分路径无法匹配
-        p = GetLongPathName(p)
-    return p
-
-
-def GetProcessFileName(pid):
-    for _ in (
-        PROCESS_ALL_ACCESS,  # 如果能这个，那最好，因为一些特殊路径在这个权限下可以不需要处理
-        PROCESS_QUERY_INFORMATION | PROCESS_VM_READ,  # GetModuleFileNameExW
-        PROCESS_QUERY_INFORMATION,  # XP
-        PROCESS_QUERY_LIMITED_INFORMATION,
-    ):
-        hproc = OpenProcess(_, False, pid)
-        if not hproc:
-            continue
-        name_ = ___GetProcessFileName(hproc)
-        if name_:
-            return name_
-    return None
 
 
 _CreateProcessW = _kernel32.CreateProcessW
@@ -753,16 +526,6 @@ def WaitNamedPipe(pipename, _=NMPWAIT_WAIT_FOREVER):
 #     return TargetHandle.value
 
 
-def mciSendString(s):
-    _winmm = windll.winmm
-    _mciSendStringW = _winmm.mciSendStringW
-    _mciSendStringW.argtypes = c_wchar_p, c_wchar_p, c_uint, c_void_p
-    bf = create_unicode_buffer(1024)
-    if _mciSendStringW(s, bf, 1024, None) != 0:
-        return None
-    return bf.value
-
-
 _IsUserAnAdmin = _shell32.IsUserAnAdmin
 
 
@@ -861,38 +624,6 @@ IsZoomed.argtypes = (HWND,)
 IsZoomed.restype = BOOL
 
 
-FORMAT_MESSAGE_ALLOCATE_BUFFER = 0x100
-FORMAT_MESSAGE_FROM_HMODULE = 0x800
-FORMAT_MESSAGE_FROM_SYSTEM = 0x1000
-FORMAT_MESSAGE_IGNORE_INSERTS = 0x200
-FormatMessageW = _kernel32.FormatMessageW
-FormatMessageW.argtypes = DWORD, LPCVOID, DWORD, DWORD, LPWSTR, DWORD, LPCVOID
-FormatMessageW.restype = c_size_t
-LocalFree = _kernel32.LocalFree
-LocalFree.argtypes = (c_void_p,)
-
-
-def FormatMessage(code, module=None):
-    mess = LPWSTR()
-    flag = (
-        FORMAT_MESSAGE_ALLOCATE_BUFFER
-        | FORMAT_MESSAGE_FROM_SYSTEM
-        | FORMAT_MESSAGE_IGNORE_INSERTS
-    )
-    if module:
-        flag |= FORMAT_MESSAGE_FROM_HMODULE
-
-    length = FormatMessageW(
-        flag, module, code, 0x400, cast(pointer(mess), LPWSTR), 0, None
-    )
-    if mess.value is None:
-        return ""
-    res = mess.value[:length]
-    if length:
-        LocalFree(mess)
-    return res.strip()
-
-
 MONITOR_DEFAULTTONEAREST = 0x00000002
 _MonitorFromWindow = _user32.MonitorFromWindow
 _MonitorFromWindow.argtypes = HWND, DWORD
@@ -908,10 +639,6 @@ PathFileExists.argtypes = (LPCWSTR,)
 PathFileExists.restype = BOOL
 
 
-class HRESULT_ERROR(Exception):
-    pass
-
-
 def FAILED(hr):
     hr = HRESULT(hr).value
     return hr < 0
@@ -920,11 +647,6 @@ def FAILED(hr):
 def SUCCEEDDED(hr):
     hr = HRESULT(hr).value
     return hr >= 0
-
-
-def CHECK_FAILURE(hr, module=None):
-    if FAILED(hr):
-        raise HRESULT_ERROR(FormatMessage(hr, module))
 
 
 GetClassNameW = _user32.GetClassNameW
@@ -970,20 +692,6 @@ StrCmpLogicalW = _Shlwapi.StrCmpLogicalW
 StrCmpLogicalW.argtypes = (LPCWSTR, LPCWSTR)
 StrCmpLogicalW.restype = INT
 
-LOCALE_NAME_MAX_LENGTH = 85
-
-
-def LCIDToLocaleName(lcid: int) -> str:
-    _LCIDToLocaleName = _kernel32.LCIDToLocaleName
-    _LCIDToLocaleName.argtypes = LCID, LPWSTR, c_int, DWORD
-    _LCIDToLocaleName.restype = c_int
-
-    buff = create_unicode_buffer(LOCALE_NAME_MAX_LENGTH)
-    if not _LCIDToLocaleName(lcid, buff, LOCALE_NAME_MAX_LENGTH, 0):
-        raise Exception(GetLastError())
-    return buff.value
-
-
 CoInitialize = _Ole32.CoInitialize
 CoInitialize.argtypes = (LPVOID,)
 CoInitialize.restype = HRESULT
@@ -1006,20 +714,3 @@ WM_DESTROY = 0x2
 
 DestroyWindow = _user32.DestroyWindow
 DestroyWindow.argtypes = (HWND,)
-
-
-def exclude_from_capture(hwnd) -> bool:
-    """WDA_EXCLUDEFROMCAPTURE（Win10 2004+）：窗口对用户照常可见，
-    但不出现在 BitBlt/PrintWindow 等截图里（OCR 选框 / 覆盖层共用，
-    防止识别到自己的界面）。旧系统上 0x11 会被当成黑矩形，返回
-    False 不设置。"""
-    import gobject
-    if not gobject.sys_ge_win10_2004:
-        return False
-    try:
-        api = windll.user32.SetWindowDisplayAffinity
-        api.argtypes = (HWND, DWORD)
-        api.restype = BOOL
-        return bool(api(int(hwnd), 0x11))
-    except (AttributeError, OSError):
-        return False

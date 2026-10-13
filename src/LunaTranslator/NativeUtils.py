@@ -243,7 +243,7 @@ _ExtractExeIconData.restype = c_bool
 
 def ExtractExeIconData(file, large=False):
 
-    file = windows.check_maybe_unc_file(file)
+    file = CheckMaybeUNCFile(file)
     if not file:
         return False
     ret = []
@@ -399,6 +399,95 @@ def find_sole_opaque_window(x1, y1, x2, y2, exclude_pid):
     （其下窗口都被挡住，单窗口截图不失真）；部分覆盖（合成画面）或
     无相交返回 0。"""
     return int(_FindSoleOpaqueWindow(x1, y1, x2, y2, exclude_pid) or 0)
+
+
+class HRESULT_ERROR(Exception):
+    pass
+
+
+def CHECK_FAILURE(hr, module=None):
+    if windows.FAILED(hr):
+        raise HRESULT_ERROR(WinErrorMessage(hr, module))
+
+
+# ---- winutils.cpp（原 windows.py 里的多步组合逻辑，C++ 实现） ----
+
+_CheckMaybeUNCFile = utilsdll.CheckMaybeUNCFile
+_CheckMaybeUNCFile.argtypes = c_wchar_p, c_void_p
+_CheckMaybeUNCFile.restype = None
+
+
+def CheckMaybeUNCFile(v):
+    """NT/UNC 设备路径 → 盘符路径（失败返回原值）。"""
+    ret = []
+    _CheckMaybeUNCFile(v, CFUNCTYPE(None, c_wchar_p)(ret.append))
+    return ret[0] if ret else v
+
+
+_GetProcessFileName = utilsdll.GetProcessFileName
+_GetProcessFileName.argtypes = DWORD, c_void_p
+_GetProcessFileName.restype = None
+
+
+def GetProcessFileName(pid):
+    """进程可执行文件路径：递减权限打开进程 + 三级 API 回退 + NT/UNC
+    设备路径换算 + 短路径修补（见 NativeUtils/winutils.cpp）。失败 None。"""
+    ret = []
+    _GetProcessFileName(pid, CFUNCTYPE(None, c_wchar_p)(ret.append))
+    return ret[0] if ret else None
+
+
+_WinErrorMessage = utilsdll.WinErrorMessage
+_WinErrorMessage.argtypes = DWORD, c_void_p, c_void_p
+_WinErrorMessage.restype = None
+
+
+def WinErrorMessage(code, module=None):
+    """系统错误码 → 文本（FormatMessageW）。失败返回空串。"""
+    ret = []
+    _WinErrorMessage(code, module, CFUNCTYPE(None, c_wchar_p)(ret.append))
+    return ret[0] if ret else ""
+
+
+_ExcludeFromCapture = utilsdll.ExcludeFromCapture
+_ExcludeFromCapture.argtypes = (HWND,)
+_ExcludeFromCapture.restype = c_bool
+
+
+def ExcludeFromCapture(hwnd):
+    """WDA_EXCLUDEFROMCAPTURE（Win10 2004+）：窗口对用户照常可见，但
+    不出现在截图里。旧系统上返回 False 不设置。"""
+    return bool(_ExcludeFromCapture(int(hwnd)))
+
+
+_SetWindowFrameRgn = utilsdll.SetWindowFrameRgn
+_SetWindowFrameRgn.argtypes = HWND, c_int, c_int, c_int
+_SetWindowFrameRgn.restype = None
+_ClearWindowRgn = utilsdll.ClearWindowRgn
+_ClearWindowRgn.argtypes = (HWND,)
+_ClearWindowRgn.restype = None
+
+
+def SetWindowFrameRgn(hwnd, w, h, border):
+    """窗口命中区域限制为四条边框（内部鼠标穿透）。"""
+    _SetWindowFrameRgn(hwnd, w, h, border)
+
+
+def ClearWindowRgn(hwnd):
+    _ClearWindowRgn(hwnd)
+
+
+_LCIDToLocaleNameEx = utilsdll.LCIDToLocaleNameEx
+_LCIDToLocaleNameEx.argtypes = DWORD, c_void_p
+_LCIDToLocaleNameEx.restype = c_bool
+
+
+def LCIDToLocaleNameEx(lcid):
+    """失败抛异常（同原 windows.LCIDToLocaleName）。"""
+    ret = []
+    if not _LCIDToLocaleNameEx(lcid, CFUNCTYPE(None, c_wchar_p)(ret.append)):
+        raise Exception(windows.GetLastError())
+    return ret[0]
 
 
 setAeroEffect = utilsdll.setAeroEffect
@@ -682,7 +771,7 @@ class WebView2(AbstractWebView):
             # 在共享路径上无法运行
             os.environ["WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS"] = "--no-sandbox"
         _ = windows.CO_INIT()
-        windows.CHECK_FAILURE(
+        CHECK_FAILURE(
             webview2_create(windows.pointer(self.ptr), parent, transp, loadext)
         )
         self.put_PreferredColorScheme(darklight)
@@ -734,20 +823,20 @@ class WebView2(AbstractWebView):
                 collect.append((_, _1, _2))
 
             _ = webview2_list_ext_CALLBACK_T(__)
-            windows.CHECK_FAILURE(webview2_ext_list(_))
+            CHECK_FAILURE(webview2_ext_list(_))
             return collect
 
         @staticmethod
         def Enable(_id, enable):
-            windows.CHECK_FAILURE(webview2_ext_enable(_id, enable))
+            CHECK_FAILURE(webview2_ext_enable(_id, enable))
 
         @staticmethod
         def Remove(_id):
-            windows.CHECK_FAILURE(webview2_ext_rm(_id))
+            CHECK_FAILURE(webview2_ext_rm(_id))
 
         @staticmethod
         def Add(path):
-            windows.CHECK_FAILURE(webview2_ext_add(path))
+            CHECK_FAILURE(webview2_ext_add(path))
 
         @staticmethod
         def Manifest_Info(extid: str):
@@ -821,7 +910,7 @@ class EdgeHtml(AbstractWebView):
         self.binds = {}
         self.html_limit = 1572834
         _ = windows.CO_INIT()
-        windows.CHECK_FAILURE(edgehtml_new(windows.pointer(self.ptr), parent, transp))
+        CHECK_FAILURE(edgehtml_new(windows.pointer(self.ptr), parent, transp))
         self._keepref = web_notify_callback_t(self.__web_notify_callback)
         edgehtml_set_notify_callback(self.ptr, self._keepref)
         self._init()
@@ -923,7 +1012,7 @@ class loopbackrecorder:
     def __init__(self) -> None:
         self.data = None
         self.ptr = c_void_p()
-        windows.CHECK_FAILURE(StartCaptureAsync(pointer(self.ptr)))
+        CHECK_FAILURE(StartCaptureAsync(pointer(self.ptr)))
 
 
 # LoopBack

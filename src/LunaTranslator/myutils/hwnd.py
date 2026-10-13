@@ -29,7 +29,7 @@ def __getuidandfname(app):
     if not hwndx:
         hwndx = windows.GetForegroundWindow()
     hwndx = windows.GetAncestor(hwndx)
-    gamepath = windows.GetProcessFileName(windows.GetWindowThreadProcessId(hwndx))
+    gamepath = NativeUtils.GetProcessFileName(windows.GetWindowThreadProcessId(hwndx))
     exename = os.path.splitext(os.path.basename(gamepath))[0]
     uid = gobject.base.gameuid
     screenshot_savepath: str = globalconfig.get("screenshot_savepath", "")
@@ -118,7 +118,7 @@ def grabwindow(app="PNG", callback=None, tocliponly=False):
 
 def getcurrexe():
     # getpidexe(os.getpid())谜之有人获取到的结果是None，无法理解，那就先回档吧。
-    return os.environ.get("LUNA_EXE_NAME", windows.GetProcessFileName(os.getpid()))
+    return os.environ.get("LUNA_EXE_NAME", NativeUtils.GetProcessFileName(os.getpid()))
 
 
 def test_injectable(pids):
@@ -137,7 +137,7 @@ def ListProcess(exe=None):
             if exe is not None:
                 if exebase.lower() != os.path.basename(exe).lower():
                     continue
-            name_ = windows.GetProcessFileName(pid)
+            name_ = NativeUtils.GetProcessFileName(pid)
             if name_ is None:
                 continue
             name = name_.lower()

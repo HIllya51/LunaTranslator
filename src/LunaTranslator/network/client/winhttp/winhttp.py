@@ -1,6 +1,6 @@
 from ctypes import windll, POINTER, pointer, Structure, sizeof
 from ctypes.wintypes import LPCWSTR, DWORD, LPVOID, WORD, BOOL, LPCVOID, LPWSTR, USHORT
-import windows, requests
+import windows, NativeUtils, requests
 
 
 class HINTERNET(LPVOID):
@@ -229,7 +229,7 @@ class WinhttpException(requests.exceptions.RequestException):
             and code <= WinhttpException.ERROR_WINHTTP_FEATURE_DISABLED
         ):
             module = Winhttp._handle
-        message = windows.FormatMessage(code, module)
+        message = NativeUtils.WinErrorMessage(code, module)
         error = "UNKNOWN ERROR {}".format(code)
         for _ in dir(self):
             if _.startswith("ERROR") and code == getattr(self, _):

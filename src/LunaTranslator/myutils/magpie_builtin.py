@@ -18,7 +18,7 @@ class MagpieConfig:
     def findHWNDIndex(hwnd):
         if not hwnd:
             return 0
-        path = windows.GetProcessFileName(windows.GetWindowThreadProcessId(hwnd))
+        path = NativeUtils.GetProcessFileName(windows.GetWindowThreadProcessId(hwnd))
         for i, profile in enumerate(magpie_config["profiles"]):
             if path == profile.get("pathRule"):
                 return i

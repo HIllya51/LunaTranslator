@@ -3,7 +3,7 @@ import os
 
 
 def dopathexists(file: str):
-    import windows
+    import windows, NativeUtils
 
     if not file:
         return False
@@ -11,7 +11,7 @@ def dopathexists(file: str):
         file = str(file)
     if not file.strip():
         return False
-    file = windows.check_maybe_unc_file(file)
+    file = NativeUtils.CheckMaybeUNCFile(file)
     if not file:
         return False
     return bool(windows.PathFileExists(os.path.abspath(file)))

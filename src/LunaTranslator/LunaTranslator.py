@@ -412,7 +412,7 @@ class BASEOBJECT(QObject):
                 self.translation_ui.refreshtooliconsignal.emit()
                 try:
                     if self.autoswitchgameuid:
-                        gameuid, _ = findgameuidofpath(windows.GetProcessFileName(_pid))
+                        gameuid, _ = findgameuidofpath(NativeUtils.GetProcessFileName(_pid))
                         if gameuid:
                             self.gameuid = gameuid
                 except:

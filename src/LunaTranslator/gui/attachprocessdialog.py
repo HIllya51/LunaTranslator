@@ -25,7 +25,7 @@ class AttachProcessDialog(saveposwindow):
             return mouseselectwindow(self.setcurrentpidpnamesignal.emit)
         self.setEnabled(True)
         self.button.setText("点击此按钮后点击游戏窗口"),
-        name = windows.GetProcessFileName(pid)
+        name = NativeUtils.GetProcessFileName(pid)
         if not name:
             ExMessageBox.critical(
                 self, _TR("错误"), _TR("权限不足，请以管理员权限运行！")
@@ -209,7 +209,7 @@ class AttachProcessDialog(saveposwindow):
             return
         self.selectedp = (
             pids,
-            windows.GetProcessFileName(pids[0]),
+            NativeUtils.GetProcessFileName(pids[0]),
             self.guesshwnd(pids),
         )
         self.testifneedadmin()
