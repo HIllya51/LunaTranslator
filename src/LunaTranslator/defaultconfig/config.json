@@ -411,7 +411,7 @@
                 "belong": [
                     "ocr"
                 ],
-                "icon": "fa.square",
+                "icon": "fa.square-o",
                 "align": 2
             },
             "ocr_once_1": {
