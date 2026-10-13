@@ -10,6 +10,7 @@
 #include "engine32/PixelGameMakerMVplayer.h"
 #include "engine32/LCScript.h"
 #include "engine32/Hug.h"
+#include "engine32/TEANAM.h"
 #include "engine32/Seraphim.h"
 #include "engine32/ArcSystemWorks.h"
 #include "engine32/InteractiveNovelEngine.h"
@@ -397,6 +398,7 @@ std::vector<ENGINE *> check_engines()
         new Erogos,
         new Silkysveryveryold,
         new gazelle,
+        new TEANAM,
         // ignore engines
         new oldSystem40ini,
         new AdvPlayerHD,

@@ -79,4 +79,4 @@ jobs:
             build/signed/LunaTranslator_x64.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - run: curl http://lunatranslator.org/${{ secrets.LUNA_UPDATE_NOTIFY }}
+      - run: curl https://lunatranslator.org/${{ secrets.LUNA_UPDATE_NOTIFY }}

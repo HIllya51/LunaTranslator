@@ -1538,6 +1538,12 @@
             "color": "#1839f0",
             "name": "ezTrans"
         },
+        "sugoix": {
+            "type": "offline",
+            "use": false,
+            "color": "#1839f0",
+            "name": "Sugoi"
+        },
         "kingsoft": {
             "type": "offline",
             "use": false,

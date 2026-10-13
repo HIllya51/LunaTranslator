@@ -35,7 +35,10 @@ bool ENGINE::check_function()
     {
         return Util::SearchResourceString(std::get<check_by_single>(check_by_target));
     }
-
+    case CHECK_BY::StringFileInfo:
+    {
+        return Util::SearchStringFileInfo(std::get<check_by_single>(check_by_target));
+    }
     case CHECK_BY::CUSTOM:
     {
         return std::get<check_by_custom_function>(check_by_target)();

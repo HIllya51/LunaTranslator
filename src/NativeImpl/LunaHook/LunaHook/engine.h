@@ -18,6 +18,7 @@ public:
         FILE_ALL,
         FILE_ANY,
         RESOURCE_STR,
+        StringFileInfo,
         CUSTOM,
     };
     CHECK_BY check_by;
