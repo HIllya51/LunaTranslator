@@ -18,11 +18,11 @@ class Cishu(cishubase):
             self.internal: cishubase = module.MyCishu("selfbuild")
             self.internal.init()
 
-    def search(self, word) -> str:
+    def search(self, word, sentence=None) -> str:
         self.mayreinit()
         if not self.internal:
             return None
-        return self.internal.search(word)
+        return self.internal.search(word, sentence=sentence)
 
     def getUrl(self, word) -> str:
         self.mayreinit()
