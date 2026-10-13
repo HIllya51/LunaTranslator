@@ -350,7 +350,7 @@ _GdiGrabWindow = utilsdll.GdiGrabWindow
 _GdiGrabWindow.argtypes = HWND, c_void_p
 
 _GdiCropImage = utilsdll.GdiCropImage
-_GdiCropImage.argtypes = HWND, c_int, c_int, c_int, c_int, c_void_p
+_GdiCropImage.argtypes = HWND, c_int, c_int, c_int, c_int, c_void_p, c_int
 _GdiCropImage.restype = c_bool
 
 
@@ -368,7 +368,10 @@ def GdiGrabWindow(hwnd):
     return ret[0]
 
 
-def GdiCropImage(x1, y1, x2, y2, hwnd=None):
+def GdiCropImage(x1, y1, x2, y2, hwnd=None, curr=-1):
+    """curr：GdiCropImage 的尝试序号——0 仅 HWND、1 仅桌面、-1 自动
+    兜底（HWND 失败落桌面）。指定序号后不再内部兜底，由调用方决定
+    何时落桌面（落桌面前先隐藏自己的窗口）。"""
     ret: "list[bytes]" = []
 
     def cb(ptr, size):
@@ -377,11 +380,25 @@ def GdiCropImage(x1, y1, x2, y2, hwnd=None):
     if windows.GetClassName(hwnd) == "UnityWndClass":
         hwnd = None
     succ: bool = _GdiCropImage(
-        hwnd, x1, y1, x2, y2, CFUNCTYPE(None, POINTER(c_char), c_size_t)(cb)
+        hwnd, x1, y1, x2, y2, CFUNCTYPE(None, POINTER(c_char), c_size_t)(cb), curr
     )
     if not ret:
         return False, None
     return succ, ret[0]
+
+
+_FindSoleOpaqueWindow = utilsdll.FindSoleOpaqueWindow
+_FindSoleOpaqueWindow.argtypes = c_int, c_int, c_int, c_int, DWORD
+_FindSoleOpaqueWindow.restype = HWND
+
+
+def find_sole_opaque_window(x1, y1, x2, y2, exclude_pid):
+    """选区 (x1,y1,x2,y2)（屏幕坐标）可见内容所属的唯一窗口（C++
+    实现，见 NativeUtils/screenshot.cpp 的 FindSoleOpaqueWindow）：按
+    Z 序自顶向下第一个与选区相交的未过滤窗口完全盖住选区则返回它
+    （其下窗口都被挡住，单窗口截图不失真）；部分覆盖（合成画面）或
+    无相交返回 0。"""
+    return int(_FindSoleOpaqueWindow(x1, y1, x2, y2, exclude_pid) or 0)
 
 
 setAeroEffect = utilsdll.setAeroEffect

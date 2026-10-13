@@ -1,4 +1,4 @@
-import time, json
+import time, json, os
 from myutils.config import globalconfig
 from myutils.utils import checkmd5reloadmodule, parsekeystringtomodvkcode
 import NativeUtils, windows
@@ -20,15 +20,16 @@ from CVUtils import cvMat
 from traceback import print_exc
 
 
-def _hwnd_imageCut(hwnd, rectX: QRect):
-    """hwnd 截图，并归一化到选区物理尺寸。
+def _hwnd_imageCut(hwnd, rectX: QRect, curr=-1):
+    """hwnd 截图，并归一化到选区物理尺寸。curr 同 imageCut（0 仅 HWND、
+    1 仅桌面、-1 自动兜底）。
 
     目标窗口的 DPI 与本软件不同时（典型：DPI 不感知的老游戏在高分屏
     上，GetDC 的 GDI 虚拟化返回低密度位图——像素数少于屏幕物理像素），
     OCR 块坐标与原地显示的字号/位置换算（物理像素 / 覆盖层 DPR）会
     整体偏小。统一缩放到选区物理尺寸，恢复 1:1 对应。
     返回值同 imageCut：hwnd 时 (succ, img)，否则 img。"""
-    img = imageCut(hwnd, rectX)
+    img = imageCut(hwnd, rectX, curr)
     if not hwnd:
         return img
     succ, img = img
@@ -53,16 +54,16 @@ def _hwnd_imageCut(hwnd, rectX: QRect):
 
 def imageCutEx(hwnd, rectX: QRect):
     if hwnd:
-        # 绑定游戏窗口时先裸截：GetDC(hwnd)+BitBlt 只截游戏自身内容，
-        # 覆盖层与本程序窗口都不在画面里——成功时无需隐藏覆盖层、也
-        # 无需因窗口遮挡而暂停（与系统版本无关，菜单展开同理）。
-        # 失败（如 DirectX 全屏黑屏，GdiCropImage 落桌面截图）时才
-        # 走下方守卫路径重新截取。
-        succ, img = _hwnd_imageCut(hwnd, rectX)
+        # 绑定游戏窗口时先只试 HWND 截图（不隐藏任何窗口）：GetDC(hwnd)
+        # +BitBlt 只截游戏自身内容，覆盖层与本程序窗口都不在画面里——
+        # 成功时无需隐藏覆盖层、也无需因窗口遮挡而暂停（与系统版本无关，
+        # 菜单展开同理）。失败（如 DirectX 全屏黑屏）时才走下方守卫路径：
+        # 截图前隐藏覆盖层，然后 仅落桌面。
+        succ, img = _hwnd_imageCut(hwnd, rectX, curr=0)
         if succ and not img.isNull():
             return _ocrpreprocess(img)
     img = capture_without_overlays(
-        lambda: _hwnd_imageCut(hwnd, rectX), rectX)
+        lambda: _hwnd_imageCut(hwnd, rectX, curr=1), rectX)
     if img is None:
         return QImage()
     succ = True
@@ -159,7 +160,21 @@ class rangemanger:
         if not rect.isValid():
             return None, None
         if img is None:
-            img = imageCutEx(self.ref.hwnd, rect)
+            hwnd = self.ref.hwnd
+            if (
+                not hwnd
+                and globalconfig.get("ocr_translation_overlay", False)
+                and not self.range_ui.capture_excluded
+            ):
+                # 未绑定窗口 + 截图排除失败（旧系统）+ 原地显示翻译：
+                # 桌面截图会拍到自己的覆盖层/范围框。若选区处最上层的
+                # 不透明窗口完全盖住选区（其下窗口都不可见），改从它
+                # 截图（等价绑定窗口，本程序窗口都不在其 DC 里，无需
+                # 隐藏覆盖层）
+                hwnd = NativeUtils.find_sole_opaque_window(
+                    *rect.getCoords(), os.getpid()
+                )
+            img = imageCutEx(hwnd, rect)
             if img.isNull():
                 return None, None
         else:

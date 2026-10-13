@@ -81,7 +81,7 @@ DECLARE_API void GdiGrabWindow(HWND hwnd, void (*cb)(byte *, size_t))
     if (bf)
         cb(bf.value().data.get(), bf.value().size);
 }
-DECLARE_API bool GdiCropImage(HWND hwnd, int x1, int y1, int x2, int y2, void (*cb)(byte *, size_t))
+DECLARE_API bool GdiCropImage(HWND hwnd, int x1, int y1, int x2, int y2, void (*cb)(byte *, size_t), int curr = -1)
 {
     if (x1 == x2 || y1 == y2)
         return false;
@@ -92,6 +92,10 @@ DECLARE_API bool GdiCropImage(HWND hwnd, int x1, int y1, int x2, int y2, void (*
     rect.bottom = y2;
     for (int i = 0; i < 2; i++)
     {
+        // curr >= 0：只执行指定的一次（0 = HWND，1 = 桌面），由调用方
+        // 决定何时落桌面（落桌面前先隐藏自己的窗口）；-1 = 自动兜底
+        if (curr != -1 && i != curr)
+            continue;
         switch (i)
         {
         case 0:
@@ -137,6 +141,81 @@ DECLARE_API bool GdiCropImage(HWND hwnd, int x1, int y1, int x2, int y2, void (*
 DECLARE_API float GetDevicePixelRatioF(HWND hwnd)
 {
     return 1.0f * GetDpiForWindow(hwnd) / USER_DEFAULT_SCREEN_DPI;
+}
+namespace
+{
+    struct SoleOpaqueWindowParam
+    {
+        int x1, y1, x2, y2;
+        DWORD exclude_pid;
+        HWND result;
+    };
+
+    bool IsWindowCloaked(HWND hwnd)
+    {
+        // DWMWA_CLOAKED 仅 Vista+；XP 无 dwmapi，动态取，失败视为未 cloak
+        static auto pDwmGetWindowAttribute = (BOOL(WINAPI *)(HWND, DWORD, PVOID, DWORD))GetProcAddress(GetModuleHandleW(L"dwmapi.dll"), "DwmGetWindowAttribute");
+        if (!pDwmGetWindowAttribute)
+            return false;
+        DWORD cloaked = 0;
+        return pDwmGetWindowAttribute(hwnd, 14 /*DWMWA_CLOAKED*/, &cloaked, sizeof(cloaked)) == S_OK && cloaked;
+    }
+}
+
+DECLARE_API HWND FindSoleOpaqueWindow(int x1, int y1, int x2, int y2, DWORD exclude_pid)
+{
+    // 选区可见内容所属的唯一窗口：按 Z 序自顶向下找第一个与选区真实
+    // 相交的未过滤窗口——它完全覆盖选区则返回它（其下的窗口都被它挡
+    // 住，不可见，单窗口截图不失真）；只覆盖选区一部分（可见内容是多
+    // 窗口的合成）返回 NULL。过滤：不可见/最小化/exclude_pid（本程序
+    // ——覆盖层/范围框/主窗口要"看穿"）/桌面（Progman、WorkerW，覆盖
+    // 整个屏幕永远算数会误判）/cloak（挂起的 UWP 等）/点击穿透/分层
+    // 半透明。无相交窗口返回 NULL。
+    SoleOpaqueWindowParam param{x1, y1, x2, y2, exclude_pid, NULL};
+    EnumWindows([](HWND hwnd, LPARAM lParam) -> BOOL
+                {
+        auto &param = *(SoleOpaqueWindowParam *)lParam;
+        if (!IsWindowVisible(hwnd))
+            return TRUE;
+        if (IsIconic(hwnd))
+            return TRUE;
+        DWORD pid = 0;
+        GetWindowThreadProcessId(hwnd, &pid);
+        if (pid == param.exclude_pid)
+            return TRUE;
+        wchar_t clsname[32];
+        if (GetClassNameW(hwnd, clsname, 32) &&
+            (!wcscmp(clsname, L"Progman") || !wcscmp(clsname, L"WorkerW")))
+            return TRUE; // 桌面壁纸/图标层
+        if (IsWindowCloaked(hwnd))
+            return TRUE;
+        auto exstyle = GetWindowLong(hwnd, GWL_EXSTYLE);
+        if (exstyle & WS_EX_TRANSPARENT)
+            return TRUE; // 点击穿透的悬浮层，可见内容在其下方
+        if (exstyle & WS_EX_LAYERED)
+        {
+            COLORREF cr;
+            BYTE alpha;
+            DWORD flags;
+            if (GetLayeredWindowAttributes(hwnd, &cr, &alpha, &flags) && alpha < 255)
+                return TRUE; // 半透明窗口
+        }
+        RECT r;
+        if (!GetWindowRect(hwnd, &r))
+            return TRUE;
+        if (std::max((int)r.left, param.x1) < std::min((int)r.right, param.x2) &&
+            std::max((int)r.top, param.y1) < std::min((int)r.bottom, param.y2))
+        {
+            // 第一个（最上层）相交者：完全覆盖 → 唯一可见来源；
+            // 部分覆盖 → 选区是合成画面，停止并放弃
+            if (r.left <= param.x1 && r.top <= param.y1 &&
+                r.right >= param.x2 && r.bottom >= param.y2)
+                param.result = hwnd;
+            return FALSE;
+        }
+        return TRUE; },
+                (LPARAM)&param);
+    return param.result;
 }
 std::pair<HWND, WNDCLASS> CreateWindowForWndProc(WNDPROC WNDPROC_1, HWND parent, int x, int y, int, int h, HCURSOR cursor, DWORD style, DWORD exstyle);
 namespace

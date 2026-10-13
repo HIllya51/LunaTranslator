@@ -9,9 +9,9 @@ import threading, gobject, NativeUtils
 from ocrengines.baseocrclass import baseocr, OCRResultParsed
 
 
-def imageCut(hwnd, rect: QRect) -> QImage:
+def imageCut(hwnd, rect: QRect, curr=-1) -> QImage:
     succ, pix = NativeUtils.GdiCropImage(
-        rect.x(), rect.y(), rect.right(), rect.bottom(), hwnd
+        rect.x(), rect.y(), rect.right(), rect.bottom(), hwnd, curr
     )
     pix = safepixmap(pix).toImage()
     if hwnd:
