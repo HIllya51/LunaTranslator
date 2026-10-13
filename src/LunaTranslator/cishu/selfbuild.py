@@ -1,5 +1,5 @@
 from myutils.utils import checkmd5reloadmodule
-import gobject
+import gobject, inspect
 from cishu.cishubase import cishubase
 
 
@@ -22,7 +22,14 @@ class Cishu(cishubase):
         self.mayreinit()
         if not self.internal:
             return None
-        return self.internal.search(word, sentence=sentence)
+        sig = inspect.signature(self.internal.search)
+        np = len(sig.parameters)
+        if np == 1:
+            return self.internal.search(word)
+        elif np == 2:
+            return self.internal.search(word, sentence=sentence)
+        else:
+            raise Exception("unknown args")
 
     def getUrl(self, word) -> str:
         self.mayreinit()
