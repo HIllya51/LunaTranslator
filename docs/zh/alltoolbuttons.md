@@ -12,7 +12,7 @@
 部分按钮有两个图标，用来指示两种不同的状态。部分按钮仅有一个图标，不过会用不同的颜色来表示不同的状态
 :::
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 
 <style>
@@ -33,18 +33,18 @@
     
     例如如果当前是OCR模式，会再执行一次OCR。
 
-1. #### <i class="fa fa-forward"></i> <i class="btnstatus2 fa fa-forward"></i> 自动模式 {#anchor-automodebutton}
+1. #### <i class="fa fa-forward"></i> <i class="btnstatus2 fa fa-play"></i> 自动模式 {#anchor-automodebutton}
     实际意义是，暂停/继续自动从当前的文本输入源读取文本。
 
     例如如果当前是HOOK模式，会暂停读取游戏文本；当前是OCR模式，暂停自动识别图像；如果当前是剪贴板模式，会暂停自动读取剪贴板。
 
 1. #### <i class="fa fa-gear"></i> <i class="fa fa-icon fa-rotate-right"></i> 打开设置 {#anchor-setting}
     略
-1. #### <i class="fa fa-file"></i> <i class="fa fa-icon fa-rotate-right"></i> 读取剪贴板 {#anchor-copy_once}
+1. #### <i class="fa fa-file-o"></i> <i class="fa fa-icon fa-rotate-right"></i> 读取剪贴板 {#anchor-copy_once}
     这个的实际意义是，不管当前的默认文本输入源是什么，都从剪贴板读取一次文本，并传给之后的翻译/tts/...流程
 
     右击按钮会追加读取到的文本到当前文本之后。
-1. #### <i class="fa fa-futbol"></i> <i class="fa fa-icon fa-rotate-right"></i> 游戏设置 {#anchor-open_game_setting}
+1. #### <i class="fa fa-futbol-o"></i> <i class="fa fa-icon fa-rotate-right"></i> 游戏设置 {#anchor-open_game_setting}
     当使用HOOK模式连接到游戏，或使用OCR模式绑定游戏窗口后，则可以通过这个按钮直接打开当前游戏的设置窗口
 1. #### <i class="fa fa-mouse-pointer"></i> <i class="btnstatus2 fa fa-mouse-pointer"></i> 鼠标穿透窗口 {#anchor-mousetransbutton}
     激活这个按钮后，鼠标点击翻译窗口时，翻译窗口不会对鼠标点击做出反应，而是把点击事件传递给下层窗口。
@@ -53,7 +53,7 @@
     
     当把鼠标移动到**鼠标穿透窗口按钮及其左右一个按钮的区域**时，会自动退出穿透以使用工具按钮；移出区域时自动恢复穿透。
 
-1. #### <i class="fa fa-lightbulb"></i> <i class="btnstatus2 fa fa-lightbulb"></i> 窗口背景透明 {#anchor-backtransbutton}
+1. #### <i class="fa fa-lightbulb-o"></i> <i class="btnstatus2 fa fa-lightbulb-o"></i> 窗口背景透明 {#anchor-backtransbutton}
     该按钮作用仅是一键使得翻译窗口的不透明度切换到0。当不透明度为0时，鼠标也会穿透窗口。
     
 1. #### <i class="fa fa-lock"></i> <i class="btnstatus2 fa fa-unlock"></i> 锁定工具栏 {#anchor-locktoolsbutton}
@@ -81,7 +81,7 @@
     OCR模式下，选取OCR区域，或者更换OCR区域，或者当激活`OCR设置`->`其他`->`多重区域模式`时增加新的OCR区域
 
     当按下右键时，会先清除所有已选取范围，再添加新的区域。
-1. #### <i class="fa fa-square"></i> <i class="fa fa-icon fa-rotate-right"></i> 显示/隐藏范围框 {#anchor-hideocrrange}
+1. #### <i class="fa fa-square-o"></i> <i class="fa fa-icon fa-rotate-right"></i> 显示/隐藏范围框 {#anchor-hideocrrange}
     **该按钮仅在OCR模式下可用**
 
     当未选择任何OCR范围时，使用该按钮显示OCR范围，会自动设置OCR范围为上一次选择的OCR。
@@ -108,7 +108,7 @@
     略
 1. #### <i class="fa fa-times"></i> <i class="fa fa-icon fa-rotate-right"></i> 退出 {#anchor-quit}
     略
-1. #### <i class="fa fa-hand-paper"></i> <i class="fa fa-icon fa-rotate-right"></i> 移动 {#anchor-move}
+1. #### <i class="fa fa-hand-paper-o"></i> <i class="fa fa-icon fa-rotate-right"></i> 移动 {#anchor-move}
     拖动翻译窗口。
 
     实际上当按钮栏有没有按钮存在的额外空白区域时，都可以随意拖动。该按钮仅用来预留一个拖动位置。
@@ -161,7 +161,7 @@
     对于当前正在玩的游戏，打开备忘录窗口。
     
     点击左键时，打开当前游戏的备忘录。点击右键时，打开全局的备忘录。
-1. #### <i class="fab fa-windows"></i> <i class="btnstatus2 fab fa-windows"></i> 绑定窗口 （点击自己取消） {#anchor-bindwindow}
+1. #### <i class="fa fa-windows"></i> <i class="btnstatus2 fa fa-windows"></i> 绑定窗口 （点击自己取消） {#anchor-bindwindow}
     **该按钮非常重要，许多功能都依赖于该按钮先进行设置后才可用**
 
     在绑定了游戏窗口后，`窗口缩放` `窗口截图` `游戏静音`，`跟随游戏窗口`->`游戏失去焦点时取消置顶`和`游戏窗口移动时同步移动`，以及记录游戏时间等，才可用。

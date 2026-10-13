@@ -12,7 +12,7 @@ Biểu tượng nút có thể tùy chỉnh bằng cách nhấp vào "Biểu tư
 Một số nút có hai biểu tượng để biểu thị hai trạng thái khác nhau. Một số nút chỉ có một biểu tượng, nhưng chúng sử dụng các màu khác nhau để biểu thị các trạng thái khác nhau.
 :::
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"> 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> 
 
 <style>
     i{
@@ -32,18 +32,18 @@ Một số nút có hai biểu tượng để biểu thị hai trạng thái kh�
     
     Ví dụ, nếu chế độ hiện tại là OCR, nó sẽ thực hiện OCR lại.
 
-1. #### <i class="fa fa-forward"></i> <i class="btnstatus2 fa fa-forward"></i> Chế độ tự động {#anchor-automodebutton}
+1. #### <i class="fa fa-forward"></i> <i class="btnstatus2 fa fa-play"></i> Chế độ tự động {#anchor-automodebutton}
     Ý nghĩa thực tế là tạm dừng/tiếp tục tự động đọc văn bản từ nguồn đầu vào văn bản hiện tại.
 
     Ví dụ, nếu chế độ hiện tại là HOOK, nó sẽ tạm dừng đọc văn bản trò chơi; nếu chế độ hiện tại là OCR, nó sẽ tạm dừng nhận diện hình ảnh tự động; nếu chế độ hiện tại là chế độ clipboard, nó sẽ tạm dừng đọc tự động từ clipboard.
 
 1. #### <i class="fa fa-gear"></i> <i class="fa fa-icon fa-rotate-right"></i> Mở cài đặt {#anchor-setting}
     N/A
-1. #### <i class="fa fa-file"></i> <i class="fa fa-icon fa-rotate-right"></i> Đọc khay nhớ tạm {#anchor-copy_once}
+1. #### <i class="fa fa-file-o"></i> <i class="fa fa-icon fa-rotate-right"></i> Đọc khay nhớ tạm {#anchor-copy_once}
     Ý nghĩa thực tế là đọc văn bản một lần từ clipboard bất kể nguồn đầu vào văn bản mặc định hiện tại và chuyển nó đến quá trình dịch/tts/... tiếp theo
 
     Nhấp chuột phải vào nút sẽ thêm văn bản đã đọc vào văn bản hiện tại.
-1. #### <i class="fa fa-futbol"></i> <i class="fa fa-icon fa-rotate-right"></i> Cài đặt trò chơi {#anchor-open_game_setting}
+1. #### <i class="fa fa-futbol-o"></i> <i class="fa fa-icon fa-rotate-right"></i> Cài đặt trò chơi {#anchor-open_game_setting}
     Khi sử dụng chế độ HOOK để kết nối với trò chơi, hoặc sử dụng chế độ OCR để liên kết cửa sổ trò chơi, bạn có thể trực tiếp mở cửa sổ cài đặt trò chơi hiện tại thông qua nút này
 1. #### <i class="fa fa-mouse-pointer"></i> <i class="btnstatus2 fa fa-mouse-pointer"></i> Chuột xuyên thấu (Click-through) {#anchor-mousetransbutton}
     Sau khi kích hoạt nút này, cửa sổ dịch sẽ không phản hồi các lần nhấp chuột, nhưng sẽ chuyển sự kiện nhấp chuột đến cửa sổ bên dưới.
@@ -52,7 +52,7 @@ Một số nút có hai biểu tượng để biểu thị hai trạng thái kh�
 
     Khi chuột di chuyển đến **khu vực của nút Cửa sổ xuyên chuột và một nút bên trái và phải**, nó sẽ tự động thoát ra để sử dụng các nút công cụ; nó sẽ tự động khôi phục xuyên qua khi di chuyển ra khỏi khu vực.
 
-1. #### <i class="fa fa-lightbulb"></i> <i class="btnstatus2 fa fa-lightbulb"></i> Nền cửa sổ trong suốt {#anchor-backtransbutton}
+1. #### <i class="fa fa-lightbulb-o"></i> <i class="btnstatus2 fa fa-lightbulb-o"></i> Nền cửa sổ trong suốt {#anchor-backtransbutton}
     Chức năng của nút này là chuyển độ mờ của cửa sổ dịch sang 0 chỉ với một lần nhấp. Khi độ mờ bằng 0, chuột cũng sẽ xuyên qua cửa sổ.
     
 1. #### <i class="fa fa-lock"></i> <i class="btnstatus2 fa fa-unlock"></i> Khóa thanh công cụ {#anchor-locktoolsbutton}
@@ -79,7 +79,7 @@ Một số nút có hai biểu tượng để biểu thị hai trạng thái kh�
     Trong chế độ OCR, chọn khu vực OCR, hoặc thay đổi khu vực OCR, hoặc khi kích hoạt `Cài đặt OCR` -> `Khác` -> `Chế độ nhiều khu vực`, thêm một khu vực OCR mới
 
     Khi nhấn nút phải, tất cả các phạm vi đã chọn sẽ bị xóa trước khi thêm các khu vực mới.
-1. #### <i class="fa fa-square"></i> <i class="fa fa-icon fa-rotate-right"></i> Hiện/Ẩn khung vùng chọn {#anchor-hideocrrange}
+1. #### <i class="fa fa-square-o"></i> <i class="fa fa-icon fa-rotate-right"></i> Hiện/Ẩn khung vùng chọn {#anchor-hideocrrange}
     **Nút này chỉ có sẵn trong chế độ OCR**
 
     Khi không có phạm vi OCR nào được chọn, sử dụng nút này để hiển thị phạm vi OCR, nó sẽ tự động đặt phạm vi OCR thành OCR cuối cùng đã chọn.
@@ -107,7 +107,7 @@ Một số nút có hai biểu tượng để biểu thị hai trạng thái kh�
     N/A
 1. #### <i class="fa fa-times"></i> <i class="fa fa-icon fa-rotate-right"></i> Thoát {#anchor-quit}
     N/A
-1. #### <i class="fa fa-hand-paper"></i> <i class="fa fa-icon fa-rotate-right"></i> Di chuyển {#anchor-move}
+1. #### <i class="fa fa-hand-paper-o"></i> <i class="fa fa-icon fa-rotate-right"></i> Di chuyển {#anchor-move}
     Kéo cửa sổ dịch.
 
     Thực tế, khi không có nút nào trên thanh nút, có thêm khu vực trống, bạn có thể kéo nó tùy ý. Nút này chỉ để dành một vị trí kéo.
@@ -160,7 +160,7 @@ Một số nút có hai biểu tượng để biểu thị hai trạng thái kh�
     Mở cửa sổ ghi chú cho trò chơi bạn đang chơi.
 
     Khi bạn nhấp chuột trái, ghi chú cho trò chơi hiện tại sẽ được mở. Khi bạn nhấp chuột phải, ghi chú toàn cầu sẽ được mở.
-1. #### <i class="fab fa-windows"></i> <i class="btnstatus2 fab fa-windows"></i> Liên kết với Cửa sổ (Nhấn vào để hủy) {#anchor-bindwindow}
+1. #### <i class="fa fa-windows"></i> <i class="btnstatus2 fa fa-windows"></i> Liên kết với Cửa sổ (Nhấn vào để hủy) {#anchor-bindwindow}
     **Nút này rất quan trọng, nhiều tính năng phụ thuộc vào nút này được đặt trước khi chúng có thể được sử dụng**
 
     Sau khi liên kết cửa sổ trò chơi, `Tỷ lệ cửa sổ` `Chụp màn hình cửa sổ` `Tắt tiếng trò chơi`, `Theo dõi cửa sổ trò chơi` -> `Bỏ ghim khi trò chơi mất tiêu điểm` và `Đồng bộ hóa với chuyển động của cửa sổ trò chơi`, cũng như ghi lại thời gian chơi trò chơi, v.v., đều có sẵn.

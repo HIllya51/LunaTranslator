@@ -12,7 +12,7 @@
 일부 버튼에는 두 가지 상태를 나타내는 두 개의 아이콘이 있습니다. 일부 버튼에는 하나의 아이콘만 있지만 다른 색상으로 다른 상태를 표시합니다.
 :::
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 
 <style>
@@ -33,18 +33,18 @@
 
     예를 들어 현재 OCR 모드인 경우, OCR을 다시 한 번 실행합니다.
 
-1. #### <i class="fa fa-forward"></i> <i class="btnstatus2 fa fa-forward"></i> 자동 모드 {#anchor-automodebutton}
+1. #### <i class="fa fa-forward"></i> <i class="btnstatus2 fa fa-play"></i> 자동 모드 {#anchor-automodebutton}
     실제 의미는 현재의 텍스트 입력 소스에서 자동으로 텍스트를 읽는 것을 일시 중지/재개하는 것입니다.
 
     예를 들어 현재 HOOK 모드인 경우 게임 텍스트 읽기를 일시 중지합니다; 현재 OCR 모드인 경우 이미지 자동 인식을 일시 중지합니다; 현재 클립보드 모드인 경우 클립보드 자동 읽기를 일시 중지합니다.
 
 1. #### <i class="fa fa-gear"></i> <i class="fa fa-icon fa-rotate-right"></i> 설정 열기 {#anchor-setting}
     생략
-1. #### <i class="fa fa-file"></i> <i class="fa fa-icon fa-rotate-right"></i> 클립보드 읽기 {#anchor-copy_once}
+1. #### <i class="fa fa-file-o"></i> <i class="fa fa-icon fa-rotate-right"></i> 클립보드 읽기 {#anchor-copy_once}
     이것의 실제 의미는 현재 기본 텍스트 입력 소스가 무엇이든 클립보드에서 텍스트를 한 번 읽어 온 후 번역/TTS/… 등의 프로세스로 전달한다는 것입니다.
 
     버튼을 우클릭하면 읽어온 텍스트를 현재 텍스트 뒤에 추가합니다.
-1. #### <i class="fa fa-futbol"></i> <i class="fa fa-icon fa-rotate-right"></i> 게임 설정 {#anchor-open_game_setting}
+1. #### <i class="fa fa-futbol-o"></i> <i class="fa fa-icon fa-rotate-right"></i> 게임 설정 {#anchor-open_game_setting}
     HOOK 모드로 게임에 연결하거나 OCR 모드로 게임 창을 바인딩한 경우, 이 버튼을 통해 현재 게임의 설정 창을 직접 열 수 있습니다.
 1. #### <i class="fa fa-mouse-pointer"></i> <i class="btnstatus2 fa fa-mouse-pointer"></i> 마우스 윈도우 투과 {#anchor-mousetransbutton}
     이 버튼을 활성화하면 번역 창을 클릭할 때 번역 창이 마우스 클릭에 반응하지 않고 클릭 이벤트를 하위 창으로 전달합니다.
@@ -53,7 +53,7 @@
 
     마우스를 **마우스 창 투과 버튼 및 그 좌우 한 버튼 영역**으로 이동하면 자동으로 투과 모드를 해제하여 도구 버튼을 사용할 수 있으며, 영역 밖으로 이동하면 자동으로 투과 모드가 복구됩니다.
 
-1. #### <i class="fa fa-lightbulb"></i> <i class="btnstatus2 fa fa-lightbulb"></i> 창 배경 투명 {#anchor-backtransbutton}
+1. #### <i class="fa fa-lightbulb-o"></i> <i class="btnstatus2 fa fa-lightbulb-o"></i> 창 배경 투명 {#anchor-backtransbutton}
     이 버튼은 번역 창의 불투명도를 0으로 전환하는 기능만 수행합니다. 불투명도가 0이면 마우스가 창을 통과합니다.
 
 1. #### <i class="fa fa-lock"></i> <i class="btnstatus2 fa fa-unlock"></i> 툴바 잠금 {#anchor-locktoolsbutton}
@@ -81,7 +81,7 @@
     OCR 모드에서 OCR 영역을 선택하거나 변경하거나, `OCR 설정`->`기타`->`다중 영역 모드`가 활성화된 경우 새로운 OCR 영역을 추가할 수 있습니다.
 
     오른쪽 버튼을 누르면 모든 선택된 범위가 먼저 지워진 후 새로운 영역이 추가됩니다.
-1. #### <i class="fa fa-square"></i> <i class="fa fa-icon fa-rotate-right"></i> 범위 프레임 표시/숨기기 {#anchor-hideocrrange}
+1. #### <i class="fa fa-square-o"></i> <i class="fa fa-icon fa-rotate-right"></i> 범위 프레임 표시/숨기기 {#anchor-hideocrrange}
     **이 버튼은 OCR 모드에서만 사용 가능**
 
     OCR 범위를 선택하지 않은 상태에서 이 버튼을 사용하면 OCR 범위가 표시되며, 자동으로 마지막으로 선택한 OCR 범위로 설정됩니다.
@@ -109,7 +109,7 @@
     생략
 1. #### <i class="fa fa-times"></i> <i class="fa fa-icon fa-rotate-right"></i> 종료 {#anchor-quit}
     생략
-1. #### <i class="fa fa-hand-paper"></i> <i class="fa fa-icon fa-rotate-right"></i> 이동 {#anchor-move}
+1. #### <i class="fa fa-hand-paper-o"></i> <i class="fa fa-icon fa-rotate-right"></i> 이동 {#anchor-move}
     번역 창을 드래그합니다.
 
     실제로 버튼 바에 버튼이 없는 추가 빈 공간이 있을 경우, 자유롭게 드래그할 수 있습니다. 이 버튼은 드래그 위치를 예약하기 위한 용도입니다.
@@ -161,7 +161,7 @@
     현재 플레이 중인 게임에 대해 메모 창을 엽니다.
 
     왼쪽 클릭 시 현재 게임의 메모를 엽니다. 오른쪽 클릭 시 전역 메모를 엽니다.
-1. #### <i class="fab fa-windows"></i> <i class="btnstatus2 fab fa-windows"></i> 창 바인딩 (클릭하여 취소) {#anchor-bindwindow}
+1. #### <i class="fa fa-windows"></i> <i class="btnstatus2 fa fa-windows"></i> 창 바인딩 (클릭하여 취소) {#anchor-bindwindow}
     **이 버튼은 매우 중요하며, 많은 기능들이 이 버튼을 먼저 설정해야 사용 가능합니다**
 
     게임 창을 바인딩한 후에야 `창 크기 조절` `창 스크린샷` `게임 음소거`, `게임 창 따라가기`->`게임이 포커스를 잃을 때 항상 위 취소`와 `게임 창 이동 시 동기화 이동`, 그리고 게임 시간 기록 등이 사용 가능해집니다.

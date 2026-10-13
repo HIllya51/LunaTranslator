@@ -12,7 +12,7 @@
 部份按鈕有兩個圖示，用來表示兩種不同的狀態。部份按鈕僅有一個圖示，不過會用不同的顏色來表示不同的狀態
 :::
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 
 <style>
@@ -33,7 +33,7 @@
 
     例如如果目前是 OCR 模式，會再執行一次 OCR。
 
-1. #### <i class="fa fa-forward"></i> <i class="btnstatus2 fa fa-forward"></i> 自動模式 {#anchor-automodebutton}
+1. #### <i class="fa fa-forward"></i> <i class="btnstatus2 fa fa-play"></i> 自動模式 {#anchor-automodebutton}
     實際意義是，暫停／繼續自動從目前的文字輸入來源讀取文字。
 
     例如如果目前是 HOOK 模式，會暫停讀取遊戲文字；目前是 OCR 模式，暫停自動辨識圖像；如果目前是剪貼簿模式，會暫停自動讀取剪貼簿。
@@ -41,12 +41,12 @@
 1. #### <i class="fa fa-gear"></i> <i class="fa fa-icon fa-rotate-right"></i> 開啟設定 {#anchor-setting}
     開啟或關閉程式的設定視窗。
 
-1. #### <i class="fa fa-file"></i> <i class="fa fa-icon fa-rotate-right"></i> 讀取剪貼簿 {#anchor-copy_once}
+1. #### <i class="fa fa-file-o"></i> <i class="fa fa-icon fa-rotate-right"></i> 讀取剪貼簿 {#anchor-copy_once}
     這個的實際意義是，不管目前的預設文字輸入來源是什麼，都從剪貼簿讀取一次文字，並傳給之後的翻譯／TTS／…流程。
 
     右鍵點擊按鈕會追加讀取到的文字到目前文字之後。
 
-1. #### <i class="fa fa-futbol"></i> <i class="fa fa-icon fa-rotate-right"></i> 遊戲設定 {#anchor-open_game_setting}
+1. #### <i class="fa fa-futbol-o"></i> <i class="fa fa-icon fa-rotate-right"></i> 遊戲設定 {#anchor-open_game_setting}
     當使用 HOOK 模式連接到遊戲，或使用 OCR 模式綁定遊戲視窗後，則可以透過這個按鈕直接開啟目前遊戲的設定視窗。
 
 1. #### <i class="fa fa-mouse-pointer"></i> <i class="btnstatus2 fa fa-mouse-pointer"></i> 滑鼠游標穿透視窗 {#anchor-mousetransbutton}
@@ -56,7 +56,7 @@
 
     當把滑鼠游標移動到**滑鼠游標穿透視窗按鈕及其左右一個按鈕的區域**時，會自動退出穿透狀態以使用工具按鈕；移出區域時自動恢復穿透狀態。
 
-1. #### <i class="fa fa-lightbulb"></i> <i class="btnstatus2 fa fa-lightbulb"></i> 視窗背景透明 {#anchor-backtransbutton}
+1. #### <i class="fa fa-lightbulb-o"></i> <i class="btnstatus2 fa fa-lightbulb-o"></i> 視窗背景透明 {#anchor-backtransbutton}
     該按鈕作用僅是一鍵使得翻譯視窗的不透明度切換到 0。當不透明度為 0 時，滑鼠也會穿透視窗。
 
 1. #### <i class="fa fa-lock"></i> <i class="btnstatus2 fa fa-unlock"></i> 鎖定工具列 {#anchor-locktoolsbutton}
@@ -87,7 +87,7 @@
 
     當按下右鍵時，會先清除所有已選取範圍，再新增新的區域。
 
-1. #### <i class="fa fa-square"></i> <i class="fa fa-icon fa-rotate-right"></i> 顯示／隱藏範圍框 {#anchor-hideocrrange}
+1. #### <i class="fa fa-square-o"></i> <i class="fa fa-icon fa-rotate-right"></i> 顯示／隱藏範圍框 {#anchor-hideocrrange}
     **該按鈕僅在 OCR 模式下可用**
 
     當未選擇任何 OCR 範圍時，使用該按鈕顯示 OCR 範圍，會自動設定 OCR 範圍為上一次選擇的 OCR。
@@ -119,7 +119,7 @@
 1. #### <i class="fa fa-times"></i> <i class="fa fa-icon fa-rotate-right"></i> 退出 {#anchor-quit}
     結束程式。
 
-1. #### <i class="fa fa-hand-paper"></i> <i class="fa fa-icon fa-rotate-right"></i> 移動 {#anchor-move}
+1. #### <i class="fa fa-hand-paper-o"></i> <i class="fa fa-icon fa-rotate-right"></i> 移動 {#anchor-move}
     拖動翻譯視窗。
 
     實際上當按鈕欄有或沒有按鈕存在的額外空白區域時，都可以隨意拖動。該按鈕僅用來預留一個拖動位置。
@@ -184,7 +184,7 @@
 
     點擊左鍵時，開啟目前遊戲的備忘錄。點擊右鍵時，開啟全域的備忘錄。
 
-1. #### <i class="fab fa-windows"></i> <i class="btnstatus2 fab fa-windows"></i> 綁定視窗 （點擊自己取消） {#anchor-bindwindow}
+1. #### <i class="fa fa-windows"></i> <i class="btnstatus2 fa fa-windows"></i> 綁定視窗 （點擊自己取消） {#anchor-bindwindow}
     **該按鈕非常重要，許多功能都依賴於該按鈕先進行設定後才可用**
 
     在綁定了遊戲視窗後，`視窗縮放` `視窗截圖` `遊戲靜音`，`跟隨遊戲視窗`->`遊戲失去焦點時取消置頂`和`遊戲視窗移動時同步移動`，以及記錄遊戲時間等功能，才可用。

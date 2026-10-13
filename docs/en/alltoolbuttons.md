@@ -12,7 +12,7 @@ Button icon can be customized by clicking on "Icon".
 Some buttons have two icons to indicate two different states. Some buttons only have one icon, but they use different colors to represent different states.
 :::
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"> 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> 
 
 <style>
     i{
@@ -32,18 +32,18 @@ Some buttons have two icons to indicate two different states. Some buttons only 
     
     For example, if the current mode is OCR, it will perform OCR again.
 
-1. #### <i class="fa fa-forward"></i> <i class="btnstatus2 fa fa-forward"></i> Auto mode {#anchor-automodebutton}
+1. #### <i class="fa fa-forward"></i> <i class="btnstatus2 fa fa-play"></i> Auto mode {#anchor-automodebutton}
     The actual meaning is to pause/continue automatically reading text from the current text input source.
 
     For example, if the current mode is HOOK, it will pause reading game text; if the current mode is OCR, it will pause automatic image recognition; if the current mode is clipboard mode, it will pause automatic reading of the clipboard.
 
 1. #### <i class="fa fa-gear"></i> <i class="fa fa-icon fa-rotate-right"></i> Open Settings {#anchor-setting}
     N/A
-1. #### <i class="fa fa-file"></i> <i class="fa fa-icon fa-rotate-right"></i> Read Clipboard {#anchor-copy_once}
+1. #### <i class="fa fa-file-o"></i> <i class="fa fa-icon fa-rotate-right"></i> Read Clipboard {#anchor-copy_once}
     The actual meaning is to read text once from the clipboard regardless of the current default text input source and pass it on to the subsequent translation/tts/... process
 
     Right clicking the button will append the read text to the current text.
-1. #### <i class="fa fa-futbol"></i> <i class="fa fa-icon fa-rotate-right"></i> Game Settings {#anchor-open_game_setting}
+1. #### <i class="fa fa-futbol-o"></i> <i class="fa fa-icon fa-rotate-right"></i> Game Settings {#anchor-open_game_setting}
     When using HOOK mode to connect to a game, or using OCR mode to bind a game window, you can directly open the current game's settings window through this button
 1. #### <i class="fa fa-mouse-pointer"></i> <i class="btnstatus2 fa fa-mouse-pointer"></i> Mouse Click-through {#anchor-mousetransbutton}
     After activating this button, the translation window will not respond to mouse clicks, but will pass the click event to the underlying window.
@@ -52,7 +52,7 @@ Some buttons have two icons to indicate two different states. Some buttons only 
 
     When the mouse moves to the **area of the Mouse Through Window button and one button to the left and right**, it will automatically exit through to use the tool buttons; it will automatically restore through when moving out of the area.
 
-1. #### <i class="fa fa-lightbulb"></i> <i class="btnstatus2 fa fa-lightbulb"></i> Window background transparency {#anchor-backtransbutton}
+1. #### <i class="fa fa-lightbulb-o"></i> <i class="btnstatus2 fa fa-lightbulb-o"></i> Window background transparency {#anchor-backtransbutton}
     The function of this button is to switch the opacity of the translation window to 0 with one click. When the opacity is 0, the mouse will also penetrate through the window.
     
 1. #### <i class="fa fa-lock"></i> <i class="btnstatus2 fa fa-unlock"></i> Lock Toolbar {#anchor-locktoolsbutton}
@@ -79,7 +79,7 @@ Some buttons have two icons to indicate two different states. Some buttons only 
     In OCR mode, select the OCR area, or change the OCR area, or when activating `OCR Settings` -> `Other` -> `Multiple Area Mode`, add a new OCR area
 
     When the right button is pressed, all selected ranges will be cleared before adding new areas.
-1. #### <i class="fa fa-square"></i> <i class="fa fa-icon fa-rotate-right"></i> Show/Hide Region Border {#anchor-hideocrrange}
+1. #### <i class="fa fa-square-o"></i> <i class="fa fa-icon fa-rotate-right"></i> Show/Hide Region Border {#anchor-hideocrrange}
     **This button is only available in OCR mode**
 
     When no OCR range is selected, use this button to display the OCR range, which will automatically set the OCR range to the last selected OCR.
@@ -107,7 +107,7 @@ Some buttons have two icons to indicate two different states. Some buttons only 
     N/A
 1. #### <i class="fa fa-times"></i> <i class="fa fa-icon fa-rotate-right"></i> Exit {#anchor-quit}
     N/A
-1. #### <i class="fa fa-hand-paper"></i> <i class="fa fa-icon fa-rotate-right"></i> Move {#anchor-move}
+1. #### <i class="fa fa-hand-paper-o"></i> <i class="fa fa-icon fa-rotate-right"></i> Move {#anchor-move}
     Drag the translation window.
 
     In fact, when there is no button on the button bar, there is additional blank area, you can drag it at will. This button is just for reserving a drag position.
@@ -160,7 +160,7 @@ Some buttons have two icons to indicate two different states. Some buttons only 
     Open the memo window for the game you are currently playing. 
     
     When you click the left button, the memo for the current game is opened. When you click the right button, the global memo is opened.
-1. #### <i class="fab fa-windows"></i> <i class="btnstatus2 fab fa-windows"></i> Bind to Window (Click to Cancel) {#anchor-bindwindow}
+1. #### <i class="fa fa-windows"></i> <i class="btnstatus2 fa fa-windows"></i> Bind to Window (Click to Cancel) {#anchor-bindwindow}
     **This button is very important, many features depend on this button to be set first before they can be used**
 
     After binding the game window, `Window Scaling` `Window Screenshot` `Game Mute`, `Follow Game Window` -> `Unpin when Game Loses Focus` and `Synchronize with Game Window Movement`, as well as recording game time, etc., are available.
