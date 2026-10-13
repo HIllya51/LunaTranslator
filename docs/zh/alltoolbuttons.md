@@ -87,7 +87,7 @@
     当未选择任何OCR范围时，使用该按钮显示OCR范围，会自动设置OCR范围为上一次选择的OCR。
 
     当按下右键时，会清除所有已选取范围
-1. #### <i class="fa fa-crop"></i> <i class="fa fa-icon fa-rotate-right"></i> 进行一次OCR {#anchor-ocr_once}
+1. #### <i class="fa fa-cut"></i> <i class="fa fa-icon fa-rotate-right"></i> 进行一次OCR {#anchor-ocr_once}
     该按钮和`读取剪贴板`类似，不管当前的默认文本输入源是什么，都会先进行OCR范围选择，然后进行一次OCR，然后进行翻译流程。
 
     该按钮一般用于，在HOOK模式下，遇到选择肢时，临时使用一次OCR进行翻译选择肢。或者在OCR模式下，临时去识别一次其他偶尔出现的新的位置。
@@ -95,8 +95,6 @@
     默认左键点击时OCR结果和翻译在主窗口显示，右键点击时会原地显示翻译。
 
     可以设置切换右键和左键点击功能。
-1. #### <i class="fa fa-spinner"></i> <i class="fa fa-icon fa-rotate-right"></i> 再次进行OCR {#anchor-ocr_once_follow}
-    当使用过一次`进行一次OCR`后，使用这个按钮，可以在原来的位置上再次进行一次OCR而无需重新选择识别区域。
     
 1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> 翻译前替换 {#anchor-noundict_direct}
 1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> 专有名词翻译 {#anchor-noundict}

@@ -24,7 +24,6 @@ If the game supports embedded translation, there will be an "Embed" column of bu
 
 Sometimes, OCR mode can also be used to recognize text from images. Switch to OCR mode, then select the recognition area, and the text will be automatically recognized and translated.  
 
-Please note: Do not use the wrong button. The latter button, which has the same default icon, is only for temporarily selecting and recognizing an image once, not for continuous automatic recognition.  
 
 ![img](https://image.lunatranslator.org/zh/basicuse/ocr.png)  
 

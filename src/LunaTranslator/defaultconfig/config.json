@@ -315,8 +315,7 @@
             "simulate_key_enter",
             "copy_once",
             "open_game_setting",
-            "ocr_once",
-            "ocr_once_follow",
+            "ocr_once_1",
             "selectable",
             "minmize",
             "quit",
@@ -415,16 +414,10 @@
                 "icon": "fa.square",
                 "align": 2
             },
-            "ocr_once": {
+            "ocr_once_1": {
                 "use": true,
                 "tip": "进行一次OCR",
-                "icon": "fa.crop",
-                "align": 2
-            },
-            "ocr_once_follow": {
-                "use": false,
-                "tip": "再次进行OCR",
-                "icon": "fa.spinner",
+                "icon": "fa.cut",
                 "align": 2
             },
             "reset_TS_status": {
@@ -741,9 +734,6 @@
             },
             "_26": {
                 "name": "进行一次OCR"
-            },
-            "_26_1": {
-                "name": "再次进行OCR"
             },
             "_28": {
                 "name": "复制到剪贴板_翻译"

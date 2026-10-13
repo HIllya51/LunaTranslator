@@ -94,7 +94,7 @@
 
     當按下右鍵時，會清除所有已選取範圍。
 
-1. #### <i class="fa fa-crop"></i> <i class="fa fa-icon fa-rotate-right"></i> 進行一次 OCR {#anchor-ocr_once}
+1. #### <i class="fa fa-cut"></i> <i class="fa fa-icon fa-rotate-right"></i> 進行一次 OCR {#anchor-ocr_once}
     該按鈕和`讀取剪貼簿`類似，不管目前的預設文字輸入來源是什麼，都會先進行 OCR 範圍選擇，然後進行一次 OCR，然後進行翻譯流程。
 
     該按鈕一般用於：在 HOOK 模式下，遊戲中遇到選項（選擇肢）時，臨時使用一次 OCR 來翻譯該選項的文字；或者在 OCR 模式下，臨時去辨識一次其他偶爾出現的新的位置。
@@ -103,8 +103,6 @@
     預設左鍵點擊時 OCR 結果和翻譯在主視窗顯示，右鍵點擊時會原地顯示翻譯。
 
     可以設定切換右鍵和左鍵點擊的功能。
-1. #### <i class="fa fa-spinner"></i> <i class="fa fa-icon fa-rotate-right"></i> 再次進行 OCR {#anchor-ocr_once_follow}
-    當使用過一次`進行一次 OCR`後，使用這個按鈕，可以在原來的位置上再次進行一次 OCR 而無需重新選擇辨識區域。
 
 1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> 翻譯前取代 {#anchor-noundict_direct}
 1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> 專有名詞翻譯 {#anchor-noundict}

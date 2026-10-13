@@ -316,7 +316,7 @@ specialbuttonsettings = {
         "保存到剪贴板",
     ),
     # 进行一次OCR：左/右键哪个触发 原地显示翻译（另一个为普通单次OCR）
-    "ocr_once": functools.partial(
+    "ocr_once_1": functools.partial(
         LeftRightFunctionSetter,
         "ocr_once_left_inplace",
         False,

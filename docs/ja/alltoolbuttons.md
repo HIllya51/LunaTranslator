@@ -86,7 +86,7 @@
     OCR範囲が選択されていない場合、このボタンを使用してOCR範囲を表示し、最後に選択されたOCRに自動的に設定されます。
 
     右ボタンを押すと、選択されたすべての範囲がクリアされます。
-1. #### <i class="fa fa-crop"></i> <i class="fa fa-icon fa-rotate-right"></i> OCRを実行 {#anchor-ocr_once}
+1. #### <i class="fa fa-cut"></i> <i class="fa fa-icon fa-rotate-right"></i> OCRを実行 {#anchor-ocr_once}
     このボタンは`クリップボードを読み取る`と似ており、現在のデフォルトのテキスト入力ソースに関係なく、最初にOCR範囲を選択し、次に1回OCRを実行し、その後翻訳プロセスを進めます。
 
     このボタンは通常、HOOKモードで選択肢に遭遇したときに、一時的にOCRを使用して選択肢を翻訳するために使用されます。または、OCRモードで一時的に新しい位置を認識するために使用されます。
@@ -95,8 +95,6 @@
     デフォルトでは、左クリックでOCR結果と翻訳がメインウィンドウに表示され、右クリックでその場に翻訳が表示されます。
 
     左クリックと右クリックの機能は設定で切り替えられます。
-1. #### <i class="fa fa-spinner"></i> <i class="fa fa-icon fa-rotate-right"></i> OCRを再実行 {#anchor-ocr_once_follow}
-    `1回OCRを実行`を使用した後、このボタンを使用して、元の位置で再度OCRを実行し、認識エリアを再選択する必要はありません。
     
 1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> 翻訳前の置換 {#anchor-noundict_direct}
 1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> 固有名詞翻訳 {#anchor-noundict}

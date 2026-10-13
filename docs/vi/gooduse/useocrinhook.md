@@ -24,6 +24,4 @@ Nút này có biểu tượng mặc định giống với nút chọn vùng nh�
 
 Sau khi chọn vùng bằng nút này, nó chỉ thực hiện OCR một lần, sau đó thoát OCR và tiếp tục sử dụng HOOK để tự động trích xuất văn bản một cách liền mạch, khắc phục hoàn hảo một số thiếu sót của chế độ HOOK.  
 
-**Do biểu tượng của nút này, nhiều người vốn muốn sử dụng OCR lại nhầm tưởng đây là nút OCR và sử dụng nó trong khi vẫn ở chế độ HOOK. Sau khi chọn vùng, bản dịch tự động không diễn ra. Trên thực tế, nút chế độ OCR chỉ xuất hiện sau khi chuyển sang chế độ OCR.**  
 
-Đối với các lựa chọn ở vị trí cố định mà bạn không muốn chọn lại vùng mỗi lần, có thể sử dụng nút "Thực hiện OCR lại" <i class="fa fa-spinner"></i> hoặc phím tắt để thực hiện OCR bằng vùng đã chọn trước đó.  

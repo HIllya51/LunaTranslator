@@ -24,7 +24,6 @@ Nếu game hỗ trợ dịch nhúng, sẽ có nút "Nhúng" trong cột này, n�
 
 Đôi khi cũng có thể sử dụng chế độ OCR để nhận dạng văn bản hình ảnh. Chuyển sang chế độ OCR, sau đó chọn vùng nhận dạng, phần mềm sẽ tự động nhận dạng văn bản và dịch.
 
-Lưu ý không sử dụng sai nút, nút sau có biểu tượng giống nút trước chỉ dùng để tạm thời chọn và nhận dạng hình ảnh một lần, không phải tự động nhận dạng liên tục.
 
 ![img](https://image.lunatranslator.org/zh/basicuse/ocr.png)
 

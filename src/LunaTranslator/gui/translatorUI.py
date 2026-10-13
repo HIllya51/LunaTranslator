@@ -346,11 +346,7 @@ class TranslatorWindow(resizableframeless):
             gobject.base.textgetmethod(result, is_auto_run=False)
 
     def ocr_once_function(self):
-        def ocroncefunction(rect, img=None):
-            self.ocr_once_follow_rect = rect
-            self.ocr_do_function(rect, img)
-
-        rangeselct_function(ocroncefunction, hideshow=True)
+        rangeselct_function(self.ocr_do_function, hideshow=True)
 
     def ocr_once_box_function(self):
         """单次OCR的原地模式（默认右键，可在工具按钮设置里换到左键）：
@@ -612,15 +608,11 @@ class TranslatorWindow(resizableframeless):
                 lambda: opengamesettings(gobject.base.gameuid, 1),
             ),
             (
-                "ocr_once",
+                "ocr_once_1",
                 buttonfunctions(
                     clicked=self.ocr_once_leftclick,
                     rightclick=self.ocr_once_rightclick,
                 ),
-            ),
-            (
-                "ocr_once_follow",
-                lambda: self.ocr_do_function(self.ocr_once_follow_rect),
             ),
             ("minmize", self.hide_),
             ("quit", self.close),
@@ -816,7 +808,6 @@ class TranslatorWindow(resizableframeless):
         self.processismuteed = False
         self.isbindedwindow = False
         self.setontopthread_lock = threading.Lock()
-        self.ocr_once_follow_rect = None
 
     def displayglobaltooltip_f(self, string):
         QToolTip.showText(QCursor.pos(), string, self)
