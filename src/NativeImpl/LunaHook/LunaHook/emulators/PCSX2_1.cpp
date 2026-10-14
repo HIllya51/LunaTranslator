@@ -2437,7 +2437,7 @@ namespace
     template <int which, bool usesplit = false>
     void SLPM65988char(hook_context *, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
-        static const wchar_t *whichx[] = {L"Yoshitsune", L"Futakoi_Alternative", L"Shounen_Onmyouji", L"Darling"};
+        static const wchar_t *whichx[] = {L"Yoshitsune", L"Futakoi_Alternative", L"Shounen_Onmyouji", L"Darling", L"Bakumatsu"};
         static auto charset = load_charset_with_common(whichx[which]);
         auto code = (uint16_t)(PCSX2_REG_EMU(a0) & 0xffff);
         buffer->from_t(charset[code]);
@@ -2726,6 +2726,18 @@ namespace
         FSLPM65997(buffer, hp);
         all_ascii_Filter(buffer, hp);
     }
+    void SLPM65737add(hook_context *, HookParam *, TextBuffer *buffer, uintptr_t *)
+    {
+        buffer->from(jisx0208_to_shiftjis((const char *)PCSX2_REG(a0)));
+    }
+    void SLPM66028(TextBuffer *buffer, HookParam *hp)
+    {
+        static lru_cache<std::string> cache(5);
+        std::string s = buffer->strA();
+        if (cache.touch(s))
+            return buffer->clear();
+        buffer->from(s);
+    }
 }
 struct emfuncinfoX
 {
@@ -2733,6 +2745,14 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // 召しませ浪漫茶房
+    {0x19fd30, {0, 0, 0, SLPM65737add, 0, "SLPM-65737"}}, // EvMsgWin_AddStr a0=JIS串
+    {0x1a0010, {0, 0, 0, SLPM65737add, 0, "SLPM-65737"}}, // EvMsgWin_SetNameStr a0=名
+    {0x1a1590, {0, 0, 0, SLPM65737add, 0, "SLPM-65737"}}, // EvSelector_AddItem a0=项文本
+    // うるるんクエスト恋遊記
+    {0x129b40, {FULL_STRING, 0, 0, SLPM65737add, SLPM66028, "SLPM-66028"}},
+    // 幕末恋華・花柳剣士伝
+    {0x1a3fc0, {USING_CHAR | CODEC_UTF16, 0, 0, SLPM65988char<4>, 0, "SLPS-25818"}},
     // 緋色の欠片 ～あの空の下で～
     {0x1056D0, {FULL_STRING, PCSX2_REG_OFFSET(a1), 0, 0, FSLPM66687, "SLPM-66687"}},
     // 緋色の欠片 ～玉依姫奇譚～

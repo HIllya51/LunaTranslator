@@ -87,7 +87,7 @@ bool endWith(const std::string_view &s, const std::string_view &s2);
 bool endWith(const std::wstring_view &s, const std::wstring_view &s2);
 std::wstring utf32_to_utf16(std::u32string_view sv);
 std::u32string utf16_to_utf32(std::wstring_view);
-
+std::string jisx0208_to_shiftjis(const std::string&);
 std::string WideStringToString(const std::wstring &text, UINT cp = CP_UTF8);
 std::string WideStringToString(std::wstring_view text, UINT cp = CP_UTF8);
 std::string WideStringToString(const wchar_t *, UINT cp = CP_UTF8);

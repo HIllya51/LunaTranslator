@@ -347,3 +347,86 @@ std::optional<std::wstring> commonparsestring(const void *data, size_t length, v
   else
     return {};
 }
+
+// 将 JIS X 0208 的区点码(ku-ten)转换为 Shift-JIS 字节序列
+// 输入: const std::string&，每个字符用 uint16_t 表示一个 JIS 区点码
+//       (高字节 = 区, 低字节 = 点), 这里约定用大端序存放
+// 输出: Shift-JIS 编码的 std::string
+
+static inline bool jis_to_sjis(uint16_t jis, uint16_t &sjis)
+{
+  // jis 为 JIS X 0208 码点 (0x2121 - 0x7E7E)
+  // 返回 false 表示无法转换
+  uint8_t ku = (jis >> 8) & 0xFF; // 区
+  uint8_t ten = jis & 0xFF;       // 点
+
+  // 有效范围: 区 0x21-0x7E, 点 0x21-0x7E
+  if (ku < 0x21 || ku > 0x7E || ten < 0x21 || ten > 0x7E)
+    return false;
+
+  uint16_t row = ku - 0x21;  // 0-based 行
+  uint16_t col = ten - 0x21; // 0-based 列
+
+  uint16_t lead, trail;
+
+  if (row < 0x3E) // 区 1-62: 对应 Shift-JIS 0x81-0x9F
+  {
+    lead = 0x81 + (row >> 1);
+    if (row & 1)
+    {
+      // 奇数行: trail 范围 0x9F-0xFC
+      trail = 0x9F + col;
+    }
+    else
+    {
+      // 偶数行: trail 范围 0x40-0x7E, 0x80-0x9E
+      trail = (col < 0x3F) ? (0x40 + col) : (0x41 + col);
+    }
+  }
+  else // 区 63-94: 对应 Shift-JIS 0xE0-0xEF
+  {
+    lead = 0xE0 + (row - 0x3E) / 2;
+    if ((row - 0x3E) & 1)
+    {
+      trail = 0x9F + col;
+    }
+    else
+    {
+      trail = (col < 0x3F) ? (0x40 + col) : (0x41 + col);
+    }
+  }
+
+  sjis = (static_cast<uint16_t>(lead) << 8) | trail;
+  return true;
+}
+
+std::string jisx0208_to_shiftjis(const std::string &input)
+{
+  // 输入格式: 每 2 字节表示一个 JIS 码点 (大端序)
+  // 例如 "あ" 的 JIS 码是 0x2422, 输入应为 "\x24\x22"
+  std::string output;
+  output.reserve(input.size());
+
+  if (input.size() % 2 != 0)
+    throw std::invalid_argument("input size must be even (2 bytes per JIS code point)");
+
+  for (size_t i = 0; i < input.size(); i += 2)
+  {
+    uint16_t jis = (static_cast<uint8_t>(input[i]) << 8) | static_cast<uint8_t>(input[i + 1]);
+
+    uint16_t sjis;
+    if (jis_to_sjis(jis, sjis))
+    {
+      output.push_back(static_cast<char>((sjis >> 8) & 0xFF));
+      output.push_back(static_cast<char>(sjis & 0xFF));
+    }
+    else
+    {
+      // 无法转换的码点, 可选择跳过或用替代字符
+      // 这里选择跳过
+      continue;
+    }
+  }
+
+  return output;
+}
