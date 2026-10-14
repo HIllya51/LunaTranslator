@@ -21,6 +21,11 @@ class OCRCaptureSnapshot():
         self.revision = revision
         self.rect = rect
 
+    def __eq__(self, other):
+        if not isinstance(other, OCRCaptureSnapshot):
+            return NotImplemented
+        return self.revision == other.revision and self.rect == other.rect
+
 class OCRRegionText(str):
     """Plain text at existing API/storage boundaries, with transient provenance.
 
