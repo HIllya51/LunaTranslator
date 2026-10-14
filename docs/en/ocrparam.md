@@ -10,6 +10,7 @@ When enabled, the translation is displayed directly inside the OCR selection box
 - The overlay does not intercept the mouse, so the game underneath remains operable; the software will not recognize its own translation again.
 - In multi-region mode, each selection box recognizes and displays independently.
 
+![img](https://image.lunatranslator.org/en/inplaceocr.png)
 
 ## Automation Execution Methods {#anchor-auto}
 

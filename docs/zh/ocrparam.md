@@ -10,6 +10,7 @@
 - 覆盖层不拦截鼠标，下方的游戏照常操作；软件也不会把自己的译文再识别一遍。
 - 多重区域模式下，每个选框独立识别和显示。
 
+![img](https://image.lunatranslator.org/en/inplaceocr.png)
 
 ## 自动化执行方法 {#anchor-auto}
 

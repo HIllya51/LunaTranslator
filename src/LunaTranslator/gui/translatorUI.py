@@ -346,7 +346,11 @@ class TranslatorWindow(resizableframeless):
             gobject.base.textgetmethod(result, is_auto_run=False)
 
     def ocr_once_function(self):
-        rangeselct_function(self.ocr_do_function, hideshow=True)
+        def ocroncefunction(rect, img=None):
+            self.ocr_once_follow_rect = rect
+            self.ocr_do_function(rect, img)
+
+        rangeselct_function(ocroncefunction, hideshow=True)
 
     def ocr_once_box_function(self):
         """单次OCR的原地模式（默认右键，可在工具按钮设置里换到左键）：
@@ -364,18 +368,13 @@ class TranslatorWindow(resizableframeless):
 
         rangeselct_function(createbox, hideshow=True)
 
-    def ocr_once_leftclick(self):
+    def ocr_once_click(self, is_left):
         # 左/右键哪个触发原地显示由工具按钮设置决定（默认右键）
-        if globalconfig.get("ocr_once_left_inplace", False):
+        left_inplace = globalconfig.get("ocr_once_left_inplace", False)
+        if is_left == left_inplace:
             self.ocr_once_box_function()
         else:
             self.ocr_once_signal.emit()
-
-    def ocr_once_rightclick(self):
-        if globalconfig.get("ocr_once_left_inplace", False):
-            self.ocr_once_signal.emit()
-        else:
-            self.ocr_once_box_function()
 
     @threader
     def simulate_key_ctrl(self):
@@ -610,9 +609,13 @@ class TranslatorWindow(resizableframeless):
             (
                 "ocr_once_1",
                 buttonfunctions(
-                    clicked=self.ocr_once_leftclick,
-                    rightclick=self.ocr_once_rightclick,
+                    clicked=lambda: self.ocr_once_click(True),
+                    rightclick=lambda: self.ocr_once_click(False),
                 ),
+            ),
+            (
+                "ocr_once_follow",
+                lambda: self.ocr_do_function(self.ocr_once_follow_rect),
             ),
             ("minmize", self.hide_),
             ("quit", self.close),
@@ -808,6 +811,7 @@ class TranslatorWindow(resizableframeless):
         self.processismuteed = False
         self.isbindedwindow = False
         self.setontopthread_lock = threading.Lock()
+        self.ocr_once_follow_rect = None
 
     def displayglobaltooltip_f(self, string):
         QToolTip.showText(QCursor.pos(), string, self)

@@ -13,6 +13,7 @@
 #include "engine32/TEANAM.h"
 #include "engine32/Seraphim.h"
 #include "engine32/ArcSystemWorks.h"
+#include "engine32/TERIOS.h"
 #include "engine32/InteractiveNovelEngine.h"
 #include "engine32/AZScript.h"
 #include "engine32/AZSystem.h"
@@ -399,6 +400,7 @@ std::vector<ENGINE *> check_engines()
         new Silkysveryveryold,
         new gazelle,
         new TEANAM,
+        new TERIOS,
         // ignore engines
         new oldSystem40ini,
         new AdvPlayerHD,

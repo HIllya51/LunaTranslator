@@ -85,7 +85,7 @@ Một số nút có hai biểu tượng để biểu thị hai trạng thái kh�
     Khi không có phạm vi OCR nào được chọn, sử dụng nút này để hiển thị phạm vi OCR, nó sẽ tự động đặt phạm vi OCR thành OCR cuối cùng đã chọn.
 
     Khi nhấn nút phải, tất cả các phạm vi đã chọn sẽ bị xóa
-1. #### <i class="fa fa-cut"></i> <i class="fa fa-icon fa-rotate-right"></i> Thực hiện OCR {#anchor-ocr_once}
+1. #### <i class="fa fa-crop"></i> <i class="fa fa-icon fa-rotate-right"></i> Thực hiện OCR {#anchor-ocr_once_1}
     Nút này tương tự như `Đọc Clipboard`, bất kể nguồn đầu vào văn bản mặc định hiện tại, nó sẽ đầu tiên chọn phạm vi OCR, sau đó thực hiện OCR một lần, và sau đó tiếp tục với quá trình dịch.
 
     Nút này thường được sử dụng trong chế độ HOOK, khi gặp các lựa chọn, để tạm thời sử dụng OCR để dịch các lựa chọn. Hoặc trong chế độ OCR, để tạm thời nhận diện một vị trí mới thỉnh thoảng xuất hiện.
@@ -94,6 +94,8 @@ Một số nút có hai biểu tượng để biểu thị hai trạng thái kh�
     Theo mặc định, nhấp chuột trái hiển thị kết quả OCR và bản dịch trong cửa sổ chính, còn nhấp chuột phải hiển thị bản dịch ngay tại chỗ.
 
     Chức năng của chuột trái và chuột phải có thể hoán đổi cho nhau trong cài đặt.
+1. #### <i class="fa fa-spinner"></i> <i class="fa fa-icon fa-rotate-right"></i> Thực hiện OCR lần nữa {#anchor-ocr_once_follow}
+    Sau khi sử dụng `Thực hiện OCR một lần`, sử dụng nút này để thực hiện OCR lại tại vị trí ban đầu mà không cần phải chọn lại khu vực nhận diện.
     
 1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> Thay thế trước khi dịch {#anchor-noundict_direct}
 1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> Dịch danh từ riêng {#anchor-noundict}

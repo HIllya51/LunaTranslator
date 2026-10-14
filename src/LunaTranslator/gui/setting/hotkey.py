@@ -229,6 +229,9 @@ def registrhotkeys(self):
         "41": lambda: gobject.base.translation_ui.fullsgame_signal.emit(False),
         "42": lambda: gobject.base.translation_ui.fullsgame_signal.emit(True),
         "_26": gobject.base.translation_ui.ocr_once_signal.emit,
+        "_26_1": lambda: gobject.base.translation_ui.ocr_do_function(
+            gobject.base.translation_ui.ocr_once_follow_rect
+        ),
         "_28": lambda: NativeUtils.ClipBoard.setText(gobject.base.currenttranslate),
         "_29": lambda: gobject.base.searchwordW.ankiwindow.recordbtn1.click(),
         "_30": lambda: gobject.base.searchwordW.ankiwindow.recordbtn2.click(),
@@ -292,7 +295,7 @@ hotkeys = [
         ],
     ],
     ["HOOK", ["_11", "_12"]],
-    ["OCR", ["_13", "_14", "_14_1", "_26", "46", "47", "48", "49"]],
+    ["OCR", ["_13", "_14", "_14_1", "_26", "_26_1", "46", "47", "48", "49"]],
     ["剪贴板", ["36", "_4", "_28"]],
     ["TTS", ["_32", "_7", "_7_1"]],
     ["游戏", ["_10", "_15", "_21", "_22", "43", "41", "42"]],

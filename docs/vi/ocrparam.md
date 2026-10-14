@@ -10,6 +10,7 @@ Khi bật, bản dịch sẽ hiển thị ngay trong khung chọn OCR, phủ lê
 - Lớp phủ không chặn chuột, trò chơi phía dưới vẫn thao tác bình thường; phần mềm cũng không nhận dạng lại bản dịch của chính mình.
 - Ở chế độ đa vùng, mỗi khung chọn nhận dạng và hiển thị độc lập.
 
+![img](https://image.lunatranslator.org/en/inplaceocr.png)
 
 ## Phương Pháp Thực Thi Tự Động {#anchor-auto}
 

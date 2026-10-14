@@ -8,24 +8,18 @@ import math
 import threading
 import weakref
 from contextlib import contextmanager
-from typing import NamedTuple
 
 from qtsymbols import *
 import windows, NativeUtils, gobject
 from myutils.config import globalconfig
 
-if isqt5:
-    from PyQt5.QtCore import QThread
-else:
-    from PyQt6.QtCore import QThread
 
-
-class OCRCaptureSnapshot(NamedTuple):
+class OCRCaptureSnapshot():
     """Selection revision and physical rectangle at the start of recognition."""
 
-    revision: int
-    rect: tuple
-
+    def __init__(self,revision : int, rect: tuple):
+        self.revision = revision
+        self.rect = rect
 
 class OCRRegionText(str):
     """Plain text at existing API/storage boundaries, with transient provenance.

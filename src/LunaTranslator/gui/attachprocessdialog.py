@@ -2,7 +2,7 @@ from qtsymbols import *
 from gui.fluent.messagebox import ExMessageBox
 import os, functools
 import windows, qtawesome, gobject
-from NativeUtils import GetProcessFirstWindow
+import NativeUtils
 from myutils.config import globalconfig, _TR
 from myutils.wrapper import Singleton
 from myutils.hwnd import (
@@ -236,7 +236,7 @@ class AttachProcessDialog(saveposwindow):
 
     def guesshwnd(self, pids):
         for pid in pids:
-            hwnd = GetProcessFirstWindow(pid)
+            hwnd = NativeUtils.GetProcessFirstWindow(pid)
             if (hwnd) != 0:
                 return hwnd
         return 0
