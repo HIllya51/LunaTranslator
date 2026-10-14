@@ -662,6 +662,13 @@ namespace
         FSLPM65997X(buffer, hp);
         all_ascii_Filter(buffer, hp);
     }
+    void FSLPM66687(TextBuffer *buffer, HookParam *hp)
+    {
+        if ((WORD)PCSX2_REG(t2) != 0)
+            return buffer->clear();
+        FSLPM65997X(buffer, hp);
+        all_ascii_Filter(buffer, hp);
+    }
     void SLPM66437(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strAW();
@@ -2726,6 +2733,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // 緋色の欠片 ～あの空の下で～
+    {0x1056D0, {FULL_STRING, PCSX2_REG_OFFSET(a1), 0, 0, FSLPM66687, "SLPM-66687"}},
     // 緋色の欠片 ～玉依姫奇譚～
     {0x16C960, {FULL_STRING, PCSX2_REG_OFFSET(a1), 0, 0, FSLPM65997, std::vector<const char *>{"SLPM-66453", "SLPM-66454"}}},
     // 緋色の欠片 愛蔵版 ～玉依姫奇譚～
