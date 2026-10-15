@@ -4,7 +4,7 @@
   
    ブラウザ拡張機能を使用するにはWebview2が必要です。システムがWebview2をサポートしていない場合を除き、デフォルトの表示エンジンはWebview2です。
 
-   ![img](https://image.lunatranslator.org/en/yomitan.png)
+   ![img](https://image.lunatranslator.org/en/extension/1.png)
 
 1. **ブラウザ拡張機能を使用**を有効にし、yomitan拡張機能を追加します。
 
@@ -12,7 +12,7 @@
     >Chrome / Edgeバージョンのプラグインを追加してください。Firefoxバージョンのプラグインは互換性がありません。
 
 
-   ![img](https://image.lunatranslator.org/en/yomitan3.png)
+   ![img](https://image.lunatranslator.org/en/extension/2.png)
 
    ![img](https://image.lunatranslator.org/zh/yomitan2.png)
 
@@ -28,9 +28,9 @@
    > [!TIP]
    > デフォルトでは、メインウィンドウはテキストや翻訳内容に応じて自動的にサイズが調整されます。これにより、Yomitanのウィンドウサイズも変更されます。
    >
-   > **表示設定** → **インターフェース設定** → **メインインターフェース** にて、**高さの自動調整** のチェックを外してください。
+   > **表示設定** → **インターフェース設定** にて、**高さの自動調整** のチェックを外すか、Yomitan を収めるのに十分な**最小の高さ**を設定してください。
    >
-   > ![img](https://image.lunatranslator.org/en/yomi9.png)
+   > ![img](https://image.lunatranslator.org/en/extension/3.png)
 
    ![img](https://image.lunatranslator.org/zh/yomitan5.png)
 

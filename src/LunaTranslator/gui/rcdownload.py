@@ -219,7 +219,6 @@ class resourcewidget2(GroupCardWidget):
         self.installsucc.connect(self._installsucc)
         formLayout = VisLFormLayout(self.contentWidget())
         self.formLayout = formLayout
-        formLayout.addRow("论坛", LinkLabel(makehtml("https://forum.freemdict.com/")))
         formLayout.addRow(
             "freemdict", LinkLabel(makehtml("https://search.freemdict.com/"))
         )

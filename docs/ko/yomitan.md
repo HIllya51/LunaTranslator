@@ -4,7 +4,7 @@
   
    브라우저 확장 프로그램을 사용하려면 Webview2가 필요합니다. 시스템이 Webview2를 지원하지 않는 경우를 제외하면 기본 표시 엔진은 Webview2입니다.
 
-   ![img](https://image.lunatranslator.org/en/yomitan.png)
+   ![img](https://image.lunatranslator.org/en/extension/1.png)
 
 1. **브라우저 확장 프로그램 사용**을 활성화하고 yomitan 확장 프로그램을 추가합니다.
 
@@ -12,7 +12,7 @@
     >Chrome/Edge 버전 플러그인을 추가해야 합니다. Firefox 버전 플러그인은 호환되지 않습니다.
 
 
-   ![img](https://image.lunatranslator.org/en/yomitan3.png)
+   ![img](https://image.lunatranslator.org/en/extension/2.png)
 
    ![img](https://image.lunatranslator.org/zh/yomitan2.png)
 
@@ -28,9 +28,9 @@
    > [!TIP]
    > 기본적으로 메인 창은 텍스트와 번역 내용에 따라 자동으로 창 크기가 조정되며, 이로 인해 Yomitan 창 크기도 함께 변경됩니다.
    >
-   > **디스플레이 설정** → **인터페이스 설정** → **메인 인터페이스**에서 **자동 높이 조정** 설정을 비활성화하세요.
+   > **디스플레이 설정** → **인터페이스 설정**에서 **자동 높이 조정** 설정을 비활성화하거나, Yomitan을 수용할 만큼 충분한 **최소 높이**를 설정하세요.
    >
-   > ![img](https://image.lunatranslator.org/en/yomi9.png)
+   > ![img](https://image.lunatranslator.org/en/extension/3.png)
 
 
    ![img](https://image.lunatranslator.org/zh/yomitan5.png)

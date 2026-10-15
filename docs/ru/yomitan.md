@@ -4,7 +4,7 @@
   
    Для использования расширения браузера необходим Webview2. Если система не поддерживает Webview2, по умолчанию движок отображения будет Webview2.
 
-   ![img](https://image.lunatranslator.org/en/yomitan.png)
+   ![img](https://image.lunatranslator.org/en/extension/1.png)
 
 1. Включите **Использовать расширение браузера** и добавьте расширение Yomitan.
 
@@ -13,7 +13,7 @@
 
 
 
-   ![img](https://image.lunatranslator.org/en/yomitan3.png)
+   ![img](https://image.lunatranslator.org/en/extension/2.png)
 
    ![img](https://image.lunatranslator.org/zh/yomitan2.png)
 
@@ -29,9 +29,9 @@
    > [!TIP]
    > По умолчанию главное окно автоматически изменяет размер в зависимости от текста и содержимого перевода, что также влияет на размер окна Yomitan.
    >
-   > Перейдите в **Настройки отображения** → **Настройки интерфейса** → **Главный интерфейс** и снимите флажок **Автоматическая регулировка высоты**.
+   > Перейдите в **Настройки отображения** → **Настройки интерфейса** и снимите флажок **Автоматическая регулировка высоты** либо задайте **Минимальную высоту**, достаточную для размещения Yomitan.
    >
-   > ![img](https://image.lunatranslator.org/en/yomi9.png)
+   > ![img](https://image.lunatranslator.org/en/extension/3.png)
 
    ![img](https://image.lunatranslator.org/zh/yomitan5.png)
 

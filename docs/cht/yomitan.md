@@ -4,14 +4,14 @@
 
    使用瀏覽器擴充功能時必須使用 WebView2。除非系統不支援 WebView2，否則預設的顯示引擎就是 WebView2。
 
-   ![img](https://image.lunatranslator.org/zh/yomitan.png)
+    ![img](https://image.lunatranslator.org/zh/extension/1.png)
 
 1. 啟用**使用瀏覽器擴充功能**，並新增 Yomitan 擴充功能。
 
     >[!WARNING]
     >你應該新增 Chrome/Edge 版本的擴充功能，Firefox 版本的附加元件無法相容。
 
-   ![img](https://image.lunatranslator.org/zh/yomitan3.png)
+    ![img](https://image.lunatranslator.org/zh/extension/2.png)
 
    ![img](https://image.lunatranslator.org/zh/yomitan2.png)
 
@@ -27,9 +27,9 @@
    > [!TIP]
    > 預設情況下，主視窗會根據文字和翻譯內容自動調整視窗尺寸，這也會連帶調整 Yomitan 的視窗大小。
    >
-   > 請在 **顯示設定** → **介面設定** → **主介面** 中，取消勾選 **自動調整高度** 設定。
+   > 請在 **顯示設定** → **介面設定** 中，取消勾選 **自動調整高度** 設定，或者設定一個足以容納 Yomitan 的**最小高度**。
    >
-   > ![img](https://image.lunatranslator.org/zh/yomi9.png)
+   > ![img](https://image.lunatranslator.org/zh/extension/3.png)
 
 
    ![img](https://image.lunatranslator.org/zh/yomitan5.png)

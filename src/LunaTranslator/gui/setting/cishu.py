@@ -755,8 +755,8 @@ def setTabcishu_l(self):
         enable=globalconfig.get("isshowrawtext", True),
         grid=(
             [(yufajialiang, 0)],
-            [hoverinfoexp, copywordexp],
-            [searchwordexp, searchword_Sexp],
+            [hoverinfoexp], [copywordexp],
+            [searchwordexp], [searchword_Sexp],
         ),
     )
 

@@ -4,14 +4,14 @@
     
     使用浏览器插件必须使用Webview2。除非系统不支持Webview2，否则默认的显示引擎就是Webview2。
 
-    ![img](https://image.lunatranslator.org/zh/yomitan.png)
+    ![img](https://image.lunatranslator.org/zh/extension/1.png)
 
 1. 激活**使用浏览器插件**，并添加yomitan插件。
 
     >[!WARNING]
     >你应该添加Chrome/Edge版本的插件，Firefox版本的插件无法兼容。
 
-    ![img](https://image.lunatranslator.org/zh/yomitan3.png)
+    ![img](https://image.lunatranslator.org/zh/extension/2.png)
 
     ![img](https://image.lunatranslator.org/zh/yomitan2.png)
 
@@ -27,9 +27,9 @@
     >[!TIP]
     >默认情况下，主窗口会根据文本和翻译内容自动调整窗口尺寸，这会使得Yomitan的窗口尺寸也被调整。
     >
-    >可以在**显示设置**->**界面设置**->**主界面**，取消激活**自动调整高度**设置。
+    >可以在**显示设置**->**界面设置**，取消激活**自动调整高度**设置，或者设置一个足以容纳Yomitan的**最小高度**。
     >
-    >![img](https://image.lunatranslator.org/zh/yomi9.png)
+    >![img](https://image.lunatranslator.org/zh/extension/3.png)
     
 
     ![img](https://image.lunatranslator.org/zh/yomitan5.png)

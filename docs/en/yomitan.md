@@ -4,7 +4,7 @@
   
    Using the browser extension requires Webview2. Unless the system does not support Webview2, the default display engine is Webview2.
 
-   ![img](https://image.lunatranslator.org/en/yomitan.png)
+   ![img](https://image.lunatranslator.org/en/extension/1.png)
 
 1. Enable **Use Browser Extension** and add the Yomitan extension.
 
@@ -12,7 +12,7 @@
     >You should add the Chrome/Edge version of the plugin. The Firefox version of the plugin is not compatible.
 
 
-   ![img](https://image.lunatranslator.org/en/yomitan3.png)
+   ![img](https://image.lunatranslator.org/en/extension/2.png)
 
    ![img](https://image.lunatranslator.org/zh/yomitan2.png)
 
@@ -28,9 +28,9 @@
    > [!TIP]
    > By default, the main window automatically resizes based on the text and translation content, which also adjusts the Yomitan window size.
    >
-   > Go to **Display Settings** → **Interface Settings** → **Main Window**, and disable **Auto Adjust Height**.
+   > Go to **Display Settings** → **Interface Settings**, and disable **Auto Adjust Height**, or set a **Minimum Height** large enough to accommodate Yomitan.
    >
-   > ![img](https://image.lunatranslator.org/en/yomi9.png)
+   > ![img](https://image.lunatranslator.org/en/extension/3.png)
 
    ![img](https://image.lunatranslator.org/zh/yomitan5.png)
 
