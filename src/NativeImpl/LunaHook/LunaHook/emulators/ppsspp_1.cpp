@@ -1652,6 +1652,47 @@ namespace
         }
         buffer->from(ws);
     }
+    void ULJS00273mes(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *)
+    {
+        static auto charset = LoadResCharSet(L"PS2COMMON");
+        auto tp = (uint32_t *)(uintptr_t)PPSSPP::emu_addr(context, 0x8A9BE34);
+        if (!tp || !*tp)
+            return buffer->clear();
+        auto p = (const uint16_t *)(uintptr_t)PPSSPP::emu_addr(context, *tp);
+        if (!p)
+            return buffer->clear();
+        static std::wstring last;
+        std::wstring out;
+        for (int i = 0; i < 512; i++)
+        {
+            uint16_t v = p[i];
+            if (v == 0xffff || v == 0xfffd || v == 0xfffb || v == 0xfff0)
+                break; // 结束符
+            if (v == 0xfffe)
+            {
+                // out.push_back(L'\n');
+                continue;
+            }
+            if (v >= 0xff00)
+                continue; // 其它控制码
+            if (v == 0)
+                continue; // 空槽
+            if (v < charset.size() && charset[v])
+                out.push_back(charset[v]);
+        }
+        if (out.empty())
+            return buffer->clear();
+        if (out[0] == L'、')
+            out.erase(0, 1); // 行首消息标记(顿号) — 日语句子不会以顿号开头
+        if (out.empty())
+            return buffer->clear();
+        // 打字机光标推进: 后续输出是上次输出的真后缀(更短) → 跳过; 新消息(非后缀) → 输出
+        if (!last.empty() && out.size() < last.size() &&
+            last.compare(last.size() - out.size(), out.size(), out) == 0)
+            return buffer->clear();
+        last = out;
+        buffer->from(out);
+    }
 }
 struct emfuncinfoX
 {
@@ -1659,6 +1700,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // マリッジロワイヤル
+    {0x8808764, {FULL_STRING | CODEC_UTF16, 0, 0, ULJS00273mes, 0, "ULJS00273"}},
     // ソラユメportable
     {0x8828924, {FULL_STRING, 1, 0, 0, ULJS00203, "ULJS00203"}},
     // Ｌの季節 ダブルポケット

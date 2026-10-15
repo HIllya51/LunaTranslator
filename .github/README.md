@@ -38,11 +38,13 @@ LunaTranslator使用 [GPLv3](../LICENSE) 许可证。
 
 ## 支持作者
 
-软件维护不易，如果您感觉该软件对你有帮助，欢迎通过[爱发电](https://afdian.com/a/HIllya51)，或微信扫码赞助，您的支持将成为软件长期维护的助力，谢谢~
 
+
+<details><summary>软件维护不易，如果您感觉该软件对你有帮助，欢迎通过爱发电，或微信扫码赞助，您的支持将成为软件长期维护的助力，谢谢~</summary>
 <a href="https://afdian.com/a/HIllya51"><img width="200" src="https://pic1.afdiancdn.com/static/img/welcome/button-sponsorme.png" alt=""></a>
 
 <img src='../src/files/static/zan.jpg' style="height: 300px !important;">
+</details>
 
 ---
 
