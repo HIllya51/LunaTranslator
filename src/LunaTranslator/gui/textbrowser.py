@@ -8,6 +8,7 @@ from gui.rendertext.texttype import TextType, ColorControl
 from gui.rendertext.webview import TextBrowser as WebviewTextbrowser
 from gui.rendertext.textbrowser import TextBrowser as QtTextbrowser
 from network.server.servicecollection_1 import mainuiwsoutputsave, WSForEach
+import NativeUtils
 from NativeUtils import WebView2
 import gobject
 
@@ -71,7 +72,7 @@ class Textbrowser(QFrame):
             tb = importlib.import_module("gui.rendertext.textbrowser").TextBrowser
             self.textbrowser = tb(self)
 
-        if gobject.sys_le_win7 or gobject.is_running_on_wine():
+        if gobject.sys_le_win7 or NativeUtils.IsRunningOnWine():
             # win7不可以同时FramelessWindowHint和WA_TranslucentBackground，否则会导致无法显示
             # win8没问题
             self.window().setAttribute(

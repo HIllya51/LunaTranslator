@@ -410,6 +410,11 @@ def CHECK_FAILURE(hr, module=None):
         raise HRESULT_ERROR(WinErrorMessage(hr, module))
 
 
+IsRunningOnWine = utilsdll.IsRunningOnWine
+IsRunningOnWine.restype = c_bool
+
+
+
 # ---- winutils.cpp（原 windows.py 里的多步组合逻辑，C++ 实现） ----
 
 _CheckMaybeUNCFile = utilsdll.CheckMaybeUNCFile
@@ -719,6 +724,28 @@ webview2_get_userdir_callback = CFUNCTYPE(None, c_wchar_p)
 webview2_get_userdir.argtypes = (webview2_get_userdir_callback,)
 
 
+_WebViewExtensionMessagesEnter = utilsdll.WebViewExtensionMessagesEnter
+_WebViewExtensionMessagesEnter.restype = c_bool
+_WebViewExtensionMessagesExit = utilsdll.WebViewExtensionMessagesExit
+
+
+class _WebViewExtensionMessages:
+    """Wine 11 ignores COWAIT_DISPATCH_WINDOW_MESSAGES used by extension APIs.
+
+    Service only Chromium's internal task windows on the owning STA; pumping
+    Qt events or moving the existing WebView objects to a worker is unsafe.
+    （C++ 实现：NativeUtils/winutils.cpp 的 WebViewExtensionMessagesEnter/Exit，
+    非 Wine 上 Enter 返回 false，本上下文管理器即无操作）"""
+
+    def __enter__(self):
+        self.active = _WebViewExtensionMessagesEnter()
+        return self
+
+    def __exit__(self, *_):
+        if self.active:
+            _WebViewExtensionMessagesExit()
+
+
 class WebView2(AbstractWebView):
 
     @staticmethod
@@ -823,20 +850,24 @@ class WebView2(AbstractWebView):
                 collect.append((_, _1, _2))
 
             _ = webview2_list_ext_CALLBACK_T(__)
-            CHECK_FAILURE(webview2_ext_list(_))
+            with _WebViewExtensionMessages():
+                CHECK_FAILURE(webview2_ext_list(_))
             return collect
 
         @staticmethod
         def Enable(_id, enable):
-            CHECK_FAILURE(webview2_ext_enable(_id, enable))
+            with _WebViewExtensionMessages():
+                CHECK_FAILURE(webview2_ext_enable(_id, enable))
 
         @staticmethod
         def Remove(_id):
-            CHECK_FAILURE(webview2_ext_rm(_id))
+            with _WebViewExtensionMessages():
+                CHECK_FAILURE(webview2_ext_rm(_id))
 
         @staticmethod
         def Add(path):
-            CHECK_FAILURE(webview2_ext_add(path))
+            with _WebViewExtensionMessages():
+                CHECK_FAILURE(webview2_ext_add(path))
 
         @staticmethod
         def Manifest_Info(extid: str):
@@ -968,7 +999,7 @@ class MSHTML(AbstractWebView):
         self.html_limit = 1
         self.browser = unique_ptr(None, webview_destroy)
         html_new(int(parent), pointer(self.browser))
-        if gobject.is_running_on_wine() or (
+        if IsRunningOnWine() or (
             html_version() < 10001
         ):  # ie10之前，sethtml会乱码
             self.html_limit = 0

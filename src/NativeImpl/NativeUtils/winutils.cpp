@@ -221,3 +221,126 @@ DECLARE_API bool LCIDToLocaleNameEx(LCID lcid, void (*cb)(const wchar_t *))
     cb(buff);
     return true;
 }
+
+// ---- Wine：WebView2 扩展调用的 COM 消息过滤器 ----
+// Wine 11 不实现 CoWaitForMultipleHandles 的 COWAIT_DISPATCH_WINDOW_MESSAGES
+// 泵消息：扩展 API（list/add/enable/rm）等待 Chromium 应答，而应答是投递到
+// Chrome_MessageWindow（message-only 窗口）的任务消息，永远得不到分发 → 死锁。
+// 临时注册 IMessageFilter，COM 等待进入 pending 时回调 MessagePending，只泵
+// 本线程的 Chrome 任务窗口（不动 Qt 输入事件、不碰 WebView 对象）。
+// ntdll 是否带 wine_get_version 导出（在 Wine 上运行）
+DECLARE_API bool IsRunningOnWine()
+{
+    auto h = GetModuleHandleW(L"ntdll.dll");
+    if (!h)
+        return false;
+    return GetProcAddress(h, "wine_get_version") != nullptr;
+}
+
+namespace
+{
+    class ChromeTaskPumpFilter : public IMessageFilter
+    {
+        std::vector<HWND> windows;
+        bool dispatching = false;
+
+    public:
+        // 注册用的静态实例，永不被销毁，计数只走形式
+        ULONG STDMETHODCALLTYPE AddRef() override { return 2; }
+        ULONG STDMETHODCALLTYPE Release() override { return 1; }
+        HRESULT STDMETHODCALLTYPE QueryInterface(REFIID riid, void **ppv) override
+        {
+            if (!ppv)
+                return E_POINTER;
+            if (IsEqualIID(riid, __uuidof(IUnknown)) ||
+                IsEqualIID(riid, __uuidof(IMessageFilter)))
+            {
+                *ppv = static_cast<IMessageFilter *>(this);
+                return S_OK;
+            }
+            *ppv = nullptr;
+            return E_NOINTERFACE;
+        }
+        // 其余决定交给旧过滤器（有的话），否则用默认值
+        DWORD STDMETHODCALLTYPE HandleInComingCall(DWORD dwCallType, HTASK htaskCaller,
+                                                   DWORD dwTickCount, LPINTERFACEINFO lpInterfaceInfo) override
+        {
+            if (previous)
+                return previous->HandleInComingCall(dwCallType, htaskCaller, dwTickCount, lpInterfaceInfo);
+            return SERVERCALL_ISHANDLED;
+        }
+        DWORD STDMETHODCALLTYPE RetryRejectedCall(HTASK htaskCallee, DWORD dwTickCount, DWORD dwRejectType) override
+        {
+            if (previous)
+                return previous->RetryRejectedCall(htaskCallee, dwTickCount, dwRejectType);
+            return 0xFFFFFFFF; // 直接取消被拒调用，不重试
+        }
+        DWORD STDMETHODCALLTYPE MessagePending(HTASK htaskCallee, DWORD dwTickCount, DWORD dwPendingType) override
+        {
+            if (!dispatching)
+            {
+                dispatching = true;
+                MSG msg;
+                for (HWND hwnd : windows)
+                {
+                    for (int i = 0; i < 64; i++)
+                    {
+                        if (!PeekMessageW(&msg, hwnd, 0, 0, PM_REMOVE))
+                            break;
+                        if (msg.message == WM_QUIT)
+                        {
+                            PostQuitMessage((int)msg.wParam); // WM_QUIT 留给调用方
+                            break;
+                        }
+                        DispatchMessageW(&msg);
+                    }
+                }
+                dispatching = false;
+            }
+            if (previous)
+                return previous->MessagePending(htaskCallee, dwTickCount, dwPendingType);
+            return PENDINGMSG_WAITDEFPROCESS;
+        }
+
+        IMessageFilter *previous = nullptr;
+
+        bool collect()
+        {
+            // 只收集本线程（宿主 WebView2 的 STA）的 Chrome 任务窗口
+            windows.clear();
+            auto tid = GetCurrentThreadId();
+            for (HWND hwnd = nullptr; (hwnd = FindWindowExW(HWND_MESSAGE, hwnd,
+                                                            L"Chrome_MessageWindow", nullptr)) != nullptr;)
+            {
+                if (GetWindowThreadProcessId(hwnd, nullptr) == tid)
+                    windows.push_back(hwnd);
+            }
+            return SUCCEEDED(CoRegisterMessageFilter(this, &previous));
+        }
+    };
+
+    ChromeTaskPumpFilter g_chrome_task_pump_filter;
+    DWORD g_chrome_task_pump_depth = 0;
+}
+
+// 进入/退出成对调用（同线程）。非 Wine 返回 false（无操作）。
+DECLARE_API bool WebViewExtensionMessagesEnter()
+{
+    if (!IsRunningOnWine())
+        return false;
+    if (g_chrome_task_pump_depth == 0 &&
+        !g_chrome_task_pump_filter.collect())
+        return false;
+    g_chrome_task_pump_depth += 1;
+    return true;
+}
+
+DECLARE_API void WebViewExtensionMessagesExit()
+{
+    if (g_chrome_task_pump_depth == 0)
+        return;
+    g_chrome_task_pump_depth -= 1;
+    if (g_chrome_task_pump_depth == 0)
+        // CoRegisterMessageFilter 返回的旧过滤器不带引用，不 Release
+        CoRegisterMessageFilter(g_chrome_task_pump_filter.previous, nullptr);
+}

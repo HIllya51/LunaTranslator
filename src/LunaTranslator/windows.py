@@ -44,6 +44,10 @@ from ctypes.wintypes import (
 HRESULT = LONG
 HWINEVENTHOOK = HANDLE
 LRESULT = LPLONG
+RDW_INVALIDATE = 0x0001
+RDW_NOERASE = 0x0020
+RDW_ALLCHILDREN = 0x0080
+RDW_UPDATENOW = 0x0100
 SW_HIDE = 0
 SW_SHOWNORMAL = 1
 SW_SHOWNOACTIVATE = 4
@@ -260,6 +264,9 @@ GetDC.restype = HDC
 ReleaseDC = _user32.ReleaseDC
 ReleaseDC.argtypes = HWND, HDC
 ReleaseDC.restype = c_int
+RedrawWindow = _user32.RedrawWindow
+RedrawWindow.argtypes = HWND, POINTER(RECT), HANDLE, UINT
+RedrawWindow.restype = BOOL
 
 
 _GetCursorPos = _user32.GetCursorPos

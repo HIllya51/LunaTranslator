@@ -1555,6 +1555,28 @@ class SingleExtensionSetting_(saveposwindow):
         self.tabw.midclicked.connect(self.close_tab)
         self.setCentralWidget(self.tabw)
         self.destroyed.connect(SingleExtensionSetting_.ondestroyed)
+        self._wine_webview_repaint = NativeUtils.IsRunningOnWine()
+
+    def event(self, event):
+        result = super().event(event)
+        if event.type() == QEvent.Type.UpdateRequest and getattr(
+            self, "_wine_webview_repaint", False
+        ):
+            page = self.tabw.currentWidget()
+            if page is not None and page.isVisible():
+                # Wine loses the native child surface after Qt's backing-store
+                # flush (including activation changes). Repaint the whole host,
+                # not just Chrome's HWNDs, after Qt has finished painting.
+                windows.RedrawWindow(
+                    int(page.winId()),
+                    None,
+                    None,
+                    windows.RDW_INVALIDATE
+                    | windows.RDW_NOERASE
+                    | windows.RDW_ALLCHILDREN
+                    | windows.RDW_UPDATENOW,
+                )
+        return result
 
     @staticmethod
     def ondestroyed():

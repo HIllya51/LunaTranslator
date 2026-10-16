@@ -160,12 +160,13 @@ def _install_exec_menu_gate():
             if ev.type() != QEvent.ContextMenu:
                 return False
             target = watched
+            if not isinstance(target, QWidget):
+                return False
             # QPlainTextEdit/QTextEdit 是滚动区：真实右键事件落在其
             # viewport 子件上（viewport 的 parent 即编辑器本体）
-            if isinstance(target, QWidget):
-                parent = target.parentWidget()
-                if isinstance(parent, (QPlainTextEdit, QTextEdit)):
-                    target = parent
+            parent = target.parentWidget()
+            if isinstance(parent, (QPlainTextEdit, QTextEdit)):
+                target = parent
             if target.contextMenuPolicy() != Qt.ContextMenuPolicy.DefaultContextMenu:
                 return False
             menu = None

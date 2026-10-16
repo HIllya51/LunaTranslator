@@ -126,20 +126,3 @@ sys_le_win81 = platformversion[0] <= 6
 # https://learn.microsoft.com/en-us/windows/release-health/release-information
 sys_win10_release_supported = platformversion[2] >= 17134  # 1803
 
-
-def is_running_on_wine():
-    import ctypes
-    from ctypes import wintypes
-
-    kernel32 = ctypes.WinDLL("kernel32.dll", use_last_error=False)
-    GetModuleHandleW = kernel32.GetModuleHandleW
-    GetModuleHandleW.argtypes = [wintypes.LPCWSTR]
-    GetModuleHandleW.restype = wintypes.HMODULE
-    hmodule = GetModuleHandleW("ntdll.dll")
-    if hmodule == 0:
-        return False
-    GetProcAddress = kernel32.GetProcAddress
-    GetProcAddress.argtypes = [wintypes.HMODULE, wintypes.LPCSTR]
-    func_addr = GetProcAddress(hmodule, b"wine_get_version")
-
-    return func_addr is not None and func_addr != 0

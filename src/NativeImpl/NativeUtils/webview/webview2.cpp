@@ -1,6 +1,9 @@
 #include "webview2.hpp"
 #include <magic_enum/magic_enum.hpp>
 
+// winutils.cpp 导出（同 DLL 内直连）：ntdll wine_get_version 探测
+extern "C" bool IsRunningOnWine();
+
 class JSEvalCallback : public ComImpl<ICoreWebView2ExecuteScriptCompletedHandler>
 {
 public:
@@ -500,6 +503,11 @@ HRESULT WebView2::init(bool loadextension_)
     std::wstring ext = L"--autoplay-policy=no-user-gesture-required"; // https://github.com/MicrosoftEdge/WebView2Feedback/issues/1598
     if (loadextension)
         ext += L" --embedded-browser-webview-enable-extension";
+    if (IsRunningOnWine())
+        // Wine：纯 CPU 渲染（GPU 服务留在浏览器进程修复空白原生右键
+        // 菜单），禁用软件 DirectComposition 回退（Wine 的 DComp 桩会崩）
+        ext += L" --disable-gpu --in-process-gpu"
+               L" --disable-features=ForceSWDCompWhenDCompFallbackRequired";
     CComPtr<CoreWebView2EnvironmentOptions> options;
 #ifndef WINXP
     options.Attach(Microsoft::WRL::Make<CoreWebView2EnvironmentOptions>().Detach());
