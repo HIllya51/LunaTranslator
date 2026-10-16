@@ -598,6 +598,7 @@ class OCRTranslationOverlay(QWidget):
             globalconfig.get("fonttype2", ""),
             globalconfig.get("fontsize", 16),
             globalconfig.get("showbold_trans", False),
+            globalconfig.get("showitalic_trans", False),
             globalconfig.get(
                 "ocr_translation_overlay_alignment", _OVERLAY_ALIGN_DEFAULT
             ),
@@ -609,7 +610,7 @@ class OCRTranslationOverlay(QWidget):
             self.update()
 
     def _translation_font(self):
-        """译文字体（字体/字号/加粗设置，同主窗口译文显示）。"""
+        """译文字体（字体/字号/加粗/倾斜设置，同主窗口译文显示）。"""
         font = QFont(globalconfig.get("fonttype2", "") or "Microsoft YaHei")
         try:
             size = float(globalconfig.get("fontsize", 16))
@@ -618,6 +619,7 @@ class OCRTranslationOverlay(QWidget):
         if size > 0:
             font.setPointSizeF(size)
         font.setBold(globalconfig.get("showbold_trans", False))
+        font.setItalic(globalconfig.get("showitalic_trans", False))
         return font
 
     def fitted_font(self, text_rect, text=None, maximum=100):
