@@ -562,6 +562,7 @@ def setTab_about(self: QWidget, basel):
             makelink("bbepis/XUnity.AutoTranslator"),
             makelink("uchardet/uchardet"),
             makelink("XHY-ChuJian/FluentUIStyle"),
+            makelink("rany2/edge-tts"),
         ),
     )
     license_expander.addContentWidget(license_content)

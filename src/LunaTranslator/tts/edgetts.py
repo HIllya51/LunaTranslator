@@ -1,10 +1,10 @@
-import pytz
 import websocket
 from datetime import datetime
 import time
 import re
-import uuid, hashlib
+import uuid
 from tts.basettsclass import TTSbase, SpeechParam, TTSResult
+from tts.edgetts_drm import DRM  # Sec-MS-GEC v2（拷贝自 rany2/edge-tts，GPL-3.0）
 
 # https://github.com/rany2/edge-tts
 
@@ -18,21 +18,25 @@ VOICE_LIST = "https://{}/voices/list?trustedclienttoken={}".format(
     BASE_URL, TRUSTED_CLIENT_TOKEN
 )
 
-CHROMIUM_FULL_VERSION = "144.0.7559.133"
+CHROMIUM_FULL_VERSION = "143.0.3650.75"
 CHROMIUM_MAJOR_VERSION = CHROMIUM_FULL_VERSION.split(".", maxsplit=1)[0]
-SEC_MS_GEC_VERSION = "1-{}".format(CHROMIUM_FULL_VERSION)
+# v2：微软升级了 Sec-MS-GEC 的版本前缀与令牌格式（见 edgetts_drm.py）
+SEC_MS_GEC_VERSION = "2-{}".format(CHROMIUM_FULL_VERSION)
 BASE_HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
     " (KHTML, like Gecko) Chrome/{CHROMIUM_MAJOR_VERSION}.0.0.0 Safari/537.36"
     " Edg/{CHROMIUM_MAJOR_VERSION}.0.0.0".format(
         CHROMIUM_MAJOR_VERSION=CHROMIUM_MAJOR_VERSION
     ),
+    "Accept-Encoding": "gzip, deflate, br, zstd",
     "Accept-Language": "en-US,en;q=0.9",
 }
 WSS_HEADERS = {
     "Pragma": "no-cache",
     "Cache-Control": "no-cache",
     "Origin": "chrome-extension://jdiccldimpdaibmpdkjnbmckianbfold",
+    # 注意：不能加 Sec-WebSocket-Version（上游 aiohttp 用的）——本程序的
+    # libcurl websocket 自己生成握手头，重复头会被服务端 4xx 拒绝
 }
 WSS_HEADERS.update(BASE_HEADERS)
 VOICE_HEADERS = {
@@ -47,57 +51,6 @@ VOICE_HEADERS = {
     "Sec-Fetch-Dest": "empty",
 }
 VOICE_HEADERS.update(BASE_HEADERS)
-
-WIN_EPOCH = 11644473600
-S_TO_NS = 1e9
-
-
-class DRM:
-    """
-    Class to handle DRM operations with clock skew correction.
-    """
-
-    clock_skew_seconds: float = 0.0
-
-    @staticmethod
-    def adj_clock_skew_seconds(skew_seconds: float) -> None:
-        DRM.clock_skew_seconds += skew_seconds
-
-    @staticmethod
-    def get_unix_timestamp() -> float:
-        return datetime.now(pytz.utc).timestamp() + DRM.clock_skew_seconds
-
-    @staticmethod
-    def parse_rfc2616_date(date: str):
-        try:
-            return (
-                datetime.strptime(date, "%a, %d %b %Y %H:%M:%S %Z")
-                .replace(tzinfo=pytz.utc)
-                .timestamp()
-            )
-        except ValueError:
-            return None
-
-    @staticmethod
-    def generate_sec_ms_gec() -> str:
-        # Get the current timestamp in Windows file time format with clock skew correction
-        ticks = DRM.get_unix_timestamp()
-
-        # Switch to Windows file time epoch (1601-01-01 00:00:00 UTC)
-        ticks += WIN_EPOCH
-
-        # Round down to the nearest 5 minutes (300 seconds)
-        ticks -= ticks % 300
-
-        # Convert the ticks to 100-nanosecond intervals (Windows file time format)
-        ticks *= S_TO_NS / 100
-
-        # Create the string to hash by concatenating the ticks and the trusted client token
-        str_to_hash = "{:.0f}{}".format(ticks, TRUSTED_CLIENT_TOKEN)
-
-        # Compute the SHA256 hash and return the uppercased hex digest
-        return hashlib.sha256(str_to_hash.encode("ascii")).hexdigest().upper()
-
 
 class TTS(TTSbase):
 
