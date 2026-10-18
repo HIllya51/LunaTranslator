@@ -365,6 +365,7 @@ def _customnamelabel(tree, item, name):
                 return
             globalconfig["quick_setting"]["all"][name]["name"] = title
             bl.setText(title)
+            tree._a11yname(item, 2, title)  # 无障碍文本同步
 
     bl.clicked.connect(clickmenu)
     return bl
@@ -376,6 +377,7 @@ def _fillkeyrow(tree, host, item, name, doc=True, custom=False):
     custom 行的名称可点菜单重命名/删除。"""
     item.setData(0, Qt.ItemDataRole.UserRole, name)
     d = globalconfig["quick_setting"]["all"][name]
+    tree._a11yname(item, 2, d["name"])  # 重命名经 _customnamelabel 同步
     if custom:
         namew = _customnamelabel(tree, item, name)
         docw = None

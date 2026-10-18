@@ -81,6 +81,7 @@ class _PreProcessTree(FluentSettingTree):
             conf = postprocessconfig[post]
             item = QTreeWidgetItem()
             item.setData(0, Qt.ItemDataRole.UserRole, post)
+            self._a11yname(item, 2, conf["name"])
             self.addTopLevelItem(item)
             btn = self._configbtn(post, conf)
             namecell = self._cell(
@@ -173,6 +174,7 @@ class _TransOptimiTree(FluentSettingTree):
                 continue
             item = QTreeWidgetItem()
             item.setData(0, Qt.ItemDataRole.UserRole, name)
+            self._a11yname(item, 2, visname)
             self.addTopLevelItem(item)
             setting = loadpostsettingwindowmethod(name)
 

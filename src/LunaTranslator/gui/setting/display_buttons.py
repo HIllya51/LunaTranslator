@@ -168,7 +168,7 @@ class _ToolButtonList(FluentSettingTree):
             conf = globalconfig["toolbutton"]["buttons"][k]
             item = QTreeWidgetItem()
             item.setData(0, Qt.ItemDataRole.UserRole, k)
-            self.addTopLevelItem(item)
+            self.addTopLevelItem(item)  # _a11yname 在 t 计算后设置（见下）
 
             def _refreshtoolicon():
                 gobject.base.translation_ui.titlebar.refreshtoolicon()
@@ -203,6 +203,7 @@ class _ToolButtonList(FluentSettingTree):
                 iconbtn,
                 icon2btn if icon2btn is not None else self._slot(iconbtn),
                 center=True))
+            self._a11yname(item, 4, t)
             self.setItemWidget(item, 4, self._cell(
                 D_getdoclink("alltoolbuttons.html#anchor-" + k)(),
                 LLabel(t),

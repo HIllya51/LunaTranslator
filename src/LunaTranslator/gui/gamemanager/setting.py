@@ -235,6 +235,7 @@ class _GameTextProcTree(FluentSettingTree):
             conf = self._ensureconf(k)
             item = QTreeWidgetItem()
             item.setData(0, Qt.ItemDataRole.UserRole, k)
+            self._a11yname(item, 2, postprocessconfig[k]["name"])
             self.addTopLevelItem(item)
             self.setItemWidget(item, 0, self._cell(
                 getsimpleswitch(conf, "use"), center=True))
@@ -338,6 +339,7 @@ class _GameTransOptimiTree(FluentSettingTree):
                         __, setting, self._host, self._gameuid)),
                 center=True,
             ))
+            self._a11yname(item, 2, visname)
             self.setItemWidget(item, 2, self._cell(LLabel(visname)))
 
 

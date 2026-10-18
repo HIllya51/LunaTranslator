@@ -14,6 +14,7 @@
 from qtsymbols import (
     QAbstractItemView,
     QApplication,
+    QBrush,
     QDrag,
     QFrame,
     QHBoxLayout,
@@ -31,6 +32,9 @@ from myutils.config import _TR
 
 # 自管拖拽的 mime 标记（同视图内重排，无携带数据）
 _RANKMOVE_MIME = "lunarankmove"
+# 行名无障碍文本的原文（_a11yname 存原文，updatelangtext 重翻译；
+# UserRole 被各树存 post 键占用）
+_A11Y_NAME_ROLE = Qt.ItemDataRole.UserRole + 10
 
 
 class FluentSettingTree(QTreeWidget):
@@ -65,12 +69,29 @@ class FluentSettingTree(QTreeWidget):
                            QSizePolicy.Policy.Expanding)
 
     def updatelangtext(self):
-        # 语言切换：列标题重翻译（app 级事件过滤器驱动，同 LLabel）
+        # 语言切换：列标题 + 行名（无障碍文本）重翻译
+        # （app 级事件过滤器驱动，同 LLabel）
         if self._titles is not None:
             for i, t in enumerate(self._titles):
                 self.headerItem().setText(i, _TR(t))
+        for i in range(self.topLevelItemCount()):
+            item = self.topLevelItem(i)
+            for c in range(self.columnCount()):
+                raw = item.data(c, _A11Y_NAME_ROLE)
+                if raw is not None:
+                    item.setText(c, _TR(raw))
 
     # ---- 行构建助手 ----
+    def _a11yname(self, item, column, text):
+        """行名的无障碍文本（NVDA 读屏）：item view 只把 item 文本暴露
+        给读屏（setItemWidget 的控件不在可访问树里），名称列已有 LLabel
+        显示，这里把同一文本写进 item、前景画成透明——视觉不变，读屏
+        的表格/对象导航能读出行名。text 传原文，随语言切换重翻译
+        （updatelangtext，同列标题）。"""
+        item.setData(column, _A11Y_NAME_ROLE, text)
+        item.setText(column, _TR(text))
+        item.setForeground(column, QBrush(Qt.GlobalColor.transparent))
+
     def _cell(self, *ws, center=False):
         """行内格子：水平排布若干控件；center 时两侧 stretch 居中。"""
         w = QWidget()
