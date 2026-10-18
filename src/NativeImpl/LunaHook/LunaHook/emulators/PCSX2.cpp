@@ -34,10 +34,8 @@ namespace
     // static void iopRecRecompile(u32 startpc);
     // static void recRecompile(const u32 startpc);-> void __fastcall recRecompile(VMManager::Internal *startpc)
     // void CBreakPoints::AddBreakPoint(BreakPointCpu cpu, u32 addr, bool temp, bool enabled)-》 void __fastcall CBreakPoints::AddBreakPoint(BreakPointCpu cpu, unsigned int addr, unsigned __int8 a3, bool a4)
-    // void MainWindow::startGameListEntry(const GameList::Entry* entry, std::optional<s32> save_slot, std::optional<bool> fast_boot)
     uint64_t BaseBlocksNew, recRecompile, iopRecRecompile;
     uint64_t dynarecCheckBreakpoint, psxDynarecCheckBreakpoint; // 用于防止AddBreakPoint使游戏卡住
-    uint64_t startGameListEntry;
     typedef void(__fastcall *tAddBreadPoint)(BreakPointCpu cpu, u32 addr, bool temp, bool enabled);
     tAddBreadPoint AddBreakPoint = nullptr;
 
@@ -113,24 +111,6 @@ namespace
         if (!BaseBlocksNew)
             return false;
         return true;
-    }
-    bool findstartGameListEntry()
-    {
-        char fmtstr[] = "This save state does not exist.";
-        auto fmtstrptr = MemDbg::findBytes(fmtstr, sizeof(fmtstr), processStartAddress, processStopAddress);
-        if (!fmtstrptr)
-            return false;
-        fmtstrptr = MemDbg::find_leaorpush_addr(fmtstrptr, processStartAddress, processStopAddress);
-        if (!fmtstrptr)
-            return false;
-        BYTE sig2[] = {0x41, 0x57, 0x41, 0x56, 0x41, 0x55, 0x41, 0x54};
-        startGameListEntry = reverseFindBytes(sig2, sizeof(sig2), fmtstrptr - 0x200, fmtstrptr, 0, true);
-        if (!startGameListEntry)
-        {
-            BYTE sig3[] = {0x55, 0x41, 0x57, 0x41, 0x56, 0x41, 0x54}; // v1.7.4473
-            startGameListEntry = reverseFindBytes(sig3, sizeof(sig3), fmtstrptr - 0x200, fmtstrptr, 0, true);
-        }
-        return startGameListEntry;
     }
     bool findrecRecompile()
     {
@@ -255,8 +235,7 @@ namespace
     }
     bool hookFunctions(const std::optional<version_t> &version)
     {
-        if (!(findstartGameListEntry() &&
-              find_BaseBlocksNew_and_dynarecCheckBreakpoint() &&
+        if (!(find_BaseBlocksNew_and_dynarecCheckBreakpoint() &&
               findrecRecompile() &&
               findAddBreakPoint() &&
               find_cpuRegistersPack(version)))
@@ -337,6 +316,108 @@ bool PCSX2_UserHook_delayinsert(uint32_t addr)
     }
     return false;
 }
+static void startupgame(const std::string &title, const std::string &series)
+{
+    current_serial = series;
+    jitaddrclear();
+    if (series.empty())
+        return;
+    Msg::EmuGameInfo(series.c_str(), title.c_str());
+    for (auto &&[addr, op] : emfunctionhooks)
+    {
+        auto useid = MatchGameId(op._id);
+        if (!useid)
+            continue;
+        if (!(op.type & DIRECT_READ))
+        {
+            PCSX2_UserHook_delayinsert(addr);
+            continue;
+        }
+        HookParam hpinternal;
+        hpinternal.address = emu_addr(addr);
+        hpinternal.emu_addr = addr;
+        hpinternal.jittype = JITTYPE::PCSX2;
+        hpinternal.type = op.type;
+        hpinternal.codepage = 932;
+        hpinternal.text_fun = op.hookfunc;
+        hpinternal.filter_fun = op.filterfun;
+        hpinternal.offset = op.offset;
+        hpinternal.padding = op.padding;
+        NewHook(hpinternal, useid);
+    }
+}
+static bool hookOnGameChanged()
+{
+    /*
+void Host::OnGameChanged(const std::string& title, const std::string& elf_override, const std::string& disc_path,
+    const std::string& disc_serial, u32 disc_crc, u32 current_crc)
+{
+    emit g_emu_thread->onGameChanged(QString::fromStdString(title), QString::fromStdString(elf_override),
+        QString::fromStdString(disc_path), QString::fromStdString(disc_serial), disc_crc, current_crc);
+}
+    */
+    BYTE sig3[] = {
+        0x48, 0x8b, 0x2d, XX4,
+        XX4, XX4,
+        XX, 0x89, XX,
+        XX, 0x89, XX,
+        0xff, 0xd5,
+        XX4, XX4,
+        XX, 0x89, XX,
+        XX, 0x89, XX,
+        0xff, 0xd5,
+        XX4, XX4,
+        XX, 0x89, XX,
+        XX, 0x89, XX,
+        0xff, 0xd5,
+        XX, XX4,
+        XX, 0x89, XX,
+        XX, 0x89, XX,
+        0xff, 0xd5};
+    auto OnGameChanged = MemDbg::findBytes(sig3, sizeof(sig3), processStartAddress, processStopAddress);
+    if (!OnGameChanged)
+        return false;
+    BYTE sig2[] = {0x41, XX, 0x41, XX, 0x41, XX, 0x41, XX};
+    OnGameChanged = reverseFindBytes(sig2, sizeof(sig2), OnGameChanged - 0x80, OnGameChanged, 0, true);
+    if (!OnGameChanged)
+        return false;
+    HookParam hp;
+    hp.address = OnGameChanged;
+    hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    {
+        startupgame(*(const std::string *)context->rcx, *(const std::string *)context->r9);
+    };
+    return NewHook(hp, "OnGameChanged");
+}
+static bool hookstartGameListEntry()
+{
+    // void MainWindow::startGameListEntry(const GameList::Entry* entry, std::optional<s32> save_slot, std::optional<bool> fast_boot)
+    char fmtstr[] = "This save state does not exist.";
+    auto fmtstrptr = MemDbg::findBytes(fmtstr, sizeof(fmtstr), processStartAddress, processStopAddress);
+    if (!fmtstrptr)
+        return false;
+    fmtstrptr = MemDbg::find_leaorpush_addr(fmtstrptr, processStartAddress, processStopAddress);
+    if (!fmtstrptr)
+        return false;
+    BYTE sig2[] = {0x41, 0x57, 0x41, 0x56, 0x41, 0x55, 0x41, 0x54};
+    auto startGameListEntry = reverseFindBytes(sig2, sizeof(sig2), fmtstrptr - 0x200, fmtstrptr, 0, true);
+    if (!startGameListEntry)
+    {
+        BYTE sig3[] = {0x55, 0x41, 0x57, 0x41, 0x56, 0x41, 0x54}; // v1.7.4473
+        startGameListEntry = reverseFindBytes(sig3, sizeof(sig3), fmtstrptr - 0x200, fmtstrptr, 0, true);
+    }
+    if (!startGameListEntry)
+        return false;
+    HookParam hp;
+    hp.address = startGameListEntry;
+    hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    {
+        const GameList::Entry *entry = (GameList::Entry *)context->rdx;
+        startupgame(entry->title, entry->serial);
+    };
+    return NewHook(hp, "startGameListEntry");
+}
+
 bool PCSX2::attach_function1()
 {
     auto minver = std::make_tuple(1u, 7u, 4473u, 0u);
@@ -346,51 +427,17 @@ bool PCSX2::attach_function1()
         return false;
     pcsx2_load_functions(emfunctionhooks);
     bool succ = true;
+
+    HookParam hp;
+    hp.address = BaseBlocksNew;
+    hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
-        HookParam hp;
-        hp.address = BaseBlocksNew;
-        hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
-        {
-            unsigned int startpc = context->argof(2);
-            uint64_t fnptr = context->argof(3);
-            jitaddraddr(startpc, fnptr, JITTYPE::PCSX2);
-        };
-        succ = succ && NewHook(hp, "BaseBlocks::New");
-    }
-    {
-        HookParam hp;
-        hp.address = startGameListEntry;
-        hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
-        {
-            const GameList::Entry *entry = (GameList::Entry *)context->rdx;
-            current_serial = entry->serial;
-            jitaddrclear();
-            Msg::EmuGameInfo(entry->serial.c_str(), entry->title.c_str());
-            for (auto &&[addr, op] : emfunctionhooks)
-            {
-                auto useid = MatchGameId(op._id);
-                if (!useid)
-                    continue;
-                if (!(op.type & DIRECT_READ))
-                {
-                    PCSX2_UserHook_delayinsert(addr);
-                    continue;
-                }
-                HookParam hpinternal;
-                hpinternal.address = emu_addr(addr);
-                hpinternal.emu_addr = addr;
-                hpinternal.jittype = JITTYPE::PCSX2;
-                hpinternal.type = op.type;
-                hpinternal.codepage = 932;
-                hpinternal.text_fun = op.hookfunc;
-                hpinternal.filter_fun = op.filterfun;
-                hpinternal.offset = op.offset;
-                hpinternal.padding = op.padding;
-                NewHook(hpinternal, useid);
-            }
-        };
-        succ = succ && NewHook(hp, "startGameListEntry");
-    }
+        unsigned int startpc = context->argof(2);
+        uint64_t fnptr = context->argof(3);
+        jitaddraddr(startpc, fnptr, JITTYPE::PCSX2);
+    };
+    succ = succ && NewHook(hp, "BaseBlocks::New");
+    succ = succ && (hookOnGameChanged() || hookstartGameListEntry());
     auto hookrecompile = [&](auto addr, auto name)
     {
         HookParam hp;
