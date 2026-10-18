@@ -157,8 +157,9 @@ def suspend_ocr_capture():
 
 
 class _CaptureRequest:
-    def __init__(self, capture):
+    def __init__(self, capture, rect):
         self.capture = capture
+        self.rect = rect
         self.finished = threading.Event()
         self.result = None
         self.error = None
@@ -321,14 +322,33 @@ class _CaptureGuard(QObject):
 
     def run(self, request):
         hidden = []
+        excluded = []
         try:
             if request.cancelled or _capture_suspensions:
                 return
+            # 覆盖层默认不排除（录屏要能录到译文）：落桌面截图前先
+            # 截图瞬间临时排除（Win10 2004+），截完恢复；排除失败
+            # （旧系统）才隐藏。只处理与本次截图矩形相交的覆盖层——
+            # 多区域时别区域的覆盖层不在画面里，不参与（不闪）
+            rect = request.rect
             for overlay in list(_overlays):
-                if not overlay.capture_excluded and overlay.isVisible():
+                if (
+                    not overlay.capture_excluded
+                    and overlay.isVisible()
+                    and _overlay_intersects(overlay, rect)
+                ):
+                    if NativeUtils.ExcludeFromCapture(int(overlay.winId())):
+                        overlay.capture_excluded = True
+                        excluded.append(overlay)
+            for overlay in list(_overlays):
+                if (
+                    not overlay.capture_excluded
+                    and overlay.isVisible()
+                    and _overlay_intersects(overlay, rect)
+                ):
                     overlay.hide()
                     hidden.append(overlay)
-            if hidden:
+            if hidden or excluded:
                 # Wait for composition before capturing; no QWidget access in workers.
                 try:
                     ctypes.windll.dwmapi.DwmFlush()
@@ -338,9 +358,29 @@ class _CaptureGuard(QObject):
         except Exception as error:
             request.error = error
         finally:
+            for overlay in excluded:
+                # 恢复默认（可录屏）状态
+                NativeUtils.ClearFromCapture(int(overlay.winId()))
+                overlay.capture_excluded = False
             for overlay in hidden:
                 overlay.sync()
             request.finished.set()
+
+
+def _overlay_intersects(overlay, rect):
+    """覆盖层窗口是否与截图矩形相交（都是物理屏幕坐标；覆盖层恰好
+    盖住自己的选区，_last_rect 由 sync 缓存，工作线程可读）。
+    rect 未知（None）或覆盖层位置未知时保守视为相交。"""
+    if rect is None:
+        return True
+    last = overlay._last_rect
+    if not last:
+        return True
+    x, y, w, h, _dpr = last
+    return (
+        max(x, rect.x()) < min(x + w, rect.x() + rect.width())
+        and max(y, rect.y()) < min(y + h, rect.y() + rect.height())
+    )
 
 
 def capture_without_overlays(capture, rect=None):
@@ -362,11 +402,15 @@ def capture_without_overlays(capture, rect=None):
 
     # Excluded overlays are omitted by Windows without hiding or flickering.
     # The fallback runs captures on the GUI thread and temporarily hides overlays.
+    # 只看与截图矩形相交的覆盖层（多区域时别区的不触发守卫/不闪）
     if guard is None or not any(
-        o._capture_visible and not o.capture_excluded for o in list(_overlays)
+        o._capture_visible
+        and not o.capture_excluded
+        and _overlay_intersects(o, rect)
+        for o in list(_overlays)
     ):
         return guarded_capture()
-    request = _CaptureRequest(guarded_capture)
+    request = _CaptureRequest(guarded_capture, rect)
     if QThread.currentThread() == guard.thread():
         guard.run(request)
     else:
@@ -443,8 +487,9 @@ class OCRTranslationOverlay(QWidget):
                 self._geometry_window_handle = handle
             windows.WindowFocus.giveup(hwnd)
             windows.MouseTrans.set(hwnd)
-            # 截图排除（与选框/主窗口共用的全局机制，见 windows.py）
-            self.capture_excluded = NativeUtils.ExcludeFromCapture(hwnd)
+            # 默认不设置截图排除（录屏要能录到译文）；OCR 落桌面截图时
+            # 由 CaptureGuard 截图瞬间临时排除、失败才隐藏
+            self.capture_excluded = False
         finally:
             self._applying_native_flags = False
 

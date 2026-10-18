@@ -454,32 +454,21 @@ def WinErrorMessage(code, module=None):
     return ret[0] if ret else ""
 
 
-_ExcludeFromCapture = utilsdll.ExcludeFromCapture
-_ExcludeFromCapture.argtypes = (HWND,)
-_ExcludeFromCapture.restype = c_bool
+ExcludeFromCapture = utilsdll.ExcludeFromCapture
+ExcludeFromCapture.argtypes = (HWND,)
+ExcludeFromCapture.restype = c_bool
 
 
-def ExcludeFromCapture(hwnd):
-    """WDA_EXCLUDEFROMCAPTURE（Win10 2004+）：窗口对用户照常可见，但
-    不出现在截图里。旧系统上返回 False 不设置。"""
-    return bool(_ExcludeFromCapture(int(hwnd)))
+ClearFromCapture = utilsdll.ClearFromCapture
+ClearFromCapture.argtypes = (HWND,)
+ClearFromCapture.restype = c_bool
 
 
-_SetWindowFrameRgn = utilsdll.SetWindowFrameRgn
-_SetWindowFrameRgn.argtypes = HWND, c_int, c_int, c_int
-_SetWindowFrameRgn.restype = None
-_ClearWindowRgn = utilsdll.ClearWindowRgn
-_ClearWindowRgn.argtypes = (HWND,)
-_ClearWindowRgn.restype = None
-
-
-def SetWindowFrameRgn(hwnd, w, h, border):
-    """窗口命中区域限制为四条边框（内部鼠标穿透）。"""
-    _SetWindowFrameRgn(hwnd, w, h, border)
-
-
-def ClearWindowRgn(hwnd):
-    _ClearWindowRgn(hwnd)
+SetWindowFrameRgn = utilsdll.SetWindowFrameRgn
+SetWindowFrameRgn.argtypes = HWND, c_int, c_int, c_int
+SetWindowFrameRgn.restype = None
+ClearWindowRgn = utilsdll.ClearWindowRgn
+ClearWindowRgn.argtypes = (HWND,)
 
 
 _LCIDToLocaleNameEx = utilsdll.LCIDToLocaleNameEx

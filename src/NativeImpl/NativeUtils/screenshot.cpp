@@ -206,10 +206,17 @@ DECLARE_API HWND FindSoleOpaqueWindow(int x1, int y1, int x2, int y2, DWORD excl
         if (std::max((int)r.left, param.x1) < std::min((int)r.right, param.x2) &&
             std::max((int)r.top, param.y1) < std::min((int)r.bottom, param.y2))
         {
+            // 完全覆盖判定用客户区：GetDC(hwnd) 截图只含客户区内容
+            // （GdiCropImage 的 PtInRect 校验的也是客户区坐标），选区压在
+            // 标题栏/边框上时 hwnd 截图必失败，不如当作不可指定
+            POINT tl{};
+            RECT cr;
+            if (!ClientToScreen(hwnd, &tl) || !GetClientRect(hwnd, &cr))
+                return TRUE;
             // 第一个（最上层）相交者：完全覆盖 → 唯一可见来源；
             // 部分覆盖 → 选区是合成画面，停止并放弃
-            if (r.left <= param.x1 && r.top <= param.y1 &&
-                r.right >= param.x2 && r.bottom >= param.y2)
+            if (tl.x <= param.x1 && tl.y <= param.y1 &&
+                tl.x + (int)cr.right >= param.x2 && tl.y + (int)cr.bottom >= param.y2)
                 param.result = hwnd;
             return FALSE;
         }

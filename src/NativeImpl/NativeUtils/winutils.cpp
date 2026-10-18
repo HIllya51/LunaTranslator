@@ -189,6 +189,13 @@ DECLARE_API bool ExcludeFromCapture(HWND hwnd)
     return SetWindowDisplayAffinity(hwnd, WDA_EXCLUDEFROMCAPTURE);
 }
 
+// 取消截图排除（WDA_NONE）：配合 ExcludeFromCapture 的"截图瞬间临时
+// 排除、截完恢复"（默认不排除，录屏要能录到译文）
+DECLARE_API bool ClearFromCapture(HWND hwnd)
+{
+    return SetWindowDisplayAffinity(hwnd, WDA_NONE);
+}
+
 // 将窗口命中测试区域限制为宽度为 border 的四条边框，内部鼠标穿透。
 // SetWindowRgn 后系统接管 rgn，不可再 DeleteObject
 DECLARE_API void SetWindowFrameRgn(HWND hwnd, int w, int h, int border)

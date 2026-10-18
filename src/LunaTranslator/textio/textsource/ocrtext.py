@@ -54,11 +54,11 @@ def _hwnd_imageCut(hwnd, rectX: QRect, curr=-1):
 
 def imageCutEx(hwnd, rectX: QRect):
     if hwnd:
-        # 绑定游戏窗口时先只试 HWND 截图（不隐藏任何窗口）：GetDC(hwnd)
-        # +BitBlt 只截游戏自身内容，覆盖层与本程序窗口都不在画面里——
-        # 成功时无需隐藏覆盖层、也无需因窗口遮挡而暂停（与系统版本无关，
-        # 菜单展开同理）。失败（如 DirectX 全屏黑屏）时才走下方守卫路径：
-        # 截图前隐藏覆盖层，然后 仅落桌面。
+        # 先只试 HWND 截图（不隐藏/不排除任何窗口）：GetDC(hwnd)
+        # +BitBlt 只截该窗口自身内容，覆盖层与本程序窗口都不在画面里
+        # ——成功时无需守卫、也无需因窗口遮挡而暂停（与系统版本无关，
+        # 菜单展开同理）。失败（如 DirectX 全屏黑屏）时才走下方守卫
+        # 路径：截图瞬间临时排除覆盖层（排除失败才隐藏），然后 仅落桌面。
         succ, img = _hwnd_imageCut(hwnd, rectX, curr=0)
         if succ and not img.isNull():
             return _ocrpreprocess(img)
@@ -160,20 +160,12 @@ class rangemanger:
         if not rect.isValid():
             return None, None
         if img is None:
-            hwnd = self.ref.hwnd
-            if (
-                not hwnd
-                and globalconfig.get("ocr_translation_overlay", False)
-                and not self.range_ui.capture_excluded
-            ):
-                # 未绑定窗口 + 截图排除失败（旧系统）+ 原地显示翻译：
-                # 桌面截图会拍到自己的覆盖层/范围框。若选区处最上层的
-                # 不透明窗口完全盖住选区（其下窗口都不可见），改从它
-                # 截图（等价绑定窗口，本程序窗口都不在其 DC 里，无需
-                # 隐藏覆盖层）
-                hwnd = NativeUtils.find_sole_opaque_window(
-                    *rect.getCoords(), os.getpid()
-                )
+            # 绑定窗口优先；未绑定时找选区下唯一不透明窗口（完全盖住
+            # 选区、其下窗口都不可见 → 等价绑定，本程序窗口都不在其
+            # DC 里，无需隐藏覆盖层；也避开录屏/其他窗口的干扰）
+            hwnd = self.ref.hwnd or NativeUtils.find_sole_opaque_window(
+                *rect.getCoords(), os.getpid()
+            )
             img = imageCutEx(hwnd, rect)
             if img.isNull():
                 return None, None

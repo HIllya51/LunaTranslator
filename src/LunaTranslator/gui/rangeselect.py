@@ -412,10 +412,10 @@ class rangeadjust(Mainw):
         for s in self.cornerGrips:
             s.raise_()
         windows.WindowFocus.giveup(self.winId())
-        # 截图排除（Win10 2004+）：选框边框/悬停高亮不进 OCR 截图，
-        # 与覆盖层共用 NativeUtils.ExcludeFromCapture。结果记下——旧系统
-        # 排除失败时，OCR 截图改走 选区下唯一不透明窗口 的路径
-        self.capture_excluded = NativeUtils.ExcludeFromCapture(self.winId())
+        # 默认不设置截图排除（WDA_EXCLUDEFROMCAPTURE 会连录屏一起排除，
+        # 用户可能需要录制翻译结果）；OCR 截到自己的界面时由截图路径
+        # （CaptureGuard）临时排除、失败才隐藏
+        self.capture_excluded = False
         self.translation_overlay = OCRTranslationOverlay(self)
         self.overlaytranslationsignal.connect(self.translation_overlay.receive)
         self.overlaylayoutsignal.connect(self.translation_overlay.receive_layout)
