@@ -160,12 +160,15 @@ class rangemanger:
         if not rect.isValid():
             return None, None
         if img is None:
-            # 绑定窗口优先；未绑定时找选区下唯一不透明窗口（完全盖住
-            # 选区、其下窗口都不可见 → 等价绑定，本程序窗口都不在其
-            # DC 里，无需隐藏覆盖层；也避开录屏/其他窗口的干扰）
-            hwnd = self.ref.hwnd or NativeUtils.find_sole_opaque_window(
-                *rect.getCoords(), os.getpid()
-            )
+            # 绑定窗口优先。未绑定时仅原地显示翻译开启才探测选区下唯一
+            # 不透明窗口（完全盖住选区、其下窗口都不可见 → 等价绑定，
+            # 覆盖层与本程序窗口都不在其 DC 里，无需隐藏；也避开录屏/
+            # 其他窗口的干扰）；普通 OCR 直接落桌面，不做窗口探测
+            hwnd = self.ref.hwnd
+            if hwnd is None and globalconfig.get("ocr_translation_overlay", False):
+                hwnd = NativeUtils.find_sole_opaque_window(
+                    *rect.getCoords(), os.getpid()
+                )
             img = imageCutEx(hwnd, rect)
             if img.isNull():
                 return None, None
