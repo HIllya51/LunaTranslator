@@ -311,7 +311,7 @@ class FluentTabWidget(QWidget):
         footer_lay = QVBoxLayout(footer_container)
         footer_lay.setContentsMargins(6, 0, 6, 6)
         footer_lay.setSpacing(0)
-        self.nav_footer = FluentNavTree(footer_container)
+        self.nav_footer = FluentNavTree(footer_container, footer=True)
         self.nav_footer.setFixedHeight(38)
         footer_lay.addWidget(self.nav_footer)
 
