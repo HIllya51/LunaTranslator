@@ -16,6 +16,7 @@ from gui.usefulwidget import (
     getsmalllabel,
     TableViewW,
     getsimplepatheditor,
+    request_delete_ok,
     SuperCombo,
     getsimplecombobox,
     getboxlayout,
@@ -34,6 +35,52 @@ from gui.dynalang import (
     LDialog,
     LDialog,
 )
+
+
+def tableiofunc(self):
+    """导入/导出/清除 三按钮（noundict/语音指定/postconfig 等批量表格
+    对话框共用，自成一行 manybuttonlayout）：导出=整表导出为 CSV 文件
+    （内容与复制到剪贴板的格式完全一致——gettabletext，TSV、非文本格
+    落 JSON 文本，导出的文件直接粘贴回表格也能用）；导入=选 CSV 文件，
+    走粘贴（pastetable）的同款解析与写入路径、追加到表最下面；清除=
+    request_delete_ok 确认后清空全表（之后照常 apply/关闭写回）。"""
+
+    def _export():
+        try:
+            fname, _ = QFileDialog.getSaveFileName(
+                self, _TR("导出"), "", "CSV (*.csv)"
+            )
+            if not fname:
+                return
+            if not fname.lower().endswith(".csv"):
+                fname += ".csv"
+            with open(fname, "w", encoding="utf-8-sig", newline="") as ff:
+                ff.write(self.table.gettabletext())
+        except:
+            print_exc()
+
+    def _import():
+        try:
+            fname, _ = QFileDialog.getOpenFileName(
+                self, _TR("导入"), "", "CSV (*.csv)"
+            )
+            if not fname:
+                return
+            with open(fname, "r", encoding="utf-8-sig", newline="") as ff:
+                my_list = self.table.parsepastetext(ff.read())
+            # pastetable 的同款写入（inserttablelines），固定追加在表尾
+            self.table.inserttablelines(my_list, self.model.rowCount())
+        except:
+            print_exc()
+
+    def _clear():
+        if not self.model.rowCount():
+            return
+        if not request_delete_ok(self):
+            return
+        self.model.removeRows(0, self.model.rowCount())
+
+    return [("导入", _import), ("导出", _export), ("清除", _clear)]
 
 
 class noundictconfigdialog1___(LDialog, DarkLightAutoResetIconHelper):
@@ -153,6 +200,7 @@ class noundictconfigdialog1___(LDialog, DarkLightAutoResetIconHelper):
         formLayout.addWidget(table)
         formLayout.addLayout(search)
         formLayout.addLayout(button)
+        formLayout.addLayout(manybuttonlayout(tableiofunc(self)))
 
         self.resize(QSize(600, 400))
         self.show()
@@ -435,6 +483,7 @@ class yuyinzhidingsetting(LDialog):
         formLayout.addWidget(table)
         formLayout.addLayout(search)
         formLayout.addLayout(button)
+        formLayout.addLayout(manybuttonlayout(tableiofunc(self)))
 
         self.resize(QSize(600, 400))
         self.show()
@@ -1026,6 +1075,7 @@ class postconfigdialog_1(LDialog):
         formLayout.addWidget(table)
         formLayout.addLayout(search)
         formLayout.addLayout(button)
+        formLayout.addLayout(manybuttonlayout(tableiofunc(self)))
         self.resize(QSize(600, 400))
         self.show()
 
