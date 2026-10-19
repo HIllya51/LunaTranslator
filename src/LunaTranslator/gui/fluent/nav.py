@@ -32,6 +32,8 @@ from qtsymbols import (
     QTreeWidget,
     QTreeWidgetItem,
 )
+import functools
+
 from myutils.config import _TR
 
 NAV_PAGE_ROLE = Qt.UserRole          # 页面索引
@@ -200,6 +202,12 @@ class FluentNavTree(QTreeWidget):
         super().showEvent(e)
         if self._vscroll_pending:
             self._vscroll_release.start()
+        # 窗口显示时把焦点交给树（延迟一拍）：NVDA 只在收到焦点事件后
+        # 才会构建 item view 的可访问子树（#2614，同 FluentSettingTree
+        # 的页面级触发），读屏/键盘用户打开窗口即可用方向键走列表
+        QTimer.singleShot(
+            0, functools.partial(self.setFocus, Qt.FocusReason.TabFocusReason)
+        )
 
     def resizeEvent(self, e):
         super().resizeEvent(e)

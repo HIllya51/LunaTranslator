@@ -21,6 +21,7 @@ from qtsymbols import (
     QMimeData,
     QSizePolicy,
     Qt,
+    QTimer,
     QTreeWidget,
     QVBoxLayout,
     QWidget,
@@ -67,6 +68,17 @@ class FluentSettingTree(QTreeWidget):
             "QTreeWidget{background-color:transparent;border:0;}")
         self.setSizePolicy(QSizePolicy.Policy.Expanding,
                            QSizePolicy.Policy.Expanding)
+
+    def showEvent(self, e):
+        super().showEvent(e)
+        # 页面显示时把焦点交给树（延迟一拍，等整页/整窗显示完成）：
+        # NVDA 只在收到焦点事件后才会构建 item view 的可访问子树
+        # （#2614 用户实测——跟表格里的开关交互一次刷新后，小键盘导航
+        # 才能读出行内容；离开页面再进来又失效），进入页面时主动触发
+        # 一次，读屏/键盘用户也能顺势直接用方向键走列表。
+        QTimer.singleShot(
+            0, functools.partial(self.setFocus, Qt.FocusReason.TabFocusReason)
+        )
 
     def updatelangtext(self):
         # 语言切换：列标题 + 行名（无障碍文本）重翻译
