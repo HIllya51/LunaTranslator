@@ -20,7 +20,7 @@ void _glens_create_request(uint64_t uuid, const char *analytics_id, size_t size1
 
     request.mutable_objects_request()->mutable_image_data()->mutable_payload()->set_image_bytes(bytes, size);
     request.mutable_objects_request()->mutable_image_data()->mutable_image_metadata()->set_width(width);
-    request.mutable_objects_request()->mutable_image_data()->mutable_image_metadata()->set_height(width);
+    request.mutable_objects_request()->mutable_image_data()->mutable_image_metadata()->set_height(height);
 
     auto result = request.SerializeAsString();
     cb(result.c_str(), result.size());

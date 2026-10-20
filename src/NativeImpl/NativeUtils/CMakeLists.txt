@@ -28,13 +28,15 @@ add_library(md4c-all INTERFACE)
 target_include_directories(md4c-all INTERFACE ${md4c_SOURCE_DIR}/src)
 target_link_libraries(md4c-all INTERFACE md4c md4c-html)
 
+# glens(纯protobuf)两平台都编；wcocr(微信OCR)在win分支里
+add_subdirectory(needprotobuf)
+
 # 平台差异只在这里取值
 if(WIN32)
     aux_source_directory(loopbackaudio loopbackaudio)
     aux_source_directory(winrt winrt)
     add_subdirectory(webview)
     add_subdirectory(bass)
-    add_subdirectory(needprotobuf)
 
     set(nu_src
         memory.cpp
@@ -75,7 +77,6 @@ if(WIN32)
         Msimg32
         setupapi
         delayimp
-        needprotobuf
         ${YY_Thunks}
         magic_enum
     )
@@ -109,6 +110,7 @@ target_link_libraries(NativeUtils PRIVATE
     libmecab
     rapidfuzz
     md4c-all
+    needprotobuf
     ${nu_winlibs}
 )
 target_link_options(NativeUtils PRIVATE ${nu_winlinkopts})
