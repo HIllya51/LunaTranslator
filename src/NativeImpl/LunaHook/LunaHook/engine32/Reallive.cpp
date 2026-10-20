@@ -278,7 +278,35 @@ bool avg3216dattach_function2()
   };
   return NewHook(hp, "avg3217d");
 }
+
+bool avg3216dattach_function3()
+{
+  // https://vndb.org/v8826
+  // サークルメイト
+
+  BYTE pattern2[] = {
+      0X8A, 0X0B,
+      0X80, 0XF9, 0X81,
+      0X72, 0X05,
+      0X80, 0XF9, 0X9F,
+      0X76, 0X0A,
+      0X80, 0XF9, 0XE0,
+      0X72, XX,
+      0X80, 0XF9, 0XFC,
+      0X77, XX};
+  auto addr = MemDbg::findBytes(pattern2, sizeof(pattern2), processStartAddress, processStopAddress);
+  if (!addr)
+    return false;
+  addr = findfuncstart(addr, 0x100, true);
+  if (!addr)
+    return false;
+  HookParam hp;
+  hp.address = addr;
+  hp.offset = stackoffset(6);
+  hp.type = USING_CHAR | DATA_INDIRECT;
+  return NewHook(hp, "avg3217d");
+}
 bool avg3216d::attach_function()
 {
-  return avg3216dattach_function() || avg3216dattach_function2();
+  return avg3216dattach_function() || (avg3216dattach_function3() | avg3216dattach_function2());
 }
