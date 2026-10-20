@@ -89,6 +89,10 @@ PROTOBUF_GENERATE_CPP(glensprotocpp ${CMAKE_CURRENT_BINARY_DIR} ${glens_protoc} 
 add_library(glensproto glens_1.cpp "${glensprotocpp}")
 target_include_directories(glensproto PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 target_link_libraries(glensproto PRIVATE ${glens_protobuf_lib})
+if(NOT WIN32)
+    # 静态库链入.so需要PIC
+    set_target_properties(glensproto PROPERTIES POSITION_INDEPENDENT_CODE ON)
+endif()
 
 
 add_library(needprotobuf INTERFACE)

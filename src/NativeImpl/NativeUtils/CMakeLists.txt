@@ -1,7 +1,8 @@
 if(NOT WIN32)
-    # md4c的option()会往cache里塞BUILD_SHARED_LIBS=ON，导致目标类型（静态/共享）
-    # 随配置顺序漂移；这里固定为ON，保证mecab/tiny-aes等是带PIC的共享库，可链入.so
-    set(BUILD_SHARED_LIBS ON)
+    # 依赖用静态库直接链进模块（与Windows一致，输出目录只有最终.so）。
+    # md4c泄漏进cache的BUILD_SHARED_LIBS=ON会被此普通变量遮蔽；
+    # 静态库须开PIC才能链入.so（见各target的POSITION_INDEPENDENT_CODE）
+    set(BUILD_SHARED_LIBS OFF)
 endif()
 include(libmecab.cmake)
 include(FetchContent)
@@ -27,6 +28,10 @@ FetchContent_MakeAvailable(tiny-aes rapidfuzz md4c)
 add_library(md4c-all INTERFACE)
 target_include_directories(md4c-all INTERFACE ${md4c_SOURCE_DIR}/src)
 target_link_libraries(md4c-all INTERFACE md4c md4c-html)
+
+if(NOT WIN32)
+    set_target_properties(tiny-aes md4c md4c-html PROPERTIES POSITION_INDEPENDENT_CODE ON)
+endif()
 
 # glens(纯protobuf)两平台都编；wcocr(微信OCR)在win分支里
 add_subdirectory(needprotobuf)

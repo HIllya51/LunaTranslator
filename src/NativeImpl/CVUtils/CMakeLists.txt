@@ -4,8 +4,8 @@ include(ExternalProject)
 include(FetchContent)
 
 if(NOT WIN32)
-    # 同NativeUtils：固定库类型，避免md4c泄漏的BUILD_SHARED_LIBS导致顺序漂移
-    set(BUILD_SHARED_LIBS ON)
+    # 同NativeUtils：依赖固定为静态库链入模块，遮蔽md4c泄漏的BUILD_SHARED_LIBS
+    set(BUILD_SHARED_LIBS OFF)
 endif()
 
 FetchContent_Declare(clipper2
@@ -47,6 +47,10 @@ FetchContent_MakeAvailable(clipper2)
 file(GLOB Clipper2LibSrc ${clipper2_SOURCE_DIR}/CPP/Clipper2Lib/src/*.cpp)
 add_library(Clipper2Lib ${Clipper2LibSrc})
 target_include_directories(Clipper2Lib PUBLIC ${clipper2_SOURCE_DIR}/CPP/Clipper2Lib/include)
+if(NOT WIN32)
+    # 静态库链入.so需要PIC
+    set_target_properties(Clipper2Lib PROPERTIES POSITION_INDEPENDENT_CODE ON)
+endif()
 ###
 
 include(libonnxruntime.cmake)

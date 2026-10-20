@@ -72,7 +72,9 @@ if(WIN32)
     include(${CMAKE_SOURCE_DIR}/version.cmake)
 endif()
 
-add_library(pch pch.cpp)
+# 显式STATIC：pch只用于承载预编译头，防止md4c泄漏的BUILD_SHARED_LIBS
+# 使其在重新configure时漂移成共享库（libpch.so混进部署目录）
+add_library(pch STATIC pch.cpp)
 target_precompile_headers(pch PUBLIC pch.h)
 if(NOT WIN32)
     # SHARED/MODULE目标复用PCH时gcc要求PIC一致

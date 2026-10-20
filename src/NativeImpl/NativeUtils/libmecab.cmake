@@ -121,4 +121,6 @@ else()
     )
     find_package(Threads REQUIRED)
     target_link_libraries(libmecab PRIVATE Threads::Threads)
+    # 静态库链入.so需要PIC
+    set_target_properties(libmecab PROPERTIES POSITION_INDEPENDENT_CODE ON)
 endif()

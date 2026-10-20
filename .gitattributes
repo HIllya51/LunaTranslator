@@ -1,2 +1,5 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+# shell脚本必须保持LF，否则WSL/bash无法执行
+*.sh text eol=lf
