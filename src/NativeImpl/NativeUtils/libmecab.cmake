@@ -89,11 +89,36 @@ target_compile_definitions(
     -DMECAB_USE_THREAD
     -DDLL_EXPORT
     -DHAVE_GETENV
-    -DHAVE_WINDOWS_H
     -DDIC_VERSION=102
     -DVERSION="0.996"
     -DPACKAGE="mecab"
-    -DUNICODE
-    -D_UNICODE
-    -DMECAB_DEFAULT_RC="c:\\\\Program Files\\\\mecab\\\\etc\\\\mecabrc"
 )
+if(WIN32)
+    target_compile_definitions(
+        libmecab PRIVATE
+        -DHAVE_WINDOWS_H
+        -DUNICODE
+        -D_UNICODE
+        -DMECAB_DEFAULT_RC="c:\\\\Program Files\\\\mecab\\\\etc\\\\mecabrc"
+    )
+else()
+    target_compile_definitions(
+        libmecab PRIVATE
+        -DMECAB_DEFAULT_RC="/dev/null"
+        # autotools风格的功能检测宏（src下用HAVE_*条件包含系统头/选择实现）
+        -DHAVE_STDINT_H
+        -DHAVE_SYS_TYPES_H
+        -DHAVE_SYS_STAT_H
+        -DHAVE_SYS_MMAN_H
+        -DHAVE_FCNTL_H
+        -DHAVE_STRING_H
+        -DHAVE_UNISTD_H
+        -DHAVE_DIRENT_H
+        -DHAVE_MMAP
+        -DHAVE_PTHREAD_H
+        -DHAVE_GCC_ATOMIC_OPS
+        -DHAVE_UNSIGNED_LONG_LONG_INT
+    )
+    find_package(Threads REQUIRED)
+    target_link_libraries(libmecab PRIVATE Threads::Threads)
+endif()

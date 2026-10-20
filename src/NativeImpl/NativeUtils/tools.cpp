@@ -2,17 +2,7 @@
 #include <mecab.h>
 #include <rapidfuzz/distance.hpp>
 #include <aes.hpp>
-#include "../fileversion.hpp"
-
-DECLARE_API bool QueryVersion(const wchar_t *exe, WORD *_1, WORD *_2, WORD *_3, WORD *_4)
-{
-    auto version = QueryVersion(exe);
-    if (!version)
-        return false;
-
-    std::tie(*_1, *_2, *_3, *_4) = version.value();
-    return true;
-}
+#include <md4c-html.h>
 
 DECLARE_API size_t levenshtein_distance(size_t len1, const wchar_t *string1,
                                         size_t len2, const wchar_t *string2)
@@ -30,11 +20,15 @@ DECLARE_API MeCab::Tagger *mecab_init(char *utf8path)
     char argv_0[] = "fugashi";
     char argv_1[] = "-C";
     char argv_2[] = "-r";
+#if defined(_WIN32)
     char argv_3[] = "nul";
+#else
+    char argv_3[] = "/dev/null";
+#endif
     char argv_4[] = "-d";
     char argv_5[] = "-Owakati";
     char *argv[] = {argv_0, argv_1, argv_2, argv_3, argv_4, utf8path, argv_5};
-    MeCab::Tagger *tagger = MeCab::Tagger::create(ARRAYSIZE(argv), argv);
+    MeCab::Tagger *tagger = MeCab::Tagger::create(std::size(argv), argv);
     if (!tagger)
     {
         return nullptr;
@@ -87,18 +81,6 @@ DECLARE_API void AES_decrypt(uint8_t *key, uint8_t *iv, uint8_t *ptr, size_t siz
     AES_CBC_decrypt_buffer(&ctx, ptr, size);
 }
 
-// #include <maddy/parser.h>
-
-// DECLARE_API void Markdown2Html(const char *str, void (*cb)(const char *))
-// {
-//     std::string s = str;
-//     std::istringstream iss(s);
-//     maddy::Parser p{};
-//     auto result = p.Parse(iss);
-//     cb(result.c_str());
-// }
-#include <md4c-html.h>
-
 static void
 process_output(const MD_CHAR *text, MD_SIZE size, void *userdata)
 {
@@ -111,19 +93,3 @@ DECLARE_API void Markdown2Html(const char *str, void (*cb)(const char *))
     md_html(str, strlen(str), process_output, &output, MD_DIALECT_GITHUB, 0);
     cb(output.c_str());
 }
-
-// 检查是否有窗口，有则重定向。
-// 这个freopen是vcrt内部的东西，每个vcrt运行时必须独立重定向。
-// 如果静态链接了exe，则exe内的freopen只会修改其内部的stdio，dll的vcrt无法受其影响。
-#ifdef WIN10ABOVE
-auto __ = []()
-{
-    if (GetConsoleWindow())
-    {
-        FILE *stream = nullptr;
-        freopen_s(&stream, "CONOUT$", "w", stdout);
-        freopen_s(&stream, "CONOUT$", "w", stderr);
-    }
-    return 0;
-}();
-#endif

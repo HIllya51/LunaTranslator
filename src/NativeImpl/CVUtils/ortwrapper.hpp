@@ -20,5 +20,4 @@ private:
 std::vector<std::string> OrtGetAvailableProviders();
 bool isDMLAvailable();
 bool isOpenVINOAvailable();
-void *getOrtSessionOptionsAppendExecutionProvider_DML();
 void _InitApi();

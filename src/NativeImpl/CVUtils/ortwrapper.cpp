@@ -3,6 +3,8 @@
 #define ORT_API_MANUAL_INIT
 #include <onnxruntime_cxx_api.h>
 
+#ifdef _WIN32
+// DML/OpenVINO执行后端：Windows only
 #define get_provider_ptr(T)                                                                 \
     []() -> void *                                                                          \
     {                                                                                       \
@@ -22,17 +24,6 @@ ORT_API_STATUS(OrtSessionOptionsAppendExecutionProvider_DML, _In_ OrtSessionOpti
         return nullptr;
     return pOrtSessionOptionsAppendExecutionProvider_DML(options, device_id);
 }
-#endif
-#if ORT_API_VERSION <= 10
-#define STRINGT const char *
-#define FGetInputName GetInputName
-#define FGetOutputName GetOutputName
-#define GetVector(X) X
-#else
-#define STRINGT Ort::AllocatedStringPtr
-#define FGetInputName GetInputNameAllocated
-#define FGetOutputName GetOutputNameAllocated
-#define GetVector(X) [&] { std::vector<const char *> _v; _v.reserve((X).size()); for (auto &_p : (X)) _v.push_back(_p.get()); return _v; }()
 #endif
 
 ORT_API_STATUS(OrtSessionOptionsAppendExecutionProvider_OpenVINO, _In_ OrtSessionOptions *options, _In_ const char *device_type)
@@ -77,6 +68,20 @@ bool isOpenVINOAvailable()
     static bool __ = __isOpenVINOAvailableLAvailable();
     return __;
 }
+#endif
+
+#if ORT_API_VERSION <= 10
+#define STRINGT const char *
+#define FGetInputName GetInputName
+#define FGetOutputName GetOutputName
+#define GetVector(X) X
+#else
+#define STRINGT Ort::AllocatedStringPtr
+#define FGetInputName GetInputNameAllocated
+#define FGetOutputName GetOutputNameAllocated
+#define GetVector(X) [&] { std::vector<const char *> _v; _v.reserve((X).size()); for (auto &_p : (X)) _v.push_back(_p.get()); return _v; }()
+#endif
+
 class pOnnxSession
 {
     std::vector<STRINGT> inputNamesPtr;
@@ -113,6 +118,7 @@ public:
             using T = std::decay_t<decltype(info)>;
             if constexpr (std::is_same_v<T, DeviceInfo::dml>)
             {
+#ifdef _WIN32
                 try
                 {
                     Ort::ThrowOnError(OrtSessionOptionsAppendExecutionProvider_DML(sessionOptions, info.device));
@@ -123,9 +129,11 @@ public:
                 {
                     std::cout << e.what() << std::endl;
                 }
+#endif
             }
             else if constexpr (std::is_same_v<T, DeviceInfo::openvino>)
             {
+#ifdef _WIN32
                 // https://docs.openvino.ai/2024/openvino-workflow/running-inference/inference-devices-and-modes/cpu-device.html
                 try
                 {
@@ -135,6 +143,7 @@ public:
                 {
                     std::cout << e.what() << std::endl;
                 }
+#endif
             }
             else if constexpr (std::is_same_v<T, DeviceInfo::normal>)
             {
@@ -152,7 +161,8 @@ public:
             sessionOptions.DisableMemPattern();
         }
         sessionOptions.SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_ALL);
-        session = std::make_unique<Ort::Session>(env, path.c_str(), sessionOptions);
+        // ORTCHAR_T在Windows上是wchar_t、Linux上是char，filesystem::path::c_str()两者都对应。
+        session = std::make_unique<Ort::Session>(env, std::filesystem::path(path).c_str(), sessionOptions);
         getinputoutputNames(inputNamesPtr, &Ort::Session::GetInputCount, &Ort::Session::FGetInputName);
         getinputoutputNames(outputNamesPtr, &Ort::Session::GetOutputCount, &Ort::Session::FGetOutputName);
         inputNames = GetVector(inputNamesPtr);

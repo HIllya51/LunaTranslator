@@ -1,4 +1,5 @@
 #include "dbcrnn.hpp"
+#ifdef _WIN32
 #ifdef WINXP
 #include "../xpundef/xp_dxgi.h"
 #include "../xpundef/xp_d3d12.h"
@@ -75,37 +76,6 @@ int findDeviceId(uint64_t &luid)
             return i;
     }
     return 0;
-}
-
-DECLARE_API void OcrDetect(OcrLite *pOcrObj, const cv::Mat *mat,
-                           Directional mode, void (*cb)(float, float, float, float, float, float, float, float, const char *), void (*cb2)(const char *))
-{
-    if (!pOcrObj)
-        return;
-
-    try
-    {
-        auto result = pOcrObj->detect(*mat, mode);
-
-        for (const auto &item : result)
-        {
-            cb(item.first[0].x, item.first[0].y,
-               item.first[1].x, item.first[1].y,
-               item.first[2].x, item.first[2].y,
-               item.first[3].x, item.first[3].y,
-               item.second.c_str());
-        }
-    }
-    catch (std::exception &e)
-    {
-        cb2(e.what());
-    }
-}
-
-DECLARE_API void OcrDestroy(OcrLite *pOcrObj)
-{
-    if (pOcrObj)
-        delete pOcrObj;
 }
 
 static std::optional<version_t> __QueryVersion(const std::wstring &exe)
@@ -270,12 +240,56 @@ DECLARE_API void GetDeviceInfoD3D12(void (*cb)(uint64_t, LPCWSTR))
         }
     }
 }
+#else
+DECLARE_API bool OcrLoadRuntime()
+{
+    // Linux：onnxruntime直接随模块链接，无需运行时查找加载
+    _InitApi();
+    return true;
+}
+DECLARE_API bool OcrIsProviderAvailable(const wchar_t *provider)
+{
+    (void)provider;
+    return false;
+}
+#endif
 
+DECLARE_API void OcrDetect(OcrLite *pOcrObj, const cv::Mat *mat,
+                           Directional mode, void (*cb)(float, float, float, float, float, float, float, float, const char *), void (*cb2)(const char *))
+{
+    if (!pOcrObj)
+        return;
+
+    try
+    {
+        auto result = pOcrObj->detect(*mat, mode);
+
+        for (const auto &item : result)
+        {
+            cb(item.first[0].x, item.first[0].y,
+               item.first[1].x, item.first[1].y,
+               item.first[2].x, item.first[2].y,
+               item.first[3].x, item.first[3].y,
+               item.second.c_str());
+        }
+    }
+    catch (std::exception &e)
+    {
+        cb2(e.what());
+    }
+}
+
+DECLARE_API void OcrDestroy(OcrLite *pOcrObj)
+{
+    if (pOcrObj)
+        delete pOcrObj;
+}
 
 DECLARE_API OcrLite *OcrInit(const wchar_t *szDetModel, const wchar_t *szRecModel, const wchar_t *szKeyPath, int nThreads, bool gpu, uint64_t luid, const char *device_type, void (*cb2)(const char *))
 {
     OcrLite *pOcrObj = nullptr;
     DeviceInfo info;
+#ifdef _WIN32
     if (gpu && isDMLAvailable())
     {
         int device = findDeviceId(luid);
@@ -295,6 +309,7 @@ DECLARE_API OcrLite *OcrInit(const wchar_t *szDetModel, const wchar_t *szRecMode
         }
         info.info = DeviceInfo::openvino{std::move(__)};
     }
+#endif
 
     try
     {

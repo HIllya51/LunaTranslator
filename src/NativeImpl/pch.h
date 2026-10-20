@@ -1,6 +1,8 @@
 #pragma once
 #define NOMINMAX
 #define _CRT_STDIO_ARBITRARY_WIDE_SPECIFIERS 1
+
+#ifdef _WIN32
 #include <windows.h>
 
 #ifndef E_BOUNDS
@@ -19,6 +21,31 @@
 #include <mmreg.h>
 #include <atlbase.h>
 #include <atlsync.h>
+#include <comdef.h>
+#include <shlwapi.h>
+#include <mshtmhst.h>
+#include <exdisp.h>
+#include <mshtml.h>
+#include <winbase.h>
+#include <wincon.h>
+#include <windowsx.h>
+#include <commctrl.h>
+#include <commdlg.h>
+#include <mmsystem.h>
+#include <shlobj.h>
+#include <mshtmcid.h>
+#include <process.h>
+#include <dwmapi.h>
+#include <tlhelp32.h>
+#include <io.h>
+#include <fcntl.h>
+#include <crtdefs.h>
+#include <d3d11.h>
+#include <dxgi.h>
+
+extern "C" IMAGE_DOS_HEADER __ImageBase;
+#endif
+
 #include <variant>
 #include <iostream>
 #include <string>
@@ -36,57 +63,33 @@
 #include <thread>
 #include <cmath>
 #include <atomic>
+#include <string_view>
+#include <tuple>
+#include <iterator>
 
 #include <cwchar>
-#include <comdef.h>
-#include <shlwapi.h>
 #include <cstdio>
 #include <cstring>
 #include <cassert>
-#include <mshtmhst.h>
-#include <exdisp.h>
-#include <mshtml.h>
 #include <stdlib.h>
-#include <iostream>
-#include <map>
-#include <winbase.h>
-#include <wincon.h>
-
 #include <stdio.h>
-
-#include <windowsx.h>
-#include <commctrl.h>
-#include <commdlg.h>
-#include <mmsystem.h>
-#include <shlobj.h>
+#include <map>
 #include <cctype>
-#include <cassert>
-#include <mshtmcid.h>
-#include <process.h>
-
 #include <stdint.h>
-#include <dwmapi.h>
-
 #include <optional>
 #include <unordered_set>
 #include <set>
-#include <tlhelp32.h>
-
-#include <io.h>
-#include <fcntl.h>
-#include <crtdefs.h>
-
 #include <cwctype>
 #include <memory>
 
-#include <d3d11.h>
-#include <dxgi.h>
-
-
-extern "C" IMAGE_DOS_HEADER __ImageBase;
-
+#ifdef _WIN32
 #include "common.hpp"
 #include "common2.hpp"
+#endif
 
+#if defined(_WIN32)
 #define SHAREFUNCTION __declspec(dllexport)
+#else
+#define SHAREFUNCTION __attribute__((visibility("default")))
+#endif
 #define DECLARE_API extern "C" SHAREFUNCTION

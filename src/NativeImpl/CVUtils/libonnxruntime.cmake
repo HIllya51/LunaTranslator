@@ -3,6 +3,36 @@ include(FetchContent)
 
 option(WIN10ABOVE "WIN10ABOVE" OFF)
 
+if(NOT WIN32)
+    # Linux：官方预编译包（CPU），直接链接（DT_NEEDED），运行时靠 $ORIGIN rpath找到
+    set(ort_version 1.24.4)
+    if(CMAKE_SYSTEM_PROCESSOR MATCHES "(x86_|X86_|AMD64|amd64)i?64")
+        set(ort_arch x64)
+    elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "^(aarch64|arm64)$")
+        set(ort_arch aarch64)
+    else()
+        message(FATAL_ERROR "unsupported onnxruntime architecture: ${CMAKE_SYSTEM_PROCESSOR}")
+    endif()
+    FetchContent_Declare(onnxruntime
+        URL https://github.com/microsoft/onnxruntime/releases/download/v${ort_version}/onnxruntime-linux-${ort_arch}-${ort_version}.tgz
+        DOWNLOAD_EXTRACT_TIMESTAMP true
+    )
+    FetchContent_MakeAvailable(onnxruntime)
+    add_library(onnxruntime INTERFACE)
+    target_include_directories(onnxruntime INTERFACE ${onnxruntime_SOURCE_DIR}/include)
+    target_link_libraries(onnxruntime INTERFACE ${onnxruntime_SOURCE_DIR}/lib/libonnxruntime.so)
+
+    # 链接记录的DT_NEEDED是SONAME(libonnxruntime.so.1)，只拷真文件+建SONAME软链
+    add_custom_target(copy_onnxruntime_dll
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            ${onnxruntime_SOURCE_DIR}/lib/libonnxruntime.so.${ort_version}
+            ${CMAKE_FINAL_OUTPUT_DIRECTORY}
+        COMMAND ln -sf libonnxruntime.so.${ort_version} ${CMAKE_FINAL_OUTPUT_DIRECTORY}/libonnxruntime.so.1
+    )
+    add_dependencies(onnxruntime copy_onnxruntime_dll)
+    return()
+endif()
+
 #onnxruntime
 #版本：
 #1.13.1 最后一个原生支持win7的版本

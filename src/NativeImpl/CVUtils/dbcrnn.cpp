@@ -219,7 +219,7 @@ cv::RotatedRect unClip(const TextBox &box, float unClipRatio)
 CrnnNet::CrnnNet(const std::wstring &pathStr, const std::wstring &keysPath, int numOfThread, const DeviceInfo &info) : CommonOnnxModel(pathStr, {127.5, 127.5, 127.5}, {1.0 / 127.5, 1.0 / 127.5, 1.0 / 127.5}, numOfThread, info)
 {
     // load keys
-    std::ifstream in(keysPath.c_str());
+    std::ifstream in{std::filesystem::path(keysPath)};
     std::string line;
     if (in)
     {
