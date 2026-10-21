@@ -453,24 +453,9 @@ def __textbackexpander(self):
                     self,
                     ui_settings,
                     "text_area_background_color",
+                    alpha=True,
                     callback=gobject.base.translation_ui.translate_text.setTextAreaBackStyle,
-                    default="pink",
-                ),
-            ]
-        )
-    )
-    exp.addContentWidget(
-        getboxwidget(
-            [
-                "不透明度",
-                1,
-                getspinbox(
-                    0,
-                    100,
-                    ui_settings,
-                    "text_area_background_alpha",
-                    callback=gobject.base.translation_ui.translate_text.setTextAreaBackStyle,
-                    default=85,
+                    default="#d9ffc0cb",  # pink @85%（原默认观感：pink+不透明度85）
                 ),
             ]
         )

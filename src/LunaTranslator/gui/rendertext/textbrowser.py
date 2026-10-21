@@ -273,8 +273,8 @@ class TextAreaBack(QLabel):
     def paintEvent(self, a0):
         parent: TextBrowser = self.parent()
         parent.yinyinglabels
-        c = QColor(ui_settings.get("text_area_background_color", "pink"))
-        c.setAlphaF(ui_settings.get("text_area_background_alpha", 85) / 100)
+        # 颜色自带 alpha（#AARRGGBB，取色器 alpha 模式）
+        c = QColor(ui_settings.get("text_area_background_color", "#d9ffc0cb"))
 
         painter = QPainter(self)
         painter.setCompositionMode(QPainter.CompositionMode.CompositionMode_Source)
@@ -283,17 +283,20 @@ class TextAreaBack(QLabel):
         __h = ui_settings.get("text_area_background_h", 5)
         __w = ui_settings.get("text_area_background_w", 5)
         xpath = QPainterPath()
-        for label in parent.yinyinglabels:
-            if not label.isVisible():
-                continue
-            r = QRectF()
-            r.setTop(label.realy() - __h)
-            r.setLeft(label.realx() - __w)
-            r.setHeight(label.realh() + 2 * __h)
-            r.setWidth(label.realw() + 2 * __w)
-            path = QPainterPath()
-            path.addRoundedRect(r, __r, __r)
-            xpath = xpath.united(path)
+        # 普通行标签在 yinyinglabels，流式输出（iter）的行标签在
+        # iteryinyinglabelsave——两处都要画，否则流式翻译没有区域背景
+        for labels in [parent.yinyinglabels, *parent.iteryinyinglabelsave.values()]:
+            for label in labels:
+                if not label.isVisible():
+                    continue
+                r = QRectF()
+                r.setTop(label.realy() - __h)
+                r.setLeft(label.realx() - __w)
+                r.setHeight(label.realh() + 2 * __h)
+                r.setWidth(label.realw() + 2 * __w)
+                path = QPainterPath()
+                path.addRoundedRect(r, __r, __r)
+                xpath = xpath.united(path)
         painter.fillPath(xpath, c)
         return super().paintEvent(a0)
 

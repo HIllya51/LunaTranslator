@@ -90,14 +90,17 @@ class webview_common(dataget):
         self.debugeval("showtextareabackground({})".format(int(show)))
 
     def setTextAreaBackStyle(self, **_):
-        c = QColor(ui_settings.get("text_area_background_color", "pink"))
+        # 颜色自带 alpha（#AARRGGBB）；SVG fill 不认该序，转成 rgba()
+        c = QColor(ui_settings.get("text_area_background_color", "#d9ffc0cb"))
         self.debugeval(
-            "setTextAreaBackStyle({}, {}, {}, '{}', {})".format(
+            "setTextAreaBackStyle({}, {}, {}, 'rgba({},{},{},{})')".format(
                 ui_settings.get("text_area_background_r", 5),
                 ui_settings.get("text_area_background_w", 5),
                 ui_settings.get("text_area_background_h", 5),
-                c.name(QColor.NameFormat.HexRgb),
-                ui_settings.get("text_area_background_alpha", 85) / 100,
+                c.red(),
+                c.green(),
+                c.blue(),
+                c.alphaF(),
             )
         )
 

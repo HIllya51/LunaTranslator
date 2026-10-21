@@ -8,8 +8,6 @@
         z-index: -99;
         pointer-events: none;
         overflow: visible;
-        opacity: 0.5;
-        /*透明度必须放在这里，不能放到颜色里，否则会叠加 */
     }
 </style>
 <style id="bg-layer-color-control">
@@ -460,69 +458,42 @@
     var text_area_background_r = 5;
     var text_area_background_w = 5;
     var text_area_background_h = 5;
-    function setTextAreaBackStyle(r, w, h, color, alpha) {
+    function setTextAreaBackStyle(r, w, h, color) {
         text_area_background_r = r
         text_area_background_w = w
         text_area_background_h = h
-        document.getElementById('bg-layer').style.opacity = alpha
         document.getElementById('bg-layer-color-control').innerHTML = `.bg-rect {
         fill: ${color};
     }`
         drawBackgrounds();
     }
-    function isSame(v1, v2, diff = 1) {
-        return Math.abs(v1 - v2) <= diff;
-    }
-    function isHorizontalTouching(r1, r2, tolerance) {
-        return (r1.x + r1.w + tolerance >= r2.x) &&
-            (r2.x + r2.w + tolerance >= r1.x);
-    }
-    function isVerticalTouching(r1, r2, tolerance) {
-        return (r1.y + r1.h + tolerance >= r2.y) &&
-            (r2.y + r2.h + tolerance >= r1.y);
-    }
-    function mergeRectsAbsoluteInplace(list, tolerance = 0.1) {
-
-        let hasMerged = true;
-        while (hasMerged) {
-            hasMerged = false;
-
-            for (let i = 0; i < list.length; i++) {
-                for (let j = i + 1; j < list.length; j++) {
-                    const r1 = list[i];
-                    const r2 = list[j];
-
-                    let merged = null;
-                    if (isSame(r1.h, r2.h, tolerance) && isSame(r1.y, r2.y, tolerance)) {
-                        if (isHorizontalTouching(r1, r2, tolerance)) {
-                            merged = {
-                                x: Math.min(r1.x, r2.x),
-                                y: r1.y,
-                                w: Math.max(r1.x + r1.w, r2.x + r2.w) - Math.min(r1.x, r2.x),
-                                h: r1.h // 高度不变
-                            };
-                        }
-                    }
-                    else if (isSame(r1.w, r2.w, tolerance) && isSame(r1.x, r2.x, tolerance)) {
-                        if (isVerticalTouching(r1, r2, tolerance)) {
-                            merged = {
-                                x: r1.x, // X不变
-                                y: Math.min(r1.y, r2.y),
-                                w: r1.w,
-                                h: Math.max(r1.y + r1.h, r2.y + r2.h) - Math.min(r1.y, r2.y)
-                            };
-                        }
-                    }
-                    if (merged) {
-                        list[i] = merged;
-                        list.splice(j, 1);
-                        j--;
-                        hasMerged = true;
-                    }
+    // 矩形按视觉行聚类（垂直方向真实相交 → 同一行），整行并成一条：
+    // 逐矩形按几何合并（等高同顶才并）在注音场景下会碎块——假名注音
+    // 很宽时 ruby 盒比基底文字宽，基底矩形之间出现空隙；注音词基底与
+    // 普通假名词的矩形高度也不一致，永远并不到一起
+    function clusterRows(rects) {
+        rects.sort((a, b) => a.y - b.y)
+        let rows = []
+        for (const r of rects) {
+            let row = null
+            for (let i = rows.length - 1; i >= 0; i--) {
+                let t = rows[i]
+                if (Math.min(t.maxb, r.y + r.h) - Math.max(t.y, r.y) > 0.5) {
+                    row = t
+                    break
                 }
             }
+            if (row == null) {
+                rows.push({ y: r.y, maxb: r.y + r.h, minx: r.x, maxx: r.x + r.w })
+            }
+            else {
+                row.y = Math.min(row.y, r.y)
+                row.maxb = Math.max(row.maxb, r.y + r.h)
+                row.minx = Math.min(row.minx, r.x)
+                row.maxx = Math.max(row.maxx, r.x + r.w)
+            }
         }
-        return list;
+        return rows.map(t => ({ x: t.minx, y: t.y, w: t.maxx - t.minx, h: t.maxb - t.y }))
     }
 
     function drawBackgrounds() {
@@ -539,7 +510,7 @@
             }
 
         });
-        mergeRectsAbsoluteInplace(rectscollect)
+        rectscollect = clusterRows(rectscollect)
         const svg = document.getElementById('bg-layer');
         svg.innerHTML = '';
         rectscollect.forEach(rect => {

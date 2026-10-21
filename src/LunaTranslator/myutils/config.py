@@ -422,7 +422,6 @@ def migrate_ui_settings():
         "WindowEffect_shadow",
         "text_area_background",
         "text_area_background_color",
-        "text_area_background_alpha",
         "text_area_background_r",
         "text_area_background_w",
         "text_area_background_h",
