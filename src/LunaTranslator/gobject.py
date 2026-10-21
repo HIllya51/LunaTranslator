@@ -73,7 +73,7 @@ isRunningAlreadyExists = False
 serverindex = 0
 serverindex2 = 0
 tempconfig = {}
-
+AdapterServiceInited = False
 
 class Consts:
     linkcolor = "#E91E63"

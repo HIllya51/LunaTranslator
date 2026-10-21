@@ -17,9 +17,34 @@ from gui.usefulwidget import qwidget_screen
 from gui.dynalang import LAction, LMenu
 from sometypes import WordSegResult
 from gui.rendertext.tooltipswidget import tooltipswidget
-from gui.rendertext.webview import get_sorted_toolbuttonitems
+
 
 reference: "set[QLabel]" = set()
+
+
+def get_sorted_toolbuttonitems():
+    buttons = []
+    for (
+        clicked,
+        rightclick,
+        tip,
+        name,
+        iconstate,
+        colorstate,
+        middleclick,
+    ) in gobject.base.translation_ui.create_buttons():
+        if not clicked:
+            continue
+        if not tip:
+            continue
+        if not gobject.base.translation_ui.buttondisplaychecker(name):
+            continue
+        sorter = (
+            {0: 0, 1: 2, 2: 1}[globalconfig["toolbutton"]["buttons"][name]["align"]],
+            globalconfig["toolbutton"]["rank2"].index(name),
+        )
+        buttons.append((tip, clicked, sorter, iconstate if iconstate else colorstate))
+    return sorted(buttons, key=lambda _: _[2])
 
 
 class WordSegResultX(WordSegResult):

@@ -1,5 +1,5 @@
 from qtsymbols import *
-import os, time, functools, uuid, threading, windows, qtawesome
+import os, time, functools, uuid, threading, qtawesome, NativeUtils
 from functools import cmp_to_key
 from traceback import print_exc
 from myutils.config import (
@@ -1668,7 +1668,7 @@ class _gridpage(QWidget):
             self.reflist.sort(key=unsafetrygettime, reverse=action != sortbytimede)
         elif action in (sortbyname, sortbynamedesc):
             def paircmp(a, b):
-                return windows.StrCmpLogicalW(
+                return NativeUtils.strnatcmp(
                     savehook_new_data[a]["title"], savehook_new_data[b]["title"]
                 )
             self.reflist.sort(
@@ -1678,8 +1678,12 @@ class _gridpage(QWidget):
         else:
             return
         # 持久列表顺序已变：同步 reallist + nav 子项，再重建网格
+        # （tagschanged 只重过滤不动 flow 顺序，网格须走 _build_flow 重建）
         self.ref._sync_from_reflist(self.reftagid)
-        self.tagschanged(self.currtags)
+        self._build_flow()
+        if self.currtags:
+            self._apply_tag_filter()
+        QTimer.singleShot(0, self._refit_flow)
 
 class dialog_savedgame_v3(QWidget):
     # 当前实例（游戏设置页点标签时联动网格页的标签过滤）
@@ -2100,6 +2104,10 @@ class dialog_savedgame_v3(QWidget):
             self.nav.setCurrentItem(group)
         finally:
             self.nav.blockSignals(False)
+        # 重排后项数不变，滚动范围/值都不变，rangeChanged 不会触发——
+        # 排序后进入视口的未加载图标项需要显式重启加载器
+        # （同 showEvent 的"布局完成后重启"模式）
+        QTimer.singleShot(0, self.nav._kick_icon_timer)
 
     def _tagmove(self, tagid, dst_idx):
         """主项（列表）拖动：nav 树 + savegametaged 同步重排（位置任意）。"""

@@ -141,7 +141,7 @@ DECLARE_API bool IsDark()
     DWORD value;
     if (ERROR_SUCCESS != hKey.QueryDWORDValue(L"AppsUseLightTheme", value))
         return false;
-    return 1 - value;
+    return !value;;
 }
 DECLARE_API void SetCornerNotRound(HWND _hWnd, bool rect, bool round)
 {

@@ -98,6 +98,9 @@ levenshtein_distance.restype = c_size_t
 levenshtein_normalized_similarity = utilsdll.levenshtein_normalized_similarity
 levenshtein_normalized_similarity.argtypes = c_size_t, c_wchar_p, c_size_t, c_wchar_p
 levenshtein_normalized_similarity.restype = c_double
+strnatcmp = utilsdll.strnatcmp
+strnatcmp.argtypes = c_wchar_p, c_wchar_p
+strnatcmp.restype = c_int
 
 
 def distance(s1, s2):

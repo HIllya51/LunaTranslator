@@ -1,9 +1,8 @@
 from qtsymbols import *
-from myutils.config import globalconfig, magpie_config
+from myutils.config import magpie_config
 from gui.usefulwidget import (
     D_getsimplecombobox,
     D_getspinbox,
-    createfoldgrid,
     D_getsimpleswitch,
     getsimplepatheditor,
     getboxlayout,
@@ -15,9 +14,8 @@ from gui.usefulwidget import (
 )
 from gui.dynalang import LPushButton, LLabel
 from gui.fluent.expander import ExExpander
+import functools, os, json, gobject
 from myutils.magpie_builtin import AdapterService
-import functools, os, json
-
 
 class SuperCombo__1(SuperCombo):
     signal = pyqtSignal(list)
@@ -59,6 +57,7 @@ def createadaptercombo(profile):
     combo.signal.connect(functools.partial(adapterchangedcallback, profile, combo))
     combo.currentIndexChanged.connect(functools.partial(__changed, profile, combo))
     AdapterService.init(combo.signal.emit)
+    gobject.AdapterServiceInited = True
     return combo
 
 

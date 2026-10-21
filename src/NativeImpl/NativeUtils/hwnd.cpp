@@ -14,7 +14,7 @@ DECLARE_API DWORD GetParentProcessID(DWORD pid)
     if (hSnapshot == INVALID_HANDLE_VALUE)
         return 0;
 
-    PROCESSENTRY32 pe32;
+    PROCESSENTRY32 pe32{};
     pe32.dwSize = sizeof(PROCESSENTRY32);
     auto currpid = GetCurrentProcessId();
     if (Process32First(hSnapshot, &pe32))
@@ -133,8 +133,9 @@ bool IsInteractiveUserProcess(DWORD processId)
 
         SID_IDENTIFIER_AUTHORITY ntAuthority = SECURITY_NT_AUTHORITY;
         PSID systemSid;
-        AllocateAndInitializeSid(&ntAuthority, 1, SECURITY_LOCAL_SYSTEM_RID,
-                                 0, 0, 0, 0, 0, 0, 0, &systemSid);
+        if (!AllocateAndInitializeSid(&ntAuthority, 1, SECURITY_LOCAL_SYSTEM_RID,
+                                      0, 0, 0, 0, 0, 0, 0, &systemSid))
+            return false;
 
         BOOL isSystem = EqualSid(pTokenUser->User.Sid, systemSid);
         FreeSid(systemSid);
@@ -150,7 +151,7 @@ DECLARE_API void ListProcesses(void (*cb)(DWORD, const wchar_t *))
     if (hSnapshot == INVALID_HANDLE_VALUE)
         return;
 
-    PROCESSENTRY32 pe32;
+    PROCESSENTRY32 pe32{};
     pe32.dwSize = sizeof(PROCESSENTRY32);
     auto currpid = GetCurrentProcessId();
     if (Process32First(hSnapshot, &pe32))

@@ -15,13 +15,12 @@ from myutils.config import (
     defaultpost,
     globalconfig,
     static_data,
+    MagpieConfig,
 )
-from myutils.magpie_builtin import MagpieConfig
 from gui.setting.display_scale import makescalew
 from myutils.wrapper import tryprint
 import sqlite3
 from gui.dialog_memory import dialog_memory
-from myutils.localetools import getgamecamptools, maycreatesettings
 from gui.fluent.expander import ExExpander
 from gui.fluent.pillbar import ExPillBar
 from gui.fluent.settingtree import FluentSettingTree, wrap_setting_tree
@@ -125,6 +124,7 @@ class _MetaSettingRows:
 
         return _show
 
+
 def maybehavebutton(self, gameuid, post):
     save_text_process_info = savehook_new_data[gameuid]["save_text_process_info"]
     if post == "_11":
@@ -199,8 +199,7 @@ class _GameTextProcTree(FluentSettingTree):
         self._gameuid = gameuid
         hdr = self.header()
         for c in (0, 1, 3):
-            hdr.setSectionResizeMode(
-                c, QHeaderView.ResizeMode.ResizeToContents)
+            hdr.setSectionResizeMode(c, QHeaderView.ResizeMode.ResizeToContents)
         hdr.setSectionResizeMode(2, QHeaderView.ResizeMode.Stretch)
         self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.customContextMenuRequested.connect(self._showmenu)
@@ -208,12 +207,12 @@ class _GameTextProcTree(FluentSettingTree):
 
     # ---- 数据 ----
     def _rank(self):
-        return savehook_new_data[self._gameuid][
-            "save_text_process_info"]["rank"]
+        return savehook_new_data[self._gameuid]["save_text_process_info"]["rank"]
 
     def _pconf(self):
-        return savehook_new_data[self._gameuid][
-            "save_text_process_info"]["postprocessconfig"]
+        return savehook_new_data[self._gameuid]["save_text_process_info"][
+            "postprocessconfig"
+        ]
 
     def _ensureconf(self, k):
         """该游戏的私有配置副本（原 __checkaddnewmethod 的初始化）。"""
@@ -237,15 +236,18 @@ class _GameTextProcTree(FluentSettingTree):
             item.setData(0, Qt.ItemDataRole.UserRole, k)
             self._a11yname(item, 2, postprocessconfig[k]["name"])
             self.addTopLevelItem(item)
-            self.setItemWidget(item, 0, self._cell(
-                getsimpleswitch(conf, "use"), center=True))
+            self.setItemWidget(
+                item, 0, self._cell(getsimpleswitch(conf, "use"), center=True)
+            )
             btn = maybehavebutton(self._host, self._gameuid, k)
             if btn is not None:
                 self.setItemWidget(item, 1, self._cell(btn, center=True))
-            self.setItemWidget(item, 2, self._cell(
-                LLabel(_TR(postprocessconfig[k]["name"]))))
             self.setItemWidget(
-                item, 3, self._movecell(functools.partial(self._move, k)))
+                item, 2, self._cell(LLabel(_TR(postprocessconfig[k]["name"])))
+            )
+            self.setItemWidget(
+                item, 3, self._movecell(functools.partial(self._move, k))
+            )
 
     # ---- 排序（拖拽 / 上下移共用，_ondrop/_move 见基类）----
     def _rank_list(self):
@@ -303,8 +305,7 @@ class _GameTransOptimiTree(FluentSettingTree):
         self._gameuid = gameuid
         hdr = self.header()
         for c in (0, 1):
-            hdr.setSectionResizeMode(
-                c, QHeaderView.ResizeMode.ResizeToContents)
+            hdr.setSectionResizeMode(c, QHeaderView.ResizeMode.ResizeToContents)
         hdr.setSectionResizeMode(2, QHeaderView.ResizeMode.Stretch)
         self.rebuild()
 
@@ -325,20 +326,30 @@ class _GameTransOptimiTree(FluentSettingTree):
             def __(f, host, gameuid):
                 return f(host, gameuid)
 
-            self.setItemWidget(item, 0, self._cell(
-                getsimpleswitch(
-                    savehook_new_data[self._gameuid],
-                    name + "_use",
-                    default=False,
+            self.setItemWidget(
+                item,
+                0,
+                self._cell(
+                    getsimpleswitch(
+                        savehook_new_data[self._gameuid],
+                        name + "_use",
+                        default=False,
+                    ),
+                    center=True,
                 ),
-                center=True,
-            ))
-            self.setItemWidget(item, 1, self._cell(
-                getIconButton(
-                    callback=functools.partial(
-                        __, setting, self._host, self._gameuid)),
-                center=True,
-            ))
+            )
+            self.setItemWidget(
+                item,
+                1,
+                self._cell(
+                    getIconButton(
+                        callback=functools.partial(
+                            __, setting, self._host, self._gameuid
+                        )
+                    ),
+                    center=True,
+                ),
+            )
             self._a11yname(item, 2, visname)
             self.setItemWidget(item, 2, self._cell(LLabel(visname)))
 
@@ -536,7 +547,7 @@ class dialog_setting_game_internal(QWidget):
         _w = formscrollcontent()
         _w.setStyleSheet("formscrollcontent{background-color:transparent;}")
         formLayout = LFormLayout(_w)
-        formLayout.setContentsMargins(16, 16, 16, 12 )
+        formLayout.setContentsMargins(16, 16, 16, 12)
         do = functools.partial(function, formLayout, gameuid)
         scroll = makescroll()
         scroll.setWidget(_w)
@@ -549,7 +560,7 @@ class dialog_setting_game_internal(QWidget):
         _w = formscrollcontent2()
         _w.setStyleSheet("formscrollcontent2{background-color:transparent;}")
         formLayout = QVBoxLayout(_w)
-        formLayout.setContentsMargins(16, 16, 16, 12 )
+        formLayout.setContentsMargins(16, 16, 16, 12)
         do = functools.partial(function, formLayout, gameuid)
         scroll = makescroll()
         scroll.setWidget(_w)
@@ -688,9 +699,7 @@ class dialog_setting_game_internal(QWidget):
                 print_exc()
                 continue
             exp = ExExpander(content_pad=True)
-            exp.setHeaderWidget(
-                self._metaheader(name, labelw, vndbid, switch, btns)
-            )
+            exp.setHeaderWidget(self._metaheader(name, labelw, vndbid, switch, btns))
             rows = _MetaSettingRows(exp)
             # 第一子项：使用代理（getproxy 按此决定该源是否走代理）
             rows.addRow(
@@ -718,8 +727,7 @@ class dialog_setting_game_internal(QWidget):
 
             ref = dialog_savedgame_v3.reference
             if ref is not None:
-                ref.gridpage._addtagfilter(
-                    self._tagbars[key].tabText(index), _type)
+                ref.gridpage._addtagfilter(self._tagbars[key].tabText(index), _type)
         except:
             print_exc()
 
@@ -748,16 +756,14 @@ class dialog_setting_game_internal(QWidget):
             tagitem.TYPE_DEVELOPER,
             tagitem.TYPE_TAG,
         ]
-        for key, zh, _t in zip(
-            self.tagtypes, self.tagtypes_zh, self.tagtypes_1
-        ):
+        for key, zh, _t in zip(self.tagtypes, self.tagtypes_zh, self.tagtypes_1):
             bar = ExPillBar()
             for tag in savehook_new_data[gameuid].get(key, []):
                 bar.addTab(tag)
-            bar.tabClicked.connect(
-                functools.partial(self._tagbarclicked, _t, key))
+            bar.tabClicked.connect(functools.partial(self._tagbarclicked, _t, key))
             bar.tabCloseRequested.connect(
-                functools.partial(self._tagbarclose, gameuid, key))
+                functools.partial(self._tagbarclose, gameuid, key)
+            )
             self._tagbars[key] = bar
             formLayout.addWidget(LLabel(zh))
             formLayout.addWidget(bar)
@@ -787,9 +793,7 @@ class dialog_setting_game_internal(QWidget):
 
         button.clicked.connect(_add)
 
-        formLayout.addLayout(
-            getboxlayout([combo, typecombo, button])
-        )
+        formLayout.addLayout(getboxlayout([combo, typecombo, button]))
 
     def doaddtab(self, wfunct, exe, layout: QLayout):
         w, do = wfunct(exe)
@@ -803,9 +807,8 @@ class dialog_setting_game_internal(QWidget):
 
         self.setWindowIcon(_icon)
 
-    def starttab(self, formLayout: LFormLayout, gameuid):
-        # 每项一张卡；启动方式为折叠卡，子项随方式切换（无设置时收起）。
-        # 方式的每行设置经 _MethodRows 转为折叠卡的一个子项。
+    def __maybeload_launchmethod(self, gameuid, formLayout):
+        from myutils.localetools import getgamecamptools, maycreatesettings
         tools = getgamecamptools(get_launchpath(gameuid))
 
         class _MethodRows:
@@ -836,23 +839,6 @@ class dialog_setting_game_internal(QWidget):
             "launch_method",
             internal=[_.id for _ in tools],
         )
-        self.lauchpath = getsimplepatheditor(
-            get_launchpath(gameuid),
-            callback=self.selectexe_lauch,
-            icons=("fa.gear", "fa.undo"),
-            clearset=lambda: uid2gamepath[gameuid],
-        )
-        # 路径（游戏本体路径；记忆列表按钮随标题行走）——与 启动程序 相邻成组
-        formLayout.addRow(makecardrow(
-            "路径",
-            getsimplepatheditor(
-                uid2gamepath[gameuid],
-                callback=self.selectexe,
-                clearable=False,
-                icons=("fa.gear",),
-            ),
-            fill=True,
-        ))
         exp = ExExpander(content_pad=True)
         rows = _MethodRows(exp)
         header = QWidget()
@@ -884,8 +870,35 @@ class dialog_setting_game_internal(QWidget):
             exp.setFoldable(exp.hasContentWidgets())
 
         __launch_method.currentIndexChanged.connect(__)
-        formLayout.addRow(makecardrow("启动程序", self.lauchpath, fill=True))
+        __(__launch_method.currentIndex())
         formLayout.addRow(exp)
+
+
+    def starttab(self, formLayout: LFormLayout, gameuid):
+        # 每项一张卡；启动方式为折叠卡，子项随方式切换（无设置时收起）。
+        # 方式的每行设置经 _MethodRows 转为折叠卡的一个子项。
+        
+        self.lauchpath = getsimplepatheditor(
+            get_launchpath(gameuid),
+            callback=self.selectexe_lauch,
+            icons=("fa.gear", "fa.undo"),
+            clearset=lambda: uid2gamepath[gameuid],
+        )
+        # 路径（游戏本体路径；记忆列表按钮随标题行走）——与 启动程序 相邻成组
+        formLayout.addRow(
+            makecardrow(
+                "路径",
+                getsimplepatheditor(
+                    uid2gamepath[gameuid],
+                    callback=self.selectexe,
+                    clearable=False,
+                    icons=("fa.gear",),
+                ),
+                fill=True,
+            )
+        )
+        formLayout.addRow(makecardrow("启动程序", self.lauchpath, fill=True))
+        self.__maybeload_launchmethod(gameuid, formLayout)
         # 语言（原独立 tab）：启动方式之下的跟随默认折叠卡
         self.getlangcard(formLayout, gameuid)
         formLayout.addRow(
@@ -899,7 +912,6 @@ class dialog_setting_game_internal(QWidget):
                 ),
             )
         )
-        __( __launch_method.currentIndex() )
 
     @tryprint
     def __refresh(self):
@@ -939,11 +951,10 @@ class dialog_setting_game_internal(QWidget):
         chart2 = chartwidget(timechart=False)
         chart2.xtext = chart.xtext
         chart2.ytext = str
+
         def _fixedlabel():
             lb = QLabel()
-            lb.setSizePolicy(
-                QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed
-            )
+            lb.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
             return lb
 
         self._timelabel = _fixedlabel()
@@ -1168,8 +1179,9 @@ class dialog_setting_game_internal(QWidget):
         formLayout2.setContentsMargins(0, 0, 0, 0)
         return formLayout2
 
-    def createfollowdefaultfold(self, dic: dict, key: str, callback=None,
-                                title="跟随默认"):
+    def createfollowdefaultfold(
+        self, dic: dict, key: str, callback=None, title="跟随默认"
+    ):
         """跟随默认折叠卡：头部标题 + [跟随默认]开关（文字在开关旁），
         内容为各设置行子项（开关开启=跟随默认时内容禁用）。
         返回 (折叠卡, 内容网格)——调用方填充网格后 addRow 并 setExpanded。"""
@@ -1354,7 +1366,8 @@ class dialog_setting_game_internal(QWidget):
                     ("删除行", self.__privatetextproc_btn2),
                 ]
             ),
-            1, 0,
+            1,
+            0,
         )
         exp.setExpanded(True)
         formLayout.addRow(exp)
@@ -1458,10 +1471,18 @@ class dialog_setting_game_internal(QWidget):
             rows.append(row)
             exp.addContentWidget(row)
 
-        _langrow("源语言", "private_srclang_2", all_langs(),
-                 globalconfig.get("srclang4", "auto"))
-        _langrow("目标语言", "private_tgtlang_2", all_langs(False),
-                 globalconfig.get("tgtlang4", "zh"))
+        _langrow(
+            "源语言",
+            "private_srclang_2",
+            all_langs(),
+            globalconfig.get("srclang4", "auto"),
+        )
+        _langrow(
+            "目标语言",
+            "private_tgtlang_2",
+            all_langs(False),
+            globalconfig.get("tgtlang4", "zh"),
+        )
         __use(savehook_new_data[gameuid].get("lang_follow_default", True))
         formLayout.addRow(exp)
 
@@ -1575,7 +1596,7 @@ class dialog_setting_game_internal(QWidget):
         _w = hookscrollcontent()
         _w.setStyleSheet("hookscrollcontent{background-color:transparent;}")
         formLayout = LFormLayout(_w)
-        formLayout.setContentsMargins(16, 16, 16, 12 )
+        formLayout.setContentsMargins(16, 16, 16, 12)
 
         def __():
             self.gethooktab_internal(formLayout, gameuid)

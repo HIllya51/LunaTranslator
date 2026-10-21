@@ -249,7 +249,7 @@ std::pair<HWND, WNDCLASS> CreateWindowForWndProc(WNDPROC WNDPROC_1, HWND parent 
     wc.hInstance = (HINSTANCE)&__ImageBase;
     RegisterClass(&wc);
     HWND hWnd = CreateWindowEx(exstyle, CLASS_NAME.c_str(), NULL, style, x, y, w, h, parent, nullptr, wc.hInstance, nullptr); // HWND_MESSAGE会收不到。
-    return std::make_pair(hWnd, wc);
+    return {hWnd, wc};
 }
 DECLARE_API void globalmessagelistener(WinEventHookCALLBACK_t callback1, WindowMessageCallback_t callback)
 {

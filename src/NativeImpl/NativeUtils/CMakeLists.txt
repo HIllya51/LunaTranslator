@@ -68,6 +68,7 @@ if(WIN32)
         pdh
         Mpr
         Psapi
+        Shlwapi
         Dbghelp
         bassimp
         libbass

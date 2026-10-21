@@ -16,7 +16,7 @@ struct CO_INIT
     {
         hr = ::CoInitialize(NULL);
     }
-    operator HRESULT()
+    operator HRESULT() const
     {
         return hr;
     }

@@ -2,8 +2,26 @@ import sys
 import os
 
 
+def switchdir():
+    dirname = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    os.chdir(dirname)
+    sys.path.insert(1, ".")
+    # 0 是当前目录
+    # 后面的是系统库或runtime
+    # 由于自动更新不会删除，runtime下可能有历史遗留的同名文件被优先导入
+
+
+switchdir()
+
+import gobject
+import windows
+from urllib.parse import urlsplit
+from traceback import print_exc
+import argparse
+
+
 def dopathexists(file: str):
-    import windows, NativeUtils
+    import NativeUtils
 
     if not file:
         return False
@@ -17,7 +35,6 @@ def dopathexists(file: str):
     return bool(windows.PathFileExists(os.path.abspath(file)))
 
 
-originstartfile = os.startfile
 originisdir = os.path.isdir
 originisfile = os.path.isfile
 
@@ -31,7 +48,6 @@ def doisfile(file: str):
 
 
 def safestartfile(f):
-    import windows
 
     # startfile在windows上，有时会谜之把http链接当成exe用run导致崩溃
     windows.ShellExecute(
@@ -53,42 +69,32 @@ def overridepathexists():
     os.startfile = safestartfile
 
 
-def prepareqtenv(haserror):
-    import windows
-    from gobject import runtime_for_xp, runtimedir
-
-    # 对于如果使用的动态链接的x64_win10版本，由于vc++在14.38->14.40之间破坏了兼容性，
-    # 虽然打包版已经正确处理了依赖，不过在测试时，如果先加载Qt则会导致加载Qt自带的14.26vcrt导致NativeUtils内部无法正确初始化
-    # 因此如果编译为动态的，测试时必须先加载14.40+vcrt来避免Qt捣乱，这里采用的方法即是预先加载它使其加载系统的vcrt
-    # 虽然这个仅是对测试时的问题，不过没有负面影响，因此没问题。
-    if not haserror:  # 可能缺少这个文件
-        import NativeUtils
+def prepareqtenv():
 
     # pyqt5.15依赖AddDllDirectory来加载Qt，在Win7早期版本上无法成功，导致缺失dll，手动加载Qt可解。
     qtdlls = ("Qt5Core.dll", "Qt5Gui.dll", "Qt5Widgets.dll", "Qt5Svg.dll")
-    if not runtime_for_xp:
-        qtdir = "{}/PyQt5/Qt5/bin".format(runtimedir)
+    if not gobject.runtime_for_xp:
+        qtdir = "{}/PyQt5/Qt5/bin".format(gobject.runtimedir)
         if os.path.isdir(qtdir):
             for _ in qtdlls:
                 windows.LoadLibrary(os.path.join(qtdir, _))
 
     from qtsymbols import QApplication, isqt5, Qt, QFont, QLocale
 
-    overridepathexists()
-
     if isqt5:
+    
         # 中文字符下不能自动加载
-        if not runtime_for_xp:
-            plgs = "{}/PyQt5/Qt5/plugins".format(runtimedir)
+        if not gobject.runtime_for_xp:
+            plgs = "{}/PyQt5/Qt5/plugins".format(gobject.runtimedir)
         else:
-            plgs = "{}/Lib/site-packages/PyQt5/plugins".format(runtimedir)
+            plgs = "{}/Lib/site-packages/PyQt5/plugins".format(gobject.runtimedir)
 
         if os.path.exists(plgs):
             QApplication.addLibraryPath(plgs)
-        if not runtime_for_xp:
+        if not gobject.runtime_for_xp:
             QApplication.setAttribute(Qt.ApplicationAttribute.AA_EnableHighDpiScaling)
         QApplication.setAttribute(Qt.ApplicationAttribute.AA_UseHighDpiPixmaps)
-    if not runtime_for_xp:
+    if not gobject.runtime_for_xp:
         QApplication.setHighDpiScaleFactorRoundingPolicy(
             Qt.HighDpiScaleFactorRoundingPolicy.PassThrough
         )
@@ -102,7 +108,6 @@ def prepareqtenv(haserror):
 
 
 def loadmainui(startwithgameuid):
-    import gobject
     from LunaTranslator import BASEOBJECT
 
     gobject.base = BASEOBJECT()
@@ -113,7 +118,6 @@ def checklang():
 
     from myutils.config import globalconfig
     from language import GetUILanguage, Languages
-    import windows
 
     if "languageuse2" in globalconfig:
         return
@@ -137,20 +141,7 @@ def mayberror(error=None):
             os._exit(0)
 
 
-def switchdir():
-    dirname = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    os.chdir(dirname)
-    sys.path.insert(1, ".")
-    # 0 是当前目录
-    # 后面的是系统库或runtime
-    # 由于自动更新不会删除，runtime下可能有历史遗留的同名文件被优先导入
-
-
-def _parseargs():
-    import gobject
-    from urllib.parse import urlsplit
-    from traceback import print_exc
-
+def _parseargs(args):
     try:
         URLProtocol: str = args.URLProtocol
         Exec: str = args.Exec
@@ -215,14 +206,13 @@ def parsellmapi(result):
     copyllmapi("chatgpt-3rd-party", args["name"], args["uid"], args=args, use=True)
 
 
-def checkargs():
-    import gobject
+def checkargs(args):
     from traceback import format_exc
     from myutils.config import _TR
 
     startwithgameuid = None
     error = None
-    _ = _parseargs()
+    _ = _parseargs(args)
     if _:
         if _[0] == 1:
             startwithgameuid = _[1]
@@ -240,9 +230,7 @@ def checkargs():
 
 def checkrunning(args):
     import hashlib
-    import gobject
     import NativeUtils
-    import windows
     from qtsymbols import QMessageBox
     from myutils.config import _TR
 
@@ -269,8 +257,6 @@ def checkrunning(args):
 
 
 def create_argparser():
-    import argparse
-
     parser = argparse.ArgumentParser()
     parser.add_argument("--URLProtocol", required=False)
     parser.add_argument("--Exec", required=False)
@@ -280,30 +266,36 @@ def create_argparser():
 
 
 def check_userdir(args):
-    import gobject
-
     userconfig = args.userconfig
     gobject.thisuserconfig = userconfig if userconfig else gobject.thisuserconfig
     sys.path.insert(1, gobject.thisuserconfig)
 
 
 if __name__ == "__main__":
-    switchdir()
     args = create_argparser()
     check_userdir(args)
 
     checklang()
-    from myutils.config import checkintegrity
+    if 1:
+        from myutils.config import checkintegrity
 
-    error2 = checkintegrity()
-    prepareqtenv(error2)
+        error2 = checkintegrity()
+        if not error2:
+            # 对于如果使用的动态链接的x64_win10版本，由于vc++在14.38->14.40之间破坏了兼容性，
+            # 虽然打包版已经正确处理了依赖，不过在测试时，如果先加载Qt则会导致加载Qt自带的14.26vcrt导致NativeUtils内部无法正确初始化
+            # 因此如果编译为动态的，测试时必须先加载14.40+vcrt来避免Qt捣乱，这里采用的方法即是预先加载它使其加载系统的vcrt
+            # 虽然这个仅是对测试时的问题，不过没有负面影响，因此没问题。
+            import NativeUtils
+        overridepathexists()
+    prepareqtenv()
     from qtsymbols import QApplication
 
     app = QApplication(sys.argv)
     # app.setQuitOnLastWindowClosed(False)
-    mayberror(error2)
+    if 1:
+        mayberror(error2)
     checkrunning(args)
-    startwithgameuid, error = checkargs()
+    startwithgameuid, error = checkargs(args)
     mayberror(error)
     loadmainui(startwithgameuid)
     app.exit(app.exec())

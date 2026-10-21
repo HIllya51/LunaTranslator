@@ -1,5 +1,5 @@
 from qtsymbols import *
-import functools, gobject, NativeUtils, uuid, windows, shutil, time, math
+import functools, gobject, NativeUtils, uuid, shutil, time, math
 from myutils.config import globalconfig, _TR, saveallconfig
 from myutils.hwnd import grabwindow
 from traceback import print_exc

@@ -1,13 +1,5 @@
 #include "lucasystem.h"
 
-void IG64filter(TextBuffer *buffer, HookParam *)
-{
-
-  std::wstring str = buffer->strW();
-  str = re::sub(str, L"\\$\\[(.*?)\\$/(.*?)\\$\\]", L"$1");
-
-  buffer->from(re::sub(str, L"@[^@]*@"));
-};
 bool InsertIG64Hook2()
 {
   const BYTE BYTES[] = {
@@ -38,11 +30,40 @@ bool InsertIG64Hook2()
   }
   for (auto addr : collect)
   {
+    auto findlangsplit = [=]()
+    {
+      BYTE langsplit[] = {
+          0x83, 0xb8, XX, XX, 0x00, 0x00, 0x03};
+      auto langs = MemDbg::findBytes(langsplit, sizeof(langsplit), addr, addr + 0x500);
+      if (!langs)
+        return 0;
+      langsplit[ARRAYSIZE(langsplit) - 1] = 0x02;
+      *(int *)(langsplit + 2) = *(int *)(langs + 2);
+      auto langs2 = MemDbg::findBytes(langsplit, sizeof(langsplit), addr, langs);
+      if (!langs2)
+        return 0;
+      return *(int *)(langsplit + 2);
+    };
     HookParam hp;
     hp.address = addr;
-    hp.type = CODEC_UTF16 | USING_STRING | EMBED_ABLE | EMBED_AFTER_NEW; // 可以内嵌英文
-    hp.filter_fun = IG64filter;
-    hp.offset = regoffset(rdx); // rdx
+    hp.user_value = findlangsplit();
+    hp.type = CODEC_UTF16 | USING_STRING | EMBED_ABLE | EMBED_AFTER_NEW | FULL_STRING; // 可以内嵌英文
+    hp.filter_fun = [](TextBuffer *buffer, HookParam *)
+    {
+      std::wstring str = buffer->strW();
+      str = re::sub(str, L"\\$\\[(.*?)\\$/(.*?)\\$\\]", L"$1");
+      str = re::sub(str, L"@(.*?)@", L"【$1】");
+      str = strReplace(str, L"❝", L"\"");
+      str = strReplace(str, L"❞", L"\"");
+      buffer->from(str);
+    };
+    hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    {
+      buffer->from((wchar_t *)context->rdx);
+      if (hp->user_value)
+        *split = *(int *)(context->rcx + hp->user_value);
+    };
+    hp.offset = regoffset(rdx);
     ok |= NewHook(hp, "LucaSystem");
   }
   return ok;

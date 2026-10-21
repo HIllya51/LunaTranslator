@@ -10,7 +10,6 @@ from gui.dynalang import LLabel, LStandardItemModel, LDialog
 from myutils.wrapper import Singleton
 from textio.textsource.mssr import MSSR, LiveCaptions
 from gui.fluent.expander import ExExpander
-from gui.fluent.tabwidget import make_content_card
 from gui.usefulwidget import (
     D_getsimplecombobox,
     D_getspinbox,

@@ -115,7 +115,7 @@ std::vector<DWORD> _getsamenamepids(const std::optional<std::wstring> &proc)
     if (hSnapshot == INVALID_HANDLE_VALUE)
         return ret;
 
-    PROCESSENTRY32 pe32;
+    PROCESSENTRY32 pe32{};
     pe32.dwSize = sizeof(PROCESSENTRY32);
     if (Process32First(hSnapshot, &pe32))
     {

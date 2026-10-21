@@ -11,7 +11,7 @@ from sometypes import TranslateResult, TranslateError, WordSegResult
 from urllib.parse import urlencode
 import json, gobject, base64
 from myutils.ocrutil import ocr_run
-from gui.rendertext.webview import TextBrowser, somecommon as somecommon_1
+from gui.rendertext.webview_common import webview_common
 from gui.transhist import somecommon as somecommon_2, wvtranshist
 from network.server.servicecollection_1 import (
     mainuiwsoutputsave,
@@ -48,12 +48,12 @@ class Pagetranshist(HTTPHandler):
         return FileResponse(wvtranshist.loadex_())
 
 
-class internalservicemainuiws(WSHandler, somecommon_1):
+class internalservicemainuiws(WSHandler, webview_common):
     path = "/__internalservice/mainuiws"
 
     def __init__(self, info, sock):
         super().__init__(info, sock)
-        somecommon_1.__init__(self)
+        webview_common.__init__(self)
 
     def parse(self, info):
         mainuiwsoutputsave.append(self)
@@ -277,7 +277,7 @@ class PageMainui(HTTPHandler):
     path = "/page/mainui"
 
     def parse(self, _):
-        return FileResponse(TextBrowser.loadex_())
+        return FileResponse(webview_common.loadex_())
 
 
 class Pageocr(HTTPHandler):

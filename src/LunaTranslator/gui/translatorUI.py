@@ -1684,7 +1684,8 @@ class TranslatorWindow(resizableframeless):
         try:
             if self.fullscreenmanager:
                 self.fullscreenmanager.endX()
-            AdapterService.uninit()
+            if gobject.AdapterServiceInited:
+                AdapterService.uninit()
             gobject.base.isrunning = False
             self.hide()
 
