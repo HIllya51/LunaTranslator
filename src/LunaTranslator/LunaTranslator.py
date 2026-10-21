@@ -42,7 +42,8 @@ from myutils.utils import (
 from language import Languages
 from myutils.wrapper import threader, tryprint
 from gui.showword import searchwordW
-from myutils.hwnd import getExeIcon, getcurrexe
+from myutils.hwnd import getExeIcon
+from NativeUtils import getcurrexe
 from textio.textsource.copyboard import copyboard
 from textio.textsource.texthook import texthook
 from textio.textsource.ocrtext import ocrtext

@@ -2,7 +2,7 @@ import NativeUtils, queue, hashlib, threading
 from myutils.config import globalconfig, static_data, _TR
 from gobject import runtime_bit_64, runtime_for_win10, runtimedir
 from myutils.wrapper import threader, tryprint, trypass
-from myutils.hwnd import getcurrexe
+from NativeUtils import getcurrexe
 from myutils.utils import format_bytes
 import requests, base64
 import shutil, gobject

@@ -28,7 +28,8 @@ from myutils.utils import (
     find_or_create_uid,
     str2rgba,
 )
-from myutils.hwnd import grabwindow, getExeIcon, getcurrexe
+from myutils.hwnd import grabwindow, getExeIcon
+from NativeUtils import getcurrexe
 from myutils.updater import doupdate
 from gui.qevent import TransparentChangedEvent
 from gui.dialog_memory import dialog_memory

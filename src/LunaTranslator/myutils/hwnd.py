@@ -116,11 +116,6 @@ def grabwindow(app="PNG", callback=None, tocliponly=False):
         return
 
 
-def getcurrexe():
-    # getpidexe(os.getpid())谜之有人获取到的结果是None，无法理解，那就先回档吧。
-    return os.environ.get("LUNA_EXE_NAME", NativeUtils.GetProcessFileName(os.getpid()))
-
-
 def getExeIcon(name: str, icon=True, cache=False, large=False):
     if name.lower().endswith(".lnk"):
         exepath, args, iconpath, dirp = NativeUtils.GetLnkTargetPath(name)

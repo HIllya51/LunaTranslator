@@ -15,12 +15,12 @@ import NativeUtils
 import gobject
 from NativeUtils import WebView2
 import re
-from myutils.hwnd import getExeIcon, getcurrexe
+from myutils.hwnd import getExeIcon
 from gui.qevent import DarkLightChangedEvent, DarkLightSettingChangedEvent
 from myutils.config import _TR, globalconfig, mayberelpath, dynamiclink, ui_settings
 from myutils.wrapper import Singleton, threader, tryprint
 from myutils.utils import nowisdark
-from myutils.hwnd import getcurrexe
+from NativeUtils import getcurrexe
 from ocrengines.baseocrclass import OCRResult
 from NativeUtils import MenuItem
 from gui.RichMessageBox import RichMessageBox

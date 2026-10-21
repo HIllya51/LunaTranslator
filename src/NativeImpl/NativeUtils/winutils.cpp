@@ -119,9 +119,30 @@ DECLARE_API void CheckMaybeUNCFile(const wchar_t *v, void (*cb)(const wchar_t *)
     cb(CheckMaybeUNCFile(std::wstring(v)).c_str());
 }
 
-// 进程可执行文件路径核心（递减权限打开进程 + 三级 API 回退
+// 打开的进程句柄 → 可执行文件路径（三级 API 回退
 // （GetModuleFileNameExW → QueryFullProcessImageNameW → GetProcessImageFileNameW）
 // + NT/UNC 设备路径换算 + 短路径修补）。失败返回空。
+// GetProcessFileName（按 pid 打开）与 GetCurrentExe
+// （GetCurrentProcess 伪句柄）共用
+static std::wstring GetProcessFileNameFromHandle(HANDLE hproc)
+{
+    std::wstring w(65536, L'\0');
+    // 这三者越前面的越直接得到好路径，后面的经常得到辣鸡路径
+    DWORD size = (DWORD)w.size();
+    if (GetModuleFileNameExW(hproc, nullptr, w.data(), (DWORD)w.size()) == 0 &&
+        QueryFullProcessImageNameW(hproc, 0, w.data(), &size) == 0 &&
+        GetProcessImageFileNameW(hproc, w.data(), (DWORD)w.size()) == 0)
+        return {};
+    auto v = CheckMaybeUNCFile(std::wstring(w.data()));
+    if (v.empty())
+        return {};
+    v = GetLongPath(v);
+    if (v.empty())
+        return {};
+    return v;
+}
+
+// 进程可执行文件路径核心（递减权限打开进程）。失败返回空。
 // GetProcessFileName 导出与 hwnd.cpp 的 ListProcess 共用
 std::wstring GetProcessFileNameCore(DWORD pid)
 {
@@ -137,20 +158,9 @@ std::wstring GetProcessFileNameCore(DWORD pid)
         CHandle hproc{OpenProcess(access, FALSE, pid)};
         if (!hproc)
             continue;
-        std::wstring w(65536, L'\0');
-        // 这三者越前面的越直接得到好路径，后面的经常得到辣鸡路径
-        DWORD size = (DWORD)w.size();
-        if (GetModuleFileNameExW(hproc, nullptr, w.data(), (DWORD)w.size()) == 0 &&
-            QueryFullProcessImageNameW(hproc, 0, w.data(), &size) == 0 &&
-            GetProcessImageFileNameW(hproc, w.data(), (DWORD)w.size()) == 0)
-            continue;
-        auto v = CheckMaybeUNCFile(std::wstring(w.data()));
-        if (v.empty())
-            continue;
-        v = GetLongPath(v);
-        if (v.empty())
-            continue;
-        return v;
+        auto v = GetProcessFileNameFromHandle(hproc);
+        if (!v.empty())
+            return v;
     }
     return {};
 }
@@ -159,6 +169,13 @@ std::wstring GetProcessFileNameCore(DWORD pid)
 DECLARE_API void GetProcessFileName(DWORD pid, void (*cb)(const wchar_t *))
 {
     auto v = GetProcessFileNameCore(pid);
+    if (!v.empty())
+        cb(v.c_str());
+}
+
+DECLARE_API void GetCurrentExe(void (*cb)(const wchar_t *))
+{
+    auto v = GetProcessFileNameFromHandle(GetCurrentProcess());
     if (!v.empty())
         cb(v.c_str());
 }

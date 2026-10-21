@@ -472,6 +472,20 @@ def GetProcessFileName(pid):
     return ret[0] if ret else None
 
 
+_GetCurrentExe = utilsdll.GetCurrentExe
+_GetCurrentExe.argtypes = (c_void_p,)
+
+
+def getcurrexe():
+    """当前进程可执行文件路径（原 myutils/hwnd.py 的 C++ 版）：PyStand
+    打包时优先 LUNA_EXE_NAME 环境变量，否则 GetCurrentProcess 伪句柄
+    直接取路径（免 OpenProcess，见 NativeUtils/winutils.cpp）。失败
+    None。"""
+    ret = []
+    _GetCurrentExe(CFUNCTYPE(None, c_wchar_p)(ret.append))
+    return ret[0] if ret else None
+
+
 _TestInjectable = utilsdll.TestInjectable
 _TestInjectable.restype = c_bool
 # 变参（count 后跟 count 个 pid）：不设 argtypes，ctypes 按 cdecl 变参

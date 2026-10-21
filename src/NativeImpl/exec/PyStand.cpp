@@ -234,7 +234,6 @@ int PyStand::DetectScript()
 		return -1;
 	}
 	SetEnvironmentVariableW(L"PYSTAND_SCRIPT", test.c_str());
-	SetEnvironmentVariableW(L"LUNA_EXE_NAME", exepath.c_str());
 	return 0;
 }
 

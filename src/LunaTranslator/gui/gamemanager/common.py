@@ -4,7 +4,8 @@ import os, functools
 from traceback import print_exc
 from myutils.wrapper import threader
 from myutils.utils import find_or_create_uid, duplicateconfig
-from myutils.hwnd import getExeIcon, getcurrexe
+from myutils.hwnd import getExeIcon
+from NativeUtils import getcurrexe
 import gobject, NativeUtils, uuid, re
 from myutils.localetools import localeswitchedrun
 from myutils.config import (

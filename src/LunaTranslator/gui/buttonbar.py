@@ -4,7 +4,8 @@ from traceback import print_exc
 import qtawesome, gobject
 from myutils.config import ui_settings
 from myutils.utils import str2rgba
-from myutils.hwnd import getExeIcon, getcurrexe
+from myutils.hwnd import getExeIcon
+from NativeUtils import getcurrexe
 from gui.usefulwidget import (
     resizableframeless,
     load_specific_icon_size,
