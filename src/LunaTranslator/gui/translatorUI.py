@@ -28,7 +28,7 @@ from myutils.utils import (
     find_or_create_uid,
     str2rgba,
 )
-from myutils.hwnd import mouseselectwindow, grabwindow, getExeIcon, getcurrexe
+from myutils.hwnd import grabwindow, getExeIcon, getcurrexe
 from myutils.updater import doupdate
 from gui.qevent import TransparentChangedEvent
 from gui.dialog_memory import dialog_memory
@@ -837,7 +837,7 @@ class TranslatorWindow(resizableframeless):
             lambda: tryprint(gobject.base.textsource.clearrange)()
         )
         self.bindcropwindow_signal.connect(
-            functools.partial(mouseselectwindow, self.bindcropwindowcallback)
+            functools.partial(NativeUtils.mouseselectwindow, self.bindcropwindowcallback)
         )
         self.quitf_signal.connect(self.close)
         self.fullsgame_signal.connect(self._fullsgame)
@@ -1328,6 +1328,8 @@ class TranslatorWindow(resizableframeless):
             pass
 
     def bindcropwindowcallback(self, pid, hwnd):
+        if not pid:
+            return  # 右键取消：保持绑定不变
         _pid = os.getpid()
         gobject.base.hwnd = hwnd if pid != _pid else None
 

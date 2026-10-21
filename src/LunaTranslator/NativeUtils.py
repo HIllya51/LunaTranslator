@@ -33,6 +33,7 @@ from ctypes.wintypes import (
     MAX_PATH,
 )
 from myutils.config import _TR
+from myutils.wrapper import threader
 from windows import AutoHandle
 from xml.sax.saxutils import escape
 import gobject, os, json, subprocess
@@ -302,16 +303,42 @@ SetTheme.argtypes = HWND, c_bool, c_int
 SetCornerNotRound = utilsdll.SetCornerNotRound
 SetCornerNotRound.argtypes = HWND, c_bool, c_bool
 
-_ListProcesses = utilsdll.ListProcesses
-_ListProcesses.argtypes = (c_void_p,)
+_ListProcess = utilsdll.ListProcess
+_ListProcess.argtypes = (LPCWSTR, c_void_p)
 
 
-def ListProcesses():
-    ret: "list[tuple[int, str]]" = []
-    _ListProcesses(
-        CFUNCTYPE(None, DWORD, c_wchar_p)(lambda pid, exe: ret.append((pid, exe)))
+def ListProcess(exe=None):
+    """进程按可执行文件完整路径分组（原 myutils/hwnd.py 的 C++ 版，
+    见 NativeUtils/hwnd.cpp）。exe=None → {完整路径: [pid, ...]}
+    （Windows/Microsoft/WindowsApps 目录下的已过滤）；exe 给定 →
+    该完整路径对应的 pid 列表（无则空）。"""
+    groups = []
+    _ListProcess(
+        exe,
+        CFUNCTYPE(None, c_wchar_p, POINTER(DWORD), DWORD)(
+            lambda name, pids, cnt: groups.append(
+                (name, [pids[i] for i in range(cnt)]))
+        ),
     )
-    return ret
+    if exe is None:
+        return dict(groups)
+    return groups[0][1] if groups else []
+
+
+_MouseSelectWindow = utilsdll.MouseSelectWindow
+_MouseSelectWindow.argtypes = (c_void_p,)
+
+
+def mouseselectwindow(callback):
+    """鼠标点击选窗口：轮询左键按下（GetKeyState 才能检测到高权限
+    应用上的点击）后，取光标处顶层窗口回调 callback(pid, hwnd)；
+    右键点击取消，回调 callback(0, None)。阻塞直至点击，threader
+    丢工作线程。"""
+    @threader
+    def _():
+        _MouseSelectWindow(CFUNCTYPE(None, DWORD, HWND)(callback))
+
+    _()
 
 
 GetProcessListenPort = utilsdll.GetProcessListenPort
@@ -443,6 +470,18 @@ def GetProcessFileName(pid):
     ret = []
     _GetProcessFileName(pid, CFUNCTYPE(None, c_wchar_p)(ret.append))
     return ret[0] if ret else None
+
+
+_TestInjectable = utilsdll.TestInjectable
+_TestInjectable.restype = c_bool
+# 变参（count 后跟 count 个 pid）：不设 argtypes，ctypes 按 cdecl 变参
+# 逐个直传
+
+
+def test_injectable(*pids):
+    """一组进程是否都能以注入所需权限打开（变参直传 C 侧的
+    TestInjectable，全部 OpenProcess 成功才 True；空组为 True）。"""
+    return _TestInjectable(len(pids), *(c_uint(_) for _ in pids))
 
 
 _WinErrorMessage = utilsdll.WinErrorMessage

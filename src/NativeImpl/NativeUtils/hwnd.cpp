@@ -144,16 +144,26 @@ bool IsInteractiveUserProcess(DWORD processId)
     }
     return false;
 }
-DECLARE_API void ListProcesses(void (*cb)(DWORD, const wchar_t *))
+// winutils.cpp：进程可执行文件完整路径（多级权限回退 + 路径换算），
+// 失败返回空
+extern std::wstring GetProcessFileNameCore(DWORD pid);
+
+static std::wstring ToLowerW(std::wstring s)
 {
-    std::unordered_map<std::wstring, std::vector<int>> exe_pid;
+    std::transform(s.begin(), s.end(), s.begin(), towlower);
+    return s;
+}
+
+// 进程快照枚举（pid, 可执行文件基名），过滤 System/Registry/
+// Memory Compression/Secure System 等（ListProcess 用）
+template <typename F>
+static void forEachProcess(F &&f){
     CHandle hSnapshot{CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0)};
     if (hSnapshot == INVALID_HANDLE_VALUE)
         return;
 
     PROCESSENTRY32 pe32{};
     pe32.dwSize = sizeof(PROCESSENTRY32);
-    auto currpid = GetCurrentProcessId();
     if (Process32First(hSnapshot, &pe32))
     {
         do
@@ -163,9 +173,94 @@ DECLARE_API void ListProcesses(void (*cb)(DWORD, const wchar_t *))
             {
                 continue;
             }
-            cb(pe32.th32ProcessID, pe32.szExeFile);
+            f(pe32.th32ProcessID, pe32.szExeFile);
         } while (Process32Next(hSnapshot, &pe32));
     }
+}
+
+// 进程按可执行文件完整路径分组（原 myutils/hwnd.py ListProcess 的
+// C++ 版）。exe=NULL：全部进程（跳过 Windows/Microsoft/WindowsApps
+// 目录下的），逐组回调 cb(完整路径, pids, 数量)，组序=枚举序；
+// exe 给定：先按基名（不区分大小写）筛，最终只回调完整路径与 exe
+// 完全一致的组（对齐原 Python 的 ret.get(exe, [])，可能一次都不回调）
+DECLARE_API void ListProcess(const wchar_t *exe, void (*cb)(const wchar_t *, DWORD *, DWORD))
+{
+    std::vector<std::pair<std::wstring, std::vector<DWORD>>> groups;
+    std::wstring exebase;
+    if (exe)
+    {
+        exebase = exe;
+        auto pos = exebase.find_last_of(L"\\/");
+        exebase = ToLowerW(exebase.substr(pos == std::wstring::npos ? 0 : pos + 1));
+    }
+    auto selfpid = GetCurrentProcessId();
+    forEachProcess([&](DWORD pid, const wchar_t *exefile)
+    {
+        if (pid == selfpid)
+            return;
+        if (exe && ToLowerW(exefile) != exebase)
+            return;
+        auto name = GetProcessFileNameCore(pid);
+        if (name.empty())
+            return;
+        if (!exe)
+        {
+            auto namel = ToLowerW(name);
+            if (namel.find(L":\\windows\\") != std::wstring::npos ||
+                namel.find(L"\\microsoft\\") != std::wstring::npos ||
+                namel.find(L"\\windowsapps\\") != std::wstring::npos)
+                return;
+        }
+        for (auto &g : groups)
+            if (g.first == name)
+            {
+                g.second.push_back(pid);
+                return;
+            }
+        groups.emplace_back(name, std::vector<DWORD>{pid});
+    });
+    for (auto &g : groups)
+    {
+        if (exe && g.first != exe)
+            continue;
+        cb(g.first.c_str(), g.second.data(), (DWORD)g.second.size());
+    }
+}
+
+// 鼠标点击选窗口：轮询 GetKeyState 直到左键或右键按下（必须
+// GetKeyState——GetAsyncKeyState/SetWindowHookEx 都检测不到高权限
+// 应用上的点击事件）。左键：取光标处顶层窗口回调 cb(pid, hwnd)；
+// 右键：取消，回调 cb(0, NULL)。阻塞直至点击，Python 侧仍以 threader
+// 丢工作线程（见 NativeUtils.mouseselectwindow）
+DECLARE_API void MouseSelectWindow(void (*cb)(DWORD, HWND))
+{
+    bool left = false;
+    while (true)
+    {
+        if (GetKeyState(VK_RBUTTON) & 0x8000)
+            break;
+        if (GetKeyState(VK_LBUTTON) & 0x8000)
+        {
+            left = true;
+            break;
+        }
+        Sleep(10);
+    }
+    if (!left)
+    {
+        cb(0, NULL); // 右键取消
+        return;
+    }
+    POINT pos;
+    if (!GetCursorPos(&pos))
+        return;
+    auto hwnd = GetAncestor(WindowFromPoint(pos), GA_ROOT);
+    if (!hwnd)
+        return;
+    DWORD pid = 0;
+    GetWindowThreadProcessId(hwnd, &pid);
+    if (pid)
+        cb(pid, hwnd);
 }
 
 DECLARE_API int GetProcessListenPort(LPCWSTR exesubstr)

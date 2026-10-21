@@ -1,4 +1,5 @@
 #include "osversion.hpp"
+#include <cstdarg>
 #include <winnetwk.h>
 
 #ifndef WDA_EXCLUDEFROMCAPTURE
@@ -118,10 +119,11 @@ DECLARE_API void CheckMaybeUNCFile(const wchar_t *v, void (*cb)(const wchar_t *)
     cb(CheckMaybeUNCFile(std::wstring(v)).c_str());
 }
 
-// 进程可执行文件路径：递减权限打开进程 + 三级 API 回退
+// 进程可执行文件路径核心（递减权限打开进程 + 三级 API 回退
 // （GetModuleFileNameExW → QueryFullProcessImageNameW → GetProcessImageFileNameW）
-// + NT/UNC 设备路径换算 + 短路径修补。失败不回调。
-DECLARE_API void GetProcessFileName(DWORD pid, void (*cb)(const wchar_t *))
+// + NT/UNC 设备路径换算 + 短路径修补）。失败返回空。
+// GetProcessFileName 导出与 hwnd.cpp 的 ListProcess 共用
+std::wstring GetProcessFileNameCore(DWORD pid)
 {
     // 如果能 PROCESS_ALL_ACCESS，那最好，因为一些特殊路径在这个权限下可以不需要处理
     static const DWORD accesses[] = {
@@ -148,9 +150,42 @@ DECLARE_API void GetProcessFileName(DWORD pid, void (*cb)(const wchar_t *))
         v = GetLongPath(v);
         if (v.empty())
             continue;
-        cb(v.c_str());
-        return;
+        return v;
     }
+    return {};
+}
+
+// 进程可执行文件路径（cb 形式，失败不回调）
+DECLARE_API void GetProcessFileName(DWORD pid, void (*cb)(const wchar_t *))
+{
+    auto v = GetProcessFileNameCore(pid);
+    if (!v.empty())
+        cb(v.c_str());
+}
+
+// 一组进程是否都能以注入所需权限打开（OpenProcess 成功即视为可注入；
+// 权限不足/已退出则失败）。变参：count 后跟 count 个 DWORD pid——
+// Python 侧 ctypes 直接变参调用（不设 argtypes），见
+// NativeUtils.test_injectable
+DECLARE_API bool TestInjectable(int count, ...)
+{
+    // 与 windows.py 的 PROCESS_INJECT_ACCESS 保持一致
+    const DWORD access = PROCESS_CREATE_THREAD | PROCESS_QUERY_INFORMATION |
+                         PROCESS_VM_OPERATION | PROCESS_VM_READ | PROCESS_VM_WRITE;
+    va_list args;
+    va_start(args, count);
+    bool ok = true;
+    for (int i = 0; i < count; i++)
+    {
+        CHandle hproc{OpenProcess(access, FALSE, va_arg(args, DWORD))};
+        if (!hproc)
+        {
+            ok = false;
+            break;
+        }
+    }
+    va_end(args);
+    return ok;
 }
 
 // FormatMessageW ALLOCATE_BUFFER 杂耍：系统错误码 → 文本

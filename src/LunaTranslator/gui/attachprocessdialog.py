@@ -6,10 +6,7 @@ import NativeUtils
 from myutils.config import globalconfig, _TR
 from myutils.wrapper import Singleton
 from myutils.hwnd import (
-    ListProcess,
-    mouseselectwindow,
     getExeIcon,
-    test_injectable,
 )
 from gui.usefulwidget import saveposwindow, create_centered_rect
 from gui.dynalang import LPushButton, LLabel, LCheckBox
@@ -20,9 +17,19 @@ class AttachProcessDialog(saveposwindow):
 
     setcurrentpidpnamesignal = pyqtSignal(int, int)
 
+    def __emitselectsignal(self, pid, hwnd):
+        # 右键取消的 hwnd 是 None，Qt 信号(int,int)不收
+        self.setcurrentpidpnamesignal.emit(pid, hwnd or 0)
+
     def selectwindowcallback(self, pid, hwnd):
+        self.button.setChecked(True)
+        if not pid:
+            # 右键取消：恢复界面，不改已有选择
+            self.setEnabled(True)
+            self.button.setText("点击此按钮后点击游戏窗口")
+            return
         if pid == os.getpid():
-            return mouseselectwindow(self.setcurrentpidpnamesignal.emit)
+            return NativeUtils.mouseselectwindow(self.__emitselectsignal)
         self.setEnabled(True)
         self.button.setText("点击此按钮后点击游戏窗口"),
         name = NativeUtils.GetProcessFileName(pid)
@@ -31,7 +38,7 @@ class AttachProcessDialog(saveposwindow):
                 self, _TR("错误"), _TR("权限不足，请以管理员权限运行！")
             )
             return
-        _pids = ListProcess(name)
+        _pids = NativeUtils.ListProcess(name)
         self.processEdit.setText(name)
         self.processIdEdit.setText(",".join([str(pid) for pid in _pids]))
         self.windowtext.setText(windows.GetWindowText(hwnd))
@@ -83,6 +90,7 @@ class AttachProcessDialog(saveposwindow):
 
         self.button = __LPushButton("点击此按钮后点击游戏窗口")
         self.button.setCheckable(True)
+        self.button.setChecked(True)
         self.button.setStyleSheet("font-weight: bold;")
         self.button.setSizePolicy(
             QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
@@ -91,7 +99,7 @@ class AttachProcessDialog(saveposwindow):
             lambda: (
                 self.button.setText("请点击游戏窗口"),
                 self.setEnabled(False),
-                mouseselectwindow(self.setcurrentpidpnamesignal.emit),
+                NativeUtils.mouseselectwindow(self.__emitselectsignal),
             )
         )
         self.layout1.addWidget(self.label)
@@ -151,7 +159,7 @@ class AttachProcessDialog(saveposwindow):
         icon = self.adminicon
         pids: "list[int]" = self.selectedp[0]
         btn = self.buttonBox.button(QDialogButtonBox.StandardButton.Ok)
-        btn.setIcon(icon if not test_injectable(pids) else QIcon())
+        btn.setIcon(icon if not NativeUtils.test_injectable(*pids) else QIcon())
 
     def filterproc(self):
         self.processIdEdit.clear()
@@ -173,7 +181,7 @@ class AttachProcessDialog(saveposwindow):
 
         ###########################
         self.model = QStandardItemModel(self.processList)
-        self.processlist = ListProcess()
+        self.processlist = NativeUtils.ListProcess()
         self.processList.setModel(self.model)
         for pexe in self.processlist:
             if pexe in self.iconcache:

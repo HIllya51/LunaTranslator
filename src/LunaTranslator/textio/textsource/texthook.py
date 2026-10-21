@@ -22,7 +22,6 @@ from myutils.utils import (
     find_or_create_uid_for_emu,
 )
 from myutils.kanjitrans import kanjitrans
-from myutils.hwnd import test_injectable, ListProcess
 from myutils.wrapper import threader, tryprint
 from traceback import print_exc
 import NativeUtils
@@ -363,7 +362,7 @@ class texthook(basetext):
                 savehook_new_list.insert(0, uid)
             else:
                 return
-        pids = ListProcess(name_)
+        pids = NativeUtils.ListProcess(name_)
         if self.ending:
             return
         if len(self.pids[self.gameuid]):
@@ -489,7 +488,7 @@ class texthook(basetext):
 
         bit64 = bit == "64"
         for _ in (0,):
-            if not test_injectable(injectpids):
+            if not NativeUtils.test_injectable(*injectpids):
                 break
 
             ret = LunaSubProcess.dllinject_run(injectpids, bit64, dll)
@@ -508,7 +507,7 @@ class texthook(basetext):
     def injectproc(self, injecttimeout, pids):
         if injecttimeout:
             time.sleep(injecttimeout)
-            _list = ListProcess(self.gamepath)
+            _list = NativeUtils.ListProcess(self.gamepath)
             if set(pids) != set(_list):
                 # 部分cef/v8引擎的游戏，会在一段启动时间后，启动子进程用于渲染
                 return self.injectproc(injecttimeout, _list)

@@ -2,7 +2,7 @@ import windows
 from qtsymbols import *
 import gobject
 import os, functools
-import time, NativeUtils, hashlib
+import NativeUtils, hashlib
 from urllib.parse import quote
 from myutils.config import savehook_new_data, globalconfig, relpath, _TR
 from myutils.wrapper import threader
@@ -121,43 +121,6 @@ def getcurrexe():
     return os.environ.get("LUNA_EXE_NAME", NativeUtils.GetProcessFileName(os.getpid()))
 
 
-def test_injectable(pids):
-    __ = lambda pid: bool(
-        windows.OpenProcess(windows.PROCESS_INJECT_ACCESS, False, pid)
-    )
-    return all(__(pid) for pid in pids)
-
-
-def ListProcess(exe=None):
-    ret = {}
-    for pid, exebase in NativeUtils.ListProcesses():
-        if os.getpid() == pid:
-            continue
-        try:
-            if exe is not None:
-                if exebase.lower() != os.path.basename(exe).lower():
-                    continue
-            name_ = NativeUtils.GetProcessFileName(pid)
-            if name_ is None:
-                continue
-            name = name_.lower()
-            if exe is None:
-                if (
-                    ":\\windows\\" in name
-                    or "\\microsoft\\" in name
-                    or "\\windowsapps\\" in name
-                ):
-                    continue
-            if name_ not in ret:
-                ret[name_] = []
-            ret[name_].append(pid)
-        except:
-            pass
-    if exe is None:
-        return ret
-    return ret.get(exe, [])
-
-
 def getExeIcon(name: str, icon=True, cache=False, large=False):
     if name.lower().endswith(".lnk"):
         exepath, args, iconpath, dirp = NativeUtils.GetLnkTargetPath(name)
@@ -191,26 +154,6 @@ def getExeIcon(name: str, icon=True, cache=False, large=False):
         return QIcon(pixmap)
     else:
         return pixmap
-
-
-def mouseselectwindow(callback):
-    @threader
-    def _loop():
-        while True:
-            keystate = windows.GetKeyState(windows.VK_LBUTTON)
-            # 必须使用GetKeyState, GetAsyncKeyState或SetWindowHookEx都无法检测到高权限应用上的点击事件。
-            if keystate < 0:
-                break
-            time.sleep(0.01)
-        try:
-            pos = windows.GetCursorPos()
-            hwnd = windows.GetAncestor(windows.WindowFromPoint(pos))
-            pid = windows.GetWindowThreadProcessId(hwnd)
-            callback(pid, hwnd)
-        except:
-            pass
-
-    _loop()
 
 
 def safepixmap(bs):

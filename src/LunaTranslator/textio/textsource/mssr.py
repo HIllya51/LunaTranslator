@@ -74,13 +74,8 @@ class LiveCaptions:
     )
 
     def findlcpid(self):
-        for pid, exebase in NativeUtils.ListProcesses():
-            if exebase.lower() != "livecaptions.exe":
-                continue
-            name_ = NativeUtils.GetProcessFileName(pid)
-            if name_.lower() == self.lcexe.lower():
-                return pid
-        return None
+        pids = NativeUtils.ListProcess(self.lcexe)
+        return pids[0] if pids else None
 
 
 class MSSR:
