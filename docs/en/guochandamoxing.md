@@ -134,10 +134,6 @@ Replace `{endpoint}` and `{deployName}` with your endpoint and deployName.
 
 **API Key** https://platform.deepseek.com/api_keys
 
-== Xiaomi MiMo
-
-**API Key** https://platform.xiaomimimo.com/#/console/api-keys
-
 == Alibaba Cloud Bailian Large Model
 
 **API Key** https://bailian.console.aliyun.com/?apiKey=1#/api-key

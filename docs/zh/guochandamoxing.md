@@ -136,10 +136,6 @@
 
 **API Key** https://platform.deepseek.com/api_keys
 
-== Xiaomi MiMo
-
-**API Key** https://platform.xiaomimimo.com/#/console/api-keys
-
 == 阿里云百炼大模型
 
 **API Key** https://bailian.console.aliyun.com/?apiKey=1#/api-key
