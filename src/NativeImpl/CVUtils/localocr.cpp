@@ -91,7 +91,7 @@ static std::optional<version_t> __QueryVersion(const std::wstring &exe)
 static bool isvcrtlessthan1440()
 {
     // 实测之和msvcp140有关，低版本的vcruntime140.dll不影响。
-    // 但稳妥起见，都检查一下。
+    // Wine's VCRuntime may have no version resource. Keep the MSVCP check.
     auto checkversion = [](LPCWSTR dll)
     {
         auto hdll = GetModuleHandle(dll);
@@ -101,7 +101,8 @@ static bool isvcrtlessthan1440()
         GetModuleFileNameW(hdll, path, MAX_PATH);
         return __QueryVersion(path) < std::make_tuple(14u, 40u, 0u, 0u);
     };
-    return checkversion(L"msvcp140.dll") || checkversion(L"vcruntime140.dll");
+    return checkversion(L"msvcp140.dll") ||
+           (!IsRunningOnWine() && checkversion(L"vcruntime140.dll"));
 }
 static std::optional<version_t> checkfileversion(const std::optional<std::wstring> &exe)
 {
