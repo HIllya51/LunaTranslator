@@ -33,8 +33,12 @@ public:
     avg3216d()
     {
         //[980731][13cm] 好き好き大好き!
-        check_by = CHECK_BY::FILE_ALL;
-        check_by_target = check_by_list{L"koe\\*.koe", L"PDT\\*.pdt", L"Gameexe.ini"};
+        // サークルメイト https://vndb.org/r131091
+        check_by = CHECK_BY::CUSTOM;
+        check_by_target = []()
+        {
+            return Util::CheckFileAll({L"koe\\*.koe", L"PDT\\*.pdt", L"Gameexe.ini"}) || Util::SearchStringFileInfo(L"AVG32/16M/TYPE_D");
+        };
     };
     bool attach_function();
 };
