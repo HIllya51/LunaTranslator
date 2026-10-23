@@ -10,7 +10,7 @@ import weakref
 from contextlib import contextmanager
 
 from qtsymbols import *
-import windows, NativeUtils, gobject
+import windows, NativeUtils
 from myutils.config import globalconfig
 
 
@@ -112,7 +112,6 @@ def route_overlay_translation(source, engine, text):
 _overlays = weakref.WeakSet()
 _capture_guard = None
 _capture_suspensions = 0
-_capture_epoch = 0
 
 # 原地显示翻译的对齐方式（设置页 combobox 的 internal 值 -> Qt 旗标）。
 # 用 int 组合：TextFlag | (Alignment 旗标对象) 在 PyQt5 下会 TypeError，
@@ -132,17 +131,14 @@ _OVERLAY_MEASURE_FLAGS = int(Qt.TextFlag.TextWordWrap) | int(
 
 def ocr_popup_is_visible():
     # Readable from the main window's topmost check without querying widgets.
-    return bool(
-        _capture_suspensions
-        or (_capture_guard is not None and _capture_guard._visible_popup)
-    )
+    # （选区菜单都包在 suspend_ocr_capture 里，计入 _capture_suspensions）
+    return bool(_capture_suspensions)
 
 
 @contextmanager
 def suspend_ocr_capture():
     """Keep OCR from capturing selection menus, including in-flight captures."""
-    global _capture_suspensions, _capture_epoch
-    _capture_epoch += 1
+    global _capture_suspensions
     _capture_suspensions += 1
     try:
         yield
@@ -152,16 +148,16 @@ def suspend_ocr_capture():
             ctypes.windll.dwmapi.DwmFlush()
         except (AttributeError, OSError):
             pass
-        _capture_epoch += 1
         _capture_suspensions -= 1
 
 
 class _CaptureRequest:
-    def __init__(self, capture, rect):
-        self.capture = capture
+    def __init__(self, rect, probe, desktop):
         self.rect = rect
+        self.probe = probe      # ③ 探测（未命中返回空 QImage）
+        self.desktop = desktop  # ④ 桌面截图
         self.finished = threading.Event()
-        self.result = None
+        self.result = QImage()
         self.error = None
         self.cancelled = False
 
@@ -172,153 +168,6 @@ class _CaptureGuard(QObject):
     def __init__(self):
         super().__init__(QApplication.instance())
         self.requested.connect(self.run)
-        # Keep wrappers alive only while visible; Hide/destroy removes them.
-        # Otherwise a Qt-owned dialog can lose its Python wrapper mid-capture.
-        self._windows = {}
-        self._window_rectangles = ()
-        self._tracked = weakref.WeakSet()
-        self._popups = set()
-        self._visible_popup = False
-        self._tracking = False
-        self._flushed_epoch = _capture_epoch
-        QApplication.instance().installEventFilter(self)
-        # Settings can already be open when the first OCR region is created.
-        for window in QApplication.topLevelWidgets():
-            if self._is_popup(window):
-                self._track_popup(window, window.isVisible())
-            else:
-                self._track_window(window)
-
-    @staticmethod
-    def _is_popup(window):
-        # 任何 Qt::Popup 顶层都按可见性暂停截图：菜单、PopupWidget 飞层
-        # （样式/取色器等——它们可能正好盖在 OCR 选区上）。
-        # 事件过滤器会看到非控件 QObject，须先判 QWidget
-        return isinstance(window, QMenu) or (
-            isinstance(window, QWidget)
-            and window.isWindow()
-            and window.windowType() == Qt.WindowType.Popup
-        )
-
-    def _track_popup(self, popup, visible):
-        global _capture_epoch
-        if visible == (popup in self._popups):
-            return
-        if visible:
-            self._popups.add(popup)
-        else:
-            self._popups.discard(popup)
-        self._visible_popup = bool(self._popups)
-        _capture_epoch += 1
-
-    def _remove_window(self, ref):
-        global _capture_epoch
-        window = ref()
-        if window in self._windows:
-            self._windows.pop(window, None)
-            self._window_rectangles = tuple(
-                (weakref.ref(window), rect) for window, rect in self._windows.items()
-            )
-            _capture_epoch += 1
-
-    @staticmethod
-    def _flush_frame():
-        try:
-            ctypes.windll.dwmapi.DwmFlush()
-        except (AttributeError, OSError):
-            pass
-
-    def flush_pending_frame(self):
-        epoch = _capture_epoch
-        if epoch != self._flushed_epoch:
-            # Never wait for composition inside Qt show/move event delivery:
-            # the GUI must finish processing that event before it can paint.
-            self._flush_frame()
-            self._flushed_epoch = epoch
-
-    def _track_window(self, window):
-        global _capture_epoch
-        # Qt also creates private top-level widgets for popup animations.
-        # Observe main windows and dialogs, not those internal helpers. Menus
-        # suspend capture by visibility without inspecting native popup handles.
-        if (
-            self._tracking
-            or not isinstance(window, (QMainWindow, QDialog))
-            or not window.isWindow()
-        ):
-            return
-        # The selection and its overlay are handled separately. The main
-        # translation window keeps imageCutEx's existing capture behavior.
-        if any(window is o or window is o.region for o in list(_overlays)):
-            self._remove_window(weakref.ref(window))
-            return
-        base = getattr(gobject, "base", None)
-        if window is getattr(base, "translation_ui", None):
-            self._remove_window(weakref.ref(window))
-            return
-        self._tracking = True
-        try:
-            rectangle = None
-            if window.isVisible() and not window.isMinimized():
-                # Observe an existing handle; winId() can create a native
-                # popup reentrantly while Qt is still delivering Show.
-                hwnd = int(window.effectiveWinId())
-                if not hwnd:
-                    return
-                rectangle = tuple(windows.GetWindowRect(hwnd))
-                if window not in self._tracked:
-                    self._tracked.add(window)
-                    ref = weakref.ref(window)
-                    window.destroyed.connect(lambda: self._remove_window(ref))
-            if rectangle == self._windows.get(window):
-                return
-            if rectangle is None:
-                self._windows.pop(window, None)
-            else:
-                self._windows[window] = rectangle
-            self._window_rectangles = tuple(
-                (weakref.ref(window), rect) for window, rect in self._windows.items()
-            )
-            # Reject captures spanning a popup show/hide/move, including ABA.
-            _capture_epoch += 1
-        finally:
-            self._tracking = False
-
-    def eventFilter(self, window, event):
-        if self._is_popup(window):
-            if event.type() in (
-                QEvent.Type.Show,
-                QEvent.Type.Hide,
-                QEvent.Type.DeferredDelete,
-            ):
-                self._track_popup(window, event.type() == QEvent.Type.Show)
-            return False
-        if event.type() in (
-            QEvent.Type.Show,
-            QEvent.Type.Hide,
-            QEvent.Type.Move,
-            QEvent.Type.Resize,
-            QEvent.Type.WindowStateChange,
-            QEvent.Type.WinIdChange,
-        ):
-            self._track_window(window)
-        return False
-
-    def blocks_capture(self, rect):
-        # Only cached Python geometry is read from OCR workers, never widgets.
-        if self._visible_popup:
-            return True
-        main = getattr(getattr(gobject, "base", None), "translation_ui", None)
-        rectangles = tuple(
-            rect for window, rect in self._window_rectangles if window() is not main
-        )
-        if rect is None:
-            return bool(rectangles)
-        x, y, width, height = rect.getRect()
-        return any(
-            x < right and x + width > left and y < bottom and y + height > top
-            for left, top, right, bottom in rectangles
-        )
 
     def run(self, request):
         hidden = []
@@ -326,11 +175,10 @@ class _CaptureGuard(QObject):
         try:
             if request.cancelled or _capture_suspensions:
                 return
-            # 覆盖层默认不排除（录屏要能录到译文）：落桌面截图前先
-            # 截图瞬间临时排除（Win10 2004+），截完恢复；排除失败
-            # （旧系统）才隐藏。只处理与本次截图矩形相交的覆盖层——
-            # 多区域时别区域的覆盖层不在画面里，不参与（不闪）
             rect = request.rect
+            # ② 覆盖层默认不排除（录屏要能录到译文）：截图瞬间临时排除
+            # （Win10 2004+），截完恢复。只处理与本次截图矩形相交的覆盖
+            # 层——多区域时别区域的覆盖层不在画面里，不参与（不闪）
             for overlay in list(_overlays):
                 if (
                     not overlay.capture_excluded
@@ -340,6 +188,12 @@ class _CaptureGuard(QObject):
                     if NativeUtils.ExcludeFromCapture(int(overlay.winId())):
                         overlay.capture_excluded = True
                         excluded.append(overlay)
+            # ③ 唯一不透明窗口（成功即用——窗口自身 DC 不含覆盖层，
+            # 不落桌面、无须隐藏）
+            request.result = request.probe()
+            if not request.result.isNull():
+                return
+            # ④ 排除不掉的（旧系统）才隐藏，然后落桌面
             for overlay in list(_overlays):
                 if (
                     not overlay.capture_excluded
@@ -354,7 +208,7 @@ class _CaptureGuard(QObject):
                     ctypes.windll.dwmapi.DwmFlush()
                 except (AttributeError, OSError):
                     pass
-            request.result = request.capture()
+            request.result = request.desktop()
         except Exception as error:
             request.error = error
         finally:
@@ -383,41 +237,47 @@ def _overlay_intersects(overlay, rect):
     )
 
 
-def capture_without_overlays(capture, rect=None):
+def capture_without_overlays(rect, probe, desktop):
+    """守卫作用域内截图（次序见 imageCutEx）：② 临时排除相交覆盖层 →
+    ③ probe → ④ 隐藏未排除掉的覆盖层后 desktop。失败/菜单等显式挂起
+    （suspend_ocr_capture）期间返回空 QImage。无相交覆盖层时无须
+    排除/隐藏，也不必线程编组（工作线程直接跑）。"""
     guard = _capture_guard
-    if _capture_suspensions or (guard is not None and guard.blocks_capture(rect)):
-        return None
-    epoch = _capture_epoch
+    if _capture_suspensions:
+        return QImage()
 
-    def guarded_capture():
-        if _capture_suspensions or epoch != _capture_epoch:
-            return None
-        if guard is not None:
-            guard.flush_pending_frame()
-        if _capture_suspensions or epoch != _capture_epoch:
-            return None
-        result = capture()
-        # A menu may have opened/closed while native capture released the GIL.
-        return result if not _capture_suspensions and epoch == _capture_epoch else None
+    def _probe():
+        # ③ 同 ①：目标窗口自身 DC 与我们的窗口无关，不受遮挡拦截
+        if probe is None or _capture_suspensions:
+            return QImage()
+        return probe()
 
-    # Excluded overlays are omitted by Windows without hiding or flickering.
-    # The fallback runs captures on the GUI thread and temporarily hides overlays.
-    # 只看与截图矩形相交的覆盖层（多区域时别区的不触发守卫/不闪）
+    def _desktop():
+        # 菜单等显式挂起（suspend_ocr_capture）期间不截桌面，挂起期间
+        # 截到的画面作废
+        if _capture_suspensions:
+            return QImage()
+        img = desktop()
+        return img if not _capture_suspensions else QImage()
+
+    # 无相交覆盖层：无须排除/隐藏，也不必线程编组（工作线程直接跑）
     if guard is None or not any(
         o._capture_visible
         and not o.capture_excluded
         and _overlay_intersects(o, rect)
         for o in list(_overlays)
     ):
-        return guarded_capture()
-    request = _CaptureRequest(guarded_capture, rect)
+        img = _probe()
+        if img.isNull():
+            img = _desktop()
+        return img
+    request = _CaptureRequest(rect, _probe, _desktop)
     if QThread.currentThread() == guard.thread():
         guard.run(request)
     else:
         guard.requested.emit(request)
         if not request.finished.wait(2):
             request.cancelled = True
-            return None
     if request.error is not None:
         raise request.error
     return request.result

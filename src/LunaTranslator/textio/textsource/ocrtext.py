@@ -52,40 +52,61 @@ def _hwnd_imageCut(hwnd, rectX: QRect, curr=-1):
     return succ, img
 
 
+def _desktopshot(hwnd, rectX: QRect):
+    """桌面截图（两种模式共用）：主窗口若压在选区上，白化遮挡部分，
+    避免把自己的界面识别进去。失败返回空图。"""
+    raw = _hwnd_imageCut(hwnd, rectX, curr=1)
+    img = raw[1] if hwnd else raw
+    if img.isNull():
+        return QImage()
+    rect2 = windows.GetWindowRect(gobject.base.translation_ui.winid)
+    rect = QRect(rect2[0], rect2[1], rect2[2] - rect2[0], rect2[3] - rect2[1])
+    if rectX.intersected(rect):
+        rect.translate(-rectX.x(), -rectX.y())
+        painter = QPainter(img)
+        painter.setBrush(Qt.GlobalColor.white)
+        painter.setPen(Qt.PenStyle.NoPen)
+        painter.drawRect(rect)
+        painter.end()
+    return _ocrpreprocess(img)
+
+
 def imageCutEx(hwnd, rectX: QRect):
+    """选区截图：绑定 HWND 优先（窗口自身 DC 不含覆盖层/本程序窗口，
+    无须排除/隐藏），失败后按模式分路——原地显示翻译见 _imageCutInplace，
+    普通模式直接落桌面。"""
     if hwnd:
-        # 先只试 HWND 截图（不隐藏/不排除任何窗口）：GetDC(hwnd)
-        # +BitBlt 只截该窗口自身内容，覆盖层与本程序窗口都不在画面里
-        # ——成功时无需守卫、也无需因窗口遮挡而暂停（与系统版本无关，
-        # 菜单展开同理）。失败（如 DirectX 全屏黑屏）时才走下方守卫
-        # 路径：截图瞬间临时排除覆盖层（排除失败才隐藏），然后 仅落桌面。
         succ, img = _hwnd_imageCut(hwnd, rectX, curr=0)
         if succ and not img.isNull():
             return _ocrpreprocess(img)
-    img = capture_without_overlays(
-        lambda: _hwnd_imageCut(hwnd, rectX, curr=1), rectX)
-    if img is None:
+    if globalconfig.get("ocr_translation_overlay", False):
+        return _imageCutInplace(hwnd, rectX)
+    return capture_without_overlays(
+        rectX, None, lambda: _desktopshot(hwnd, rectX))
+
+
+def _imageCutInplace(hwnd, rectX: QRect):
+    """原地显示翻译模式的截图，次序：
+    ② 守卫作用域内临时排除覆盖层（setafff，无闪烁）→ ③ 未绑定时唯一
+    不透明窗口 HWND → ④ 隐藏未排除掉的覆盖层后落桌面。
+    ② 的排除横跨 ③④，作用域结束恢复（覆盖层默认不排除，录屏要能
+    录到译文）。"""
+
+    def probe():
+        # ③：仅未绑定时探测（绑定者的窗口 ① 已试过）；窗口自身 DC
+        # 不含覆盖层，不受遮挡拦截；未命中返回空图
+        if hwnd is not None:
+            return QImage()
+        sole = NativeUtils.find_sole_opaque_window(*rectX.getCoords(), os.getpid())
+        if not sole:
+            return QImage()
+        succ, img = _hwnd_imageCut(sole, rectX, curr=0)
+        if succ and not img.isNull():
+            return _ocrpreprocess(img)
         return QImage()
-    succ = True
-    if hwnd:
-        succ, img = img
-    else:
-        succ = False
-    if img.isNull():
-        return img
-    if not succ:
-        # 桌面截图兜底：主窗口若压在选区上，白化遮挡部分，避免把
-        # 自己的界面识别进去
-        rect2 = windows.GetWindowRect(gobject.base.translation_ui.winid)
-        rect = QRect(rect2[0], rect2[1], rect2[2] - rect2[0], rect2[3] - rect2[1])
-        if rectX.intersected(rect):
-            rect.translate(-rectX.x(), -rectX.y())
-            painter = QPainter(img)
-            painter.setBrush(Qt.GlobalColor.white)
-            painter.setPen(Qt.PenStyle.NoPen)
-            painter.drawRect(rect)
-            painter.end()
-    return _ocrpreprocess(img)
+
+    return capture_without_overlays(
+        rectX, probe, lambda: _desktopshot(hwnd, rectX))
 
 
 def _ocrpreprocess(img: QImage):
@@ -160,16 +181,9 @@ class rangemanger:
         if not rect.isValid():
             return None, None
         if img is None:
-            # 绑定窗口优先。未绑定时仅原地显示翻译开启才探测选区下唯一
-            # 不透明窗口（完全盖住选区、其下窗口都不可见 → 等价绑定，
-            # 覆盖层与本程序窗口都不在其 DC 里，无需隐藏；也避开录屏/
-            # 其他窗口的干扰）；普通 OCR 直接落桌面，不做窗口探测
-            hwnd = self.ref.hwnd
-            if hwnd is None and globalconfig.get("ocr_translation_overlay", False):
-                hwnd = NativeUtils.find_sole_opaque_window(
-                    *rect.getCoords(), os.getpid()
-                )
-            img = imageCutEx(hwnd, rect)
+            # 绑定窗口优先；未绑定时唯一不透明窗口的探测在
+            # _imageCutInplace ③（临时排除覆盖层之后、隐藏之前）
+            img = imageCutEx(self.ref.hwnd, rect)
             if img.isNull():
                 return None, None
         else:
