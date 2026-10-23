@@ -16,7 +16,7 @@ from textio.textsource.ocrtext import ocrtext
 from traceback import print_exc
 from gui.setting.display_text import extrahtml
 from network.server.servicecollection_1 import WSForEach, transhistwsoutputsave
-import time, threading
+import time, threading, windows
 from NativeUtils import MenuItem
 from gui.RichMessageBox import RichMessageBox
 

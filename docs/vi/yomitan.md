@@ -1,28 +1,36 @@
 # Cài đặt Tiện ích Trình duyệt Yomitan
 
-1. Đảm bảo công cụ hiển thị là Webview2
-  
-   Sử dụng tiện ích trình duyệt yêu cầu Webview2. Trừ khi hệ thống không hỗ trợ Webview2, công cụ hiển thị mặc định sẽ là Webview2.
+1. ## Thêm tiện ích Yomitan
 
-   ![img](https://image.lunatranslator.org/en/extension/1.png)
-
-1. Kích hoạt **Sử dụng Tiện ích Trình duyệt** và thêm tiện ích Yomitan.
+    Đảm bảo công cụ hiển thị là Webview2 (sử dụng tiện ích trình duyệt yêu cầu Webview2; trừ khi hệ thống không hỗ trợ Webview2, công cụ hiển thị mặc định sẽ là Webview2), sau đó kích hoạt **Sử dụng Tiện ích Trình duyệt** và thêm tiện ích Yomitan.
 
     >[!WARNING]
     >Bạn nên thêm phiên bản tiện ích mở rộng dành cho Chrome/Edge. Phiên bản dành cho Firefox không tương thích.
 
-   ![img](https://image.lunatranslator.org/en/extension/2.png)
+    1. ### Cách 1: Thêm tiện ích trình duyệt trong Cài đặt hiển thị
 
-   ![img](https://image.lunatranslator.org/zh/yomitan2.png)
+        ![img](https://image.lunatranslator.org/en/extension/2.png)
 
-1. Chờ quá trình khởi tạo hoàn tất, sau đó cấu hình Yomitan.
-   
-   >[!WARNING]
-   >Đôi khi sau khi thêm plugin, nó có thể không được nhận diện. Bạn cần đóng phần mềm và mở lại để nhận diện.
+        ![img](https://image.lunatranslator.org/en/extension/1.png)
 
-   ![img](https://image.lunatranslator.org/en/yomitan4.png)
 
-1. Kết quả cuối cùng
+    1. ### Cách 2: Thêm tiện ích trình duyệt từ menu chuột phải
+
+        ![img](https://image.lunatranslator.org/en/extension/4.png)
+
+        ![img](https://image.lunatranslator.org/en/extension/5.png)
+
+    ![img](https://image.lunatranslator.org/zh/yomitan2.png)
+
+
+1. ## Chờ quá trình khởi tạo hoàn tất, sau đó cấu hình Yomitan.
+
+    >[!WARNING]
+    >Đôi khi sau khi thêm plugin, nó có thể không được nhận diện. Bạn cần đóng phần mềm và mở lại để nhận diện.
+
+    ![img](https://image.lunatranslator.org/en/yomitan4.png)
+
+1. ## Kết quả cuối cùng
 
    > [!TIP]
    > Theo mặc định, cửa sổ chính sẽ tự động điều chỉnh kích thước dựa trên nội dung văn bản và bản dịch, điều này cũng làm thay đổi kích thước cửa sổ Yomitan.

@@ -89,6 +89,29 @@ class Textbrowser(QFrame):
     def normdropfilepath(self, file):
         self.dropfilecallback.emit(os.path.normpath(file))
 
+    # ---- 文本区域右键菜单：渲染引擎/浏览器插件（两渲染器共用，
+    # 改动同步设置页，见 rendertext/webview.py on_menu 与
+    # rendertext/textbrowser.py menunoselect）----
+    def menuswitchengine(self):
+        """使用Webview2显示：切换渲染引擎；switchdisplayengine 同步
+        设置页引擎下拉（未开过则缓存重放，晚连接也能对上）。"""
+        neweng = (
+            "textbrowser"
+            if globalconfig["rendertext_using"] == "webview"
+            else "webview"
+        )
+        globalconfig["rendertext_using"] = neweng
+        self.loadinternal(shoudong=True)
+        gobject.base.switchdisplayengine.emit(neweng)
+
+    def menutogglewebext(self):
+        """附加浏览器插件：重建 webview 应用；webview_loadext_sync 同步
+        设置页引擎卡里的开关（setChecked 不触发 clicked/callback）。"""
+        checked = not globalconfig.get("webviewLoadExt", True)
+        globalconfig["webviewLoadExt"] = checked
+        self.loadinternal(True, True)
+        gobject.base.webview_loadext_sync.emit(checked)
+
     def refreshcontent(self):
         self.textbrowser.refreshcontent_before()
         traces = self.trace.copy()

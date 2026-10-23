@@ -1,29 +1,36 @@
 # Install Yomitan Browser Extension
 
-1. Ensure the display engine is Webview2
-  
-   Using the browser extension requires Webview2. Unless the system does not support Webview2, the default display engine is Webview2.
+1. ## Add the Yomitan Extension
 
-   ![img](https://image.lunatranslator.org/en/extension/1.png)
-
-1. Enable **Use Browser Extension** and add the Yomitan extension.
+    Make sure the display engine is Webview2 (using the browser extension requires Webview2; unless the system does not support Webview2, the default display engine is Webview2), then enable **Use Browser Extension** and add the Yomitan extension.
 
     >[!WARNING]
     >You should add the Chrome/Edge version of the plugin. The Firefox version of the plugin is not compatible.
 
+    1. ### Method 1: Add the browser extension in Display Settings
 
-   ![img](https://image.lunatranslator.org/en/extension/2.png)
+        ![img](https://image.lunatranslator.org/en/extension/2.png)
 
-   ![img](https://image.lunatranslator.org/zh/yomitan2.png)
+        ![img](https://image.lunatranslator.org/en/extension/1.png)
 
-1. Wait for the initialization to complete, then configure Yomitan.
 
-   >[!WARNING]
-   >Sometimes after adding a plugin, it may not be recognized. You need to close the software and reopen it for it to be recognized.
+    1. ### Method 2: Add the browser extension from the right-click menu
 
-   ![img](https://image.lunatranslator.org/en/yomitan4.png)
+        ![img](https://image.lunatranslator.org/en/extension/4.png)
 
-1. Final Result
+        ![img](https://image.lunatranslator.org/en/extension/5.png)
+
+    ![img](https://image.lunatranslator.org/zh/yomitan2.png)
+
+
+1. ## Wait for the initialization to complete, then configure Yomitan.
+
+    >[!WARNING]
+    >Sometimes after adding a plugin, it may not be recognized. You need to close the software and reopen it for it to be recognized.
+
+    ![img](https://image.lunatranslator.org/en/yomitan4.png)
+
+1. ## Final Result
 
    > [!TIP]
    > By default, the main window automatically resizes based on the text and translation content, which also adjusts the Yomitan window size.

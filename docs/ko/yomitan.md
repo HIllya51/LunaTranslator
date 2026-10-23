@@ -1,29 +1,36 @@
 # Yomitan 브라우저 확장 프로그램 설치
 
-1. 표시 엔진이 Webview2인지 확인
-  
-   브라우저 확장 프로그램을 사용하려면 Webview2가 필요합니다. 시스템이 Webview2를 지원하지 않는 경우를 제외하면 기본 표시 엔진은 Webview2입니다.
+1. ## yomitan 확장 프로그램 추가
 
-   ![img](https://image.lunatranslator.org/en/extension/1.png)
-
-1. **브라우저 확장 프로그램 사용**을 활성화하고 yomitan 확장 프로그램을 추가합니다.
+    표시 엔진이 Webview2인지 확인한 후(브라우저 확장 프로그램을 사용하려면 Webview2가 필요합니다. 시스템이 Webview2를 지원하지 않는 경우를 제외하면 기본 표시 엔진은 Webview2입니다), **브라우저 확장 프로그램 사용**을 활성화하고 yomitan 확장 프로그램을 추가합니다.
 
     >[!WARNING]
     >Chrome/Edge 버전 플러그인을 추가해야 합니다. Firefox 버전 플러그인은 호환되지 않습니다.
 
+    1. ### 방법 1: 디스플레이 설정에서 브라우저 확장 프로그램 추가
 
-   ![img](https://image.lunatranslator.org/en/extension/2.png)
+        ![img](https://image.lunatranslator.org/en/extension/2.png)
 
-   ![img](https://image.lunatranslator.org/zh/yomitan2.png)
+        ![img](https://image.lunatranslator.org/en/extension/1.png)
 
-1. 초기화가 완료될 때까지 기다린 후 yomitan을 설정합니다.
 
-   >[!WARNING]
-   >플러그인을 추가한 후 인식되지 않을 수 있습니다. 소프트웨어를 닫았다가 다시 열어야 인식됩니다.
+    1. ### 방법 2: 마우스 오른쪽 클릭 메뉴에서 브라우저 확장 프로그램 추가
 
-   ![img](https://image.lunatranslator.org/en/yomitan4.png)
+        ![img](https://image.lunatranslator.org/en/extension/4.png)
 
-1. 최종 결과
+        ![img](https://image.lunatranslator.org/en/extension/5.png)
+
+    ![img](https://image.lunatranslator.org/zh/yomitan2.png)
+
+
+1. ## 초기화가 완료될 때까지 기다린 후 yomitan을 설정합니다.
+
+    >[!WARNING]
+    >플러그인을 추가한 후 인식되지 않을 수 있습니다. 소프트웨어를 닫았다가 다시 열어야 인식됩니다.
+
+    ![img](https://image.lunatranslator.org/en/yomitan4.png)
+
+1. ## 최종 결과
 
    > [!TIP]
    > 기본적으로 메인 창은 텍스트와 번역 내용에 따라 자동으로 창 크기가 조정되며, 이로 인해 Yomitan 창 크기도 함께 변경됩니다.

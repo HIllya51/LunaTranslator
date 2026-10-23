@@ -457,6 +457,15 @@ class TextBrowser(QWidget, dataget):
         menu.addAction(drag)
         menu.addAction(hide)
         menu.addAction(wheel)
+        # 渲染引擎切换（同历史文本 Qt 模式菜单；处理器在 wrapper 上，
+        # 与设置页互相同步）。浏览器插件两项只在 webview 模式有意义，
+        # 不进 Qt 菜单
+        useweb = LAction("使用Webview2显示", menu)
+        useweb.setCheckable(True)
+        # 本菜单只在 Qt 引擎激活时出现，恒为关
+        useweb.setChecked(False)
+        menu.addSeparator()
+        menu.addAction(useweb)
         action = menu.exec(QCursor.pos())
         if action == search:
             self.parent().clear(False)
@@ -465,6 +474,8 @@ class TextBrowser(QWidget, dataget):
             extras[action]()
         elif action == setting:
             gobject.base.settin_ui_showsignal.emit()
+        elif action == useweb:
+            self.parent().menuswitchengine()
         elif action == drag:
             globalconfig["dragable"] = drag.isChecked()
         elif action == hide:

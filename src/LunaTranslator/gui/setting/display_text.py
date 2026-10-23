@@ -227,6 +227,11 @@ def resetgroudswitchcallback(self, group):
             ),
             default=True,
         )
+        # 主窗口右键菜单切换 -> 同步本开关与编辑按钮（setChecked 不触发
+        # clicked/callback，不会重入）；引擎卡重建时旧控件销毁自动断连
+        gobject.base.webview_loadext_sync.connect(
+            lambda x: (switch2.setChecked(x), _btn2.setEnabled(x))
+        )
         self.engineexpander.addContentWidget(
             getboxwidget(["附加HTML", 1, switch, _btn])
         )

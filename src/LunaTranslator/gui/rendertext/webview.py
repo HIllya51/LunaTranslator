@@ -5,7 +5,7 @@ import NativeUtils
 from myutils.config import globalconfig, _TR
 from myutils.wrapper import threader
 import uuid
-from gui.usefulwidget import WebviewWidget
+from gui.usefulwidget import WebviewWidget, Exteditor
 from gui.RichMessageBox import RichMessageBox
 from sometypes import WordSegResult
 from gui.rendertext.tooltipswidget import tooltipswidget
@@ -107,6 +107,38 @@ class TextBrowser(WebviewWidget, webview_common):
                     )
                 )
             items.insert(0, gongjulan)
+            # 渲染引擎/浏览器插件（同历史文本菜单；处理器在 wrapper 上，
+            # 与设置页互相同步）。原生菜单回调上下文里不能直接动 UI：
+            # threader 丢线程 + safeinvokefunction 推回主线程执行，
+            # 也保证切换引擎销毁本 webview 发生在菜单回调返回之后
+            _tomainsafe = lambda f: functools.partial(
+                threader(gobject.base.safeinvokefunction.emit), f
+            )
+            items.append(MenuItem(issep=True))
+            items.append(
+                MenuItem(
+                    text="使用Webview2显示",
+                    clicked=_tomainsafe(self.parent().menuswitchengine),
+                    checkable=True,
+                    # 本菜单只在 webview 引擎激活时出现，恒为开
+                    checked=True,
+                )
+            )
+            items.append(
+                MenuItem(
+                    text="附加浏览器插件",
+                    clicked=_tomainsafe(self.parent().menutogglewebext),
+                    checkable=True,
+                    checked=globalconfig.get("webviewLoadExt", True),
+                )
+            )
+            if globalconfig.get("webviewLoadExt", True):
+                items.append(
+                    MenuItem(
+                        text="浏览器插件",
+                        clicked=_tomainsafe(functools.partial(Exteditor, self)),
+                    )
+                )
             return items
 
     def event(self, a0: QEvent) -> bool:

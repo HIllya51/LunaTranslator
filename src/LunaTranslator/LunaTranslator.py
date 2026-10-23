@@ -191,6 +191,8 @@ class BASEOBJECT(QObject):
     ocr_style_sync = pyqtSignal(str)
     # 范围框右键菜单切换 鼠标穿透 -> 同步设置页开关（btn.setChecked）
     ocr_mousetransp_sync = pyqtSignal(bool)
+    # 主窗口右键菜单切换 附加浏览器插件 -> 同步设置页引擎卡里的开关
+    webview_loadext_sync = pyqtSignal(bool)
 
     def connectsignal(self, signal: pyqtBoundSignal, callback):
         if signal in self.__cachesignal:

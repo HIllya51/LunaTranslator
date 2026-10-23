@@ -1,29 +1,36 @@
 # Yomitanブラウザ拡張機能のインストール
 
-1. 表示エンジンがWebview2であることを確認
-  
-   ブラウザ拡張機能を使用するにはWebview2が必要です。システムがWebview2をサポートしていない場合を除き、デフォルトの表示エンジンはWebview2です。
+1. ## yomitan拡張機能を追加
 
-   ![img](https://image.lunatranslator.org/en/extension/1.png)
-
-1. **ブラウザ拡張機能を使用**を有効にし、yomitan拡張機能を追加します。
+    表示エンジンがWebview2であることを確認し（ブラウザ拡張機能を使用するにはWebview2が必要です。システムがWebview2をサポートしていない場合を除き、デフォルトの表示エンジンはWebview2です）、**ブラウザ拡張機能を使用**を有効にして、yomitan拡張機能を追加します。
 
     >[!WARNING]
     >Chrome / Edgeバージョンのプラグインを追加してください。Firefoxバージョンのプラグインは互換性がありません。
 
+    1. ### 方法1：表示設定でブラウザ拡張機能を追加
 
-   ![img](https://image.lunatranslator.org/en/extension/2.png)
+        ![img](https://image.lunatranslator.org/en/extension/2.png)
 
-   ![img](https://image.lunatranslator.org/zh/yomitan2.png)
+        ![img](https://image.lunatranslator.org/en/extension/1.png)
 
-1. 初期化が完了するのを待ち、yomitanを設定します。
 
-   >[!WARNING]
-   >プラグインを追加しても認識されない場合があります。ソフトウェアを一旦閉じて再度開くと認識されることがあります。
-   
-   ![img](https://image.lunatranslator.org/en/yomitan4.png)
+    1. ### 方法2：右クリックメニューからブラウザ拡張機能を追加
 
-1. 最終的な効果
+        ![img](https://image.lunatranslator.org/en/extension/4.png)
+
+        ![img](https://image.lunatranslator.org/en/extension/5.png)
+
+    ![img](https://image.lunatranslator.org/zh/yomitan2.png)
+
+
+1. ## 初期化が完了するのを待ち、yomitanを設定します。
+
+    >[!WARNING]
+    >プラグインを追加しても認識されない場合があります。ソフトウェアを一旦閉じて再度開くと認識されることがあります。
+
+    ![img](https://image.lunatranslator.org/en/yomitan4.png)
+
+1. ## 最終的な効果
 
    > [!TIP]
    > デフォルトでは、メインウィンドウはテキストや翻訳内容に応じて自動的にサイズが調整されます。これにより、Yomitanのウィンドウサイズも変更されます。
