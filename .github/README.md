@@ -1,5 +1,5 @@
 
-### 简体中文  | [English](#lunatranslator) | [繁體中文](https://docs.lunatranslator.org/cht/) | [한국어](https://docs.lunatranslator.org/ko/) | [日本語](https://docs.lunatranslator.org/ja/) | [Tiếng Việt](https://docs.lunatranslator.org/vi/) | [Русский язык](https://docs.lunatranslator.org/ru/)
+### 简体中文  | [English](README_en.md) | [繁體中文](https://docs.lunatranslator.org/cht/) | [한국어](https://docs.lunatranslator.org/ko/) | [日本語](https://docs.lunatranslator.org/ja/) | [Tiếng Việt](https://docs.lunatranslator.org/vi/) | [Русский язык](https://docs.lunatranslator.org/ru/)
 
 ---
 
@@ -10,7 +10,6 @@
 > **视觉小说翻译器**
 
 **如果使用中遇到困难，可以查阅[使用说明](https://docs.lunatranslator.org/zh)、观看[我的B站视频](https://space.bilibili.com/592120404/video)，也欢迎加入[QQ群](https://qm.qq.com/q/mPSu3sG5ri) <a href="https://qm.qq.com/q/mPSu3sG5ri"><img src="https://img.shields.io/badge/1059137614-EB1923?style=for-the-badge&logo=qq&logoColor=white&label=QQ&color=5865F2" alt="Discord"></a>**
-
 
 
 
@@ -39,54 +38,11 @@ LunaTranslator使用 [GPLv3](../LICENSE) 许可证。
 ## 支持作者
 
 
+软件维护不易，如果您感觉该软件对你有帮助，欢迎通过爱发电，或微信扫码赞助，您的支持将成为软件长期维护的助力，谢谢~
 
-<details><summary>软件维护不易，如果您感觉该软件对你有帮助，欢迎通过爱发电，或微信扫码赞助，您的支持将成为软件长期维护的助力，谢谢~</summary>
 <a href="https://afdian.com/a/HIllya51"><img width="200" src="https://pic1.afdiancdn.com/static/img/welcome/button-sponsorme.png" alt=""></a>
 
 <img src='../src/files/static/zan.jpg' style="height: 300px !important;">
-</details>
-
----
-
-# LunaTranslator  
-
-> **Visual Novel Translator**
-
-## Community
-
-If you encounter any difficulties while using the software, you can check the [User Guide](https://docs.lunatranslator.org/en), or join our [Discord](https://discord.com/invite/ErtDwVeAbB).
-
-<a href="https://discord.gg/invite/ErtDwVeAbB"><img src="https://img.shields.io/discord/1262692128031772733?style=for-the-badge&logo=discord&logoColor=white&label=Discord&color=5865F2" alt="Discord"></a>
-
-## Features
-
-
-- **[HOOK](https://docs.lunatranslator.org/en/hooksettings.html)** Primarily uses HOOK to extract game text, compatible with almost all popular and niche visual novels.  
-
-- **[Embedded Translation](https://docs.lunatranslator.org/en/embedtranslate.html)** Some games also support directly embedding translations into the game for an immersive experience.
-
-- **[HOOK Emulator](https://docs.lunatranslator.org/en/emugames.html)** Supports HOOK emulators to directly extract text from most games on NS/PSP/PSV/PS2.
-
-- **[OCR](https://docs.lunatranslator.org/en/useapis/ocrapi.html)** Built-in high-precision OCR model, supporting many other online & offline OCR engines for flexible text extraction.  
-
-- **[Rich Translation APIs](https://docs.lunatranslator.org/en/guochandamoxing.html)** Supports almost all translation engines, including large language model translation, offline translation, and more.
-
-- **[Language Learning](https://docs.lunatranslator.org/en/qa1.html)** Supports Japanese word segmentation and kana annotation, supports AnkiConnect, supports Yomitan plugin
-
-- **[Text-to-Speech](https://docs.lunatranslator.org/en/ttsengines.html)** Supports a wide range of online & offline text-to-speech engines.  
-
-- **[Speech Recognition](https://docs.lunatranslator.org/en/sr.html)** On Windows 10 and Windows 11, you can use Windows Speech Recognition.
-
-## License
-
-LunaTranslator uses [GPLv3](../LICENSE) License
-
-
-## Sponsors
-
-Software maintenance is not easy. If you find this software helpful, feel free to support me via [Patreon](https://patreon.com/HIllya51). Your support will contribute to the long-term maintenance of the software. Thank you~
-
-<a href="https://patreon.com/HIllya51" target='_blank'><img width="200" src="../docs/become_a_patron_4x1_black_logo_white_text_on_coral.svg"></a>
 
 
 | <img src="https://signpath.org/assets/favicon.png" width="25" height="25" align="center"> | Free code signing provided by [SignPath.io](https://about.signpath.io/), certificate by [SignPath Foundation](https://signpath.org/). |
