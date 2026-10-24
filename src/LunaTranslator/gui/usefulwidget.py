@@ -1183,12 +1183,14 @@ def getIconButton(
     tips=None,
     color=None,
     checkablechangecolor=True,
+    parent=None,
 ):
 
     b = IconButton(
         icon,
         enable,
         qicon,
+        parent,
         fix=fix,
         tips=tips,
         color=color,

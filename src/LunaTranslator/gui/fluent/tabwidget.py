@@ -59,6 +59,7 @@ NAV_ICONS = {
 
 # fluentui3styleproperties.h —— enum TabBarStyle
 TABBAR_STYLE_PIVOT_GROW = 3  # Pivot_Grow
+TABBAR_STYLE_SEGMENTED_SLIDE = 6  # Segmented_Slide
 
 # 直角面板（FluentSquarePane）配色
 PANE_COLORS_PAGE = 0  # 同页卡（FluentPageCard 配方）
@@ -188,6 +189,15 @@ def apply_pivot_bar_style(bar: QTabBar):
     bar.setProperty("tabBarStyle", TABBAR_STYLE_PIVOT_GROW)
     bar.setAttribute(Qt.WA_StyledBackground, False)
     bar.setDrawBase(True)
+    bar.setExpanding(False)
+
+
+def apply_segmented_slide_bar_style(bar: QTabBar):
+    """裸 QTabBar 的 Segmented_Slide 配置：分段容器底（带
+    WA_StyledBackground 时插件画容器）+ 选中段实心拇指滑动过渡。"""
+    bar.setProperty("tabBarStyle", TABBAR_STYLE_SEGMENTED_SLIDE)
+    bar.setAttribute(Qt.WA_StyledBackground, True)
+    bar.setDrawBase(False)
     bar.setExpanding(False)
 
 

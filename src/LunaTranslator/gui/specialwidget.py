@@ -109,12 +109,18 @@ class githubheatmaphelper:
         self.end_date = QDate.currentDate()
         days_to_saturday = 6 - (self.end_date.dayOfWeek() % 7)
         self.anchor_date = self.end_date.addDays(days_to_saturday)
+        # 格子整图缓存：paintEvent 只 drawPixmap（重绘被外部高频触发时
+        # 也不重复光栅化格子）；数据/尺寸/明暗变化才重建
+        self._gridcache = None
+        self._gridcache_key = None
 
     def setdata(self, data: "list[tuple[float, int|dict[str, int]]]"):
         data = sorted(data, key=lambda _: _[0])
         data = {
             QDateTime.fromMSecsSinceEpoch(int(_ * 1000)).date(): __ for _, __ in data
         }
+        if data != self.data:
+            self._gridcache = None
         self.data = data
 
     def get_level(self, count: "int|dict[str,int]"):
@@ -135,12 +141,25 @@ class githubheatmaphelper:
         return 4
 
     def paintEvent(self, event):
+        size = self.parent.size()
+        dpr = self.parent.devicePixelRatioF()
+        dark = gobject.base.currentisdark
+        key = (size, dpr, dark)
+        if self._gridcache is None or self._gridcache_key != key:
+            self._gridcache = self._render_grid(size, dpr, dark)
+            self._gridcache_key = key
         painter = QPainter(self.parent)
+        painter.drawPixmap(0, 0, self._gridcache)
+
+    def _render_grid(self, size, dpr, dark):
+        pixmap = QPixmap(size * dpr)
+        pixmap.setDevicePixelRatio(dpr)
+        painter = QPainter(pixmap)
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
 
         painter.fillRect(
             self.parent.rect(),
-            self.color_bg if gobject.base.currentisdark else self.color_bg_light,
+            self.color_bg if dark else self.color_bg_light,
         )
 
         step = self.cell_size + self.cell_spacing
@@ -153,9 +172,7 @@ class githubheatmaphelper:
         metrics = QFontMetrics(font, self.parent)
 
         # 1. 绘制左侧星期标签
-        painter.setPen(
-            self.color_text if gobject.base.currentisdark else self.color_text_light
-        )
+        painter.setPen(self.color_text if dark else self.color_text_light)
         for row, text in {1: "Mon", 3: "Wed", 5: "Fri"}.items():
             y_text = draw_start_y + row * step + self.cell_size - 2
             painter.drawText(self.margin_lr, int(y_text), text)
@@ -183,9 +200,7 @@ class githubheatmaphelper:
 
                 if x + text_width + 5 < last_drawn_label_left_x:
                     painter.setPen(
-                        self.color_text
-                        if gobject.base.currentisdark
-                        else self.color_text_light
+                        self.color_text if dark else self.color_text_light
                     )
                     painter.drawText(int(x), draw_start_y - 8, month_name)
                     last_drawn_label_left_x = x
@@ -200,17 +215,17 @@ class githubheatmaphelper:
                     continue
 
                 count = self.data.get(target_date, 0)
-                color = (
-                    self.level_colors_dark
-                    if gobject.base.currentisdark
-                    else self.level_colors
-                )[self.get_level(count)]
+                color = (self.level_colors_dark if dark else self.level_colors)[
+                    self.get_level(count)
+                ]
 
                 painter.setPen(Qt.PenStyle.NoPen)
                 painter.setBrush(QBrush(color))
                 painter.drawRoundedRect(
                     QRect(int(x), int(y), self.cell_size, self.cell_size), 2, 2
                 )
+        painter.end()
+        return pixmap
 
     def _get_date_at_pos(self, x, y):
         step = self.cell_size + self.cell_spacing
@@ -388,35 +403,65 @@ class charthelper:
                 y_coord = ymargin + height - self.parent.yy(y) * y_scale
                 points.append((x_coord, y_coord))
 
-            # 绘制折线
+            # 平滑曲线：Catmull-Rom 样条细分后逐段画线，细分密度随相邻
+            # 数据点的像素间距自适应（子段约 2~3px 即视觉平滑；点很密时
+            # 原始折线已亚像素，少细分省绘制）。不用 drawPath/drawPolyline
+            # 画整条——光栅 stroker 处理多拐角路径极慢（基准：701 尖峰点
+            # 465ms vs 逐段画线 5ms）
+            x_step = points[1][0] - points[0][0]
+            subdiv = max(2, min(16, round(x_step / 3)))
+            prev = points[0]
+            for i in range(len(points) - 1):
+                p1 = points[i]
+                p2 = points[i + 1]
+                p0 = points[i - 1] if i else p1
+                p3 = points[i + 2] if i + 2 < len(points) else p2
+                for k in range(1, subdiv + 1):
+                    s = k / subdiv
+                    s2 = s * s
+                    s3 = s2 * s
+                    cur = (
+                        0.5 * ((2 * p1[0]) + (-p0[0] + p2[0]) * s
+                               + (2 * p0[0] - 5 * p1[0] + 4 * p2[0] - p3[0]) * s2
+                               + (-p0[0] + 3 * p1[0] - 3 * p2[0] + p3[0]) * s3),
+                        0.5 * ((2 * p1[1]) + (-p0[1] + p2[1]) * s
+                               + (2 * p0[1] - 5 * p1[1] + 4 * p2[1] - p3[1]) * s2
+                               + (-p0[1] + 3 * p1[1] - 3 * p2[1] + p3[1]) * s3),
+                    )
+                    painter.drawLine(QPointF(*prev), QPointF(*cur))
+                    prev = cur
+
+            # 数值标签：先按 x 间距粗筛（与上个标签至少隔半个标签宽），
+            # 筛掉的点不测宽、不判交——旧实现逐点与已画标签判交是
+            # O(N²)，几年历史（上千点）就能把每秒一次的重绘拖到几百 ms
             rects: "list[QRectF]" = []
             texth = self.fmetrics.height()
-            for i in range(len(points) - 1):
-                x1, y1 = points[i]
-                x2, y2 = points[i + 1]
-                painter.drawLine(QPointF(x1, y1), QPointF(x2, y2))
+            nextx = -math.inf
+            for i in range(1, len(points)):
+                x2, y2 = points[i]
+                if x2 < nextx or not self.data[i][1]:  # ==0
+                    continue
+                y1 = points[i - 1][1]
+                text = self.parent.ytext(self.parent.yy(self.data[i][1]))
+                W = self.fmetrics.size(0, text).width()
+                next_ = points[i + 1][1] if (i + 1) < len(points) else y2
 
-                if self.data[i + 1][1]:  #!=0
-                    text = self.parent.ytext(self.parent.yy(self.data[i + 1][1]))
-                    W = self.fmetrics.size(0, text).width()
-                    next_ = points[i + 2][1] if ((i + 2) < len(points)) else y2
-
-                    if y1 <= y2 and y2 >= next_:  # 凹
-                        yy = y2
-                    elif y1 >= y2 and y2 <= next_:  # 凸
-                        yy = y2 - texth
-                    elif y1 <= y2 and y2 <= next_:
-                        yy = y2
-                    elif y1 >= y2 and y2 >= next_:
-                        yy = y2 - texth
-                    if (yy == y2) and (yy + texth > ymargin + height):
-                        continue
-                    newrect = QRectF(x2 - W // 2, yy, W, texth)
-                    if any(_.intersected(newrect) for _ in rects):
-                        continue
-                    else:
-                        rects.append(newrect)
-                        painter.drawText(newrect, text)  # value
+                if y1 <= y2 and y2 >= next_:  # 凹
+                    yy = y2
+                elif y1 >= y2 and y2 <= next_:  # 凸
+                    yy = y2 - texth
+                elif y1 <= y2 and y2 <= next_:
+                    yy = y2
+                elif y1 >= y2 and y2 >= next_:
+                    yy = y2 - texth
+                if (yy == y2) and (yy + texth > ymargin + height):
+                    continue
+                newrect = QRectF(x2 - W // 2, yy, W, texth)
+                if any(_.intersected(newrect) for _ in rects):
+                    continue
+                rects.append(newrect)
+                painter.drawText(newrect, text)  # value
+                nextx = x2 + W / 2
 
             lastx2 = -math.inf
             for i, (x, y) in enumerate(points):
@@ -446,6 +491,9 @@ class chartwidget(QWidget):
     def setdata(self, data):
         self._helper1.setdata(data)
         self._helper2.setdata(data)
+        # 数据变了要重绘——原先靠旁边的时长标签变宽引发整页重排顺带
+        # 刷新图表（标签挪进页签文本后没人刷了，得等悬停才 update）
+        self.update()
 
     def yy(self, y: "int|float|dict[str, int|float]"):
         return y if isinstance(y, (int, float)) else sum(y.values())

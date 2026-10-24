@@ -19,9 +19,9 @@ from myutils.config import (
 )
 from gui.setting.display_scale import makescalew
 from myutils.wrapper import tryprint
-import sqlite3
 from gui.dialog_memory import dialog_memory
 from gui.fluent.expander import ExExpander
+from gui.fluent.tabwidget import apply_segmented_slide_bar_style
 from gui.fluent.pillbar import ExPillBar
 from gui.fluent.settingtree import FluentSettingTree, wrap_setting_tree
 from myutils.hwnd import getExeIcon
@@ -75,6 +75,7 @@ from gui.usefulwidget import (
 from gui.dynalang import (
     LFormLayout,
     LPushButton,
+    LTabBar,
     LStandardItemModel,
     LAction,
     LLabel,
@@ -913,33 +914,6 @@ class dialog_setting_game_internal(QWidget):
             )
         )
 
-    @tryprint
-    def __refresh(self):
-        _filename, _ = os.path.splitext(os.path.basename(uid2gamepath[self.gameuid]))
-        sqlitef = gobject.getcachedir(
-            "translation_record/{}_{}.sqlite".format(_filename, self.gameuid)
-        )
-        if not os.path.exists(sqlitef):
-            return
-        with sqlite3.connect(
-            sqlitef, check_same_thread=False, isolation_level=None
-        ) as sql:
-            cnt = 0
-            for (_,) in sql.execute("SELECT source FROM artificialtrans").fetchall():
-                cnt += len(_)
-            savehook_new_data[self.gameuid]["statistic_wordcount"] = max(
-                cnt, savehook_new_data[self.gameuid].get("statistic_wordcount", 0)
-            )
-
-    def chartwidget_ctxmenu(self, refreshcallback, p):
-        menu = QMenu(self)
-        quanju = LAction("this" if self.__quanju_wc else "all", menu)
-        menu.addAction(quanju)
-        action = menu.exec(self.cursor().pos())
-        if action == quanju:
-            self.__quanju_wc = not self.__quanju_wc
-            refreshcallback()
-
     def getstatistic(self, formLayout: QVBoxLayout, gameuid):
 
         chart = chartwidget(timechart=True)
@@ -952,48 +926,38 @@ class dialog_setting_game_internal(QWidget):
         chart2.xtext = chart.xtext
         chart2.ytext = str
 
-        def _fixedlabel():
-            lb = QLabel()
-            lb.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
-            return lb
-
-        self._timelabel = _fixedlabel()
-        self._wordlabel = _fixedlabel()
         refreshcallback = functools.partial(self.refresh, chart, chart2, gameuid)
         stack = QStackedWidget()
         stack.addWidget(chart)
         stack.addWidget(chart2)
-        stack.setCurrentIndex(1)
-        stack.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
-        stack.customContextMenuRequested.connect(
-            functools.partial(self.chartwidget_ctxmenu, refreshcallback)
+        # 文字计数/游戏时间 用 tabbar 切换图表栈（0=文字计数→chart2，
+        # 1=游戏时间→chart）
+        tabs = self._stattabs = LTabBar()
+        apply_segmented_slide_bar_style(tabs)
+        tabs.addTab("文字计数")
+        tabs.addTab("游戏时间")
+        # 编辑游戏时间（timelistediter）：仅游戏时间页签下显示
+        btnedit = getIconButton(
+            icon="fa.edit",
+            callback=functools.partial(timelistediter, self),
+            # 挂宿主：进布局前就会 setVisible（按页签显隐），无 parent
+            # 的 setVisible(True) 会闪一个顶层小窗口
+            parent=self,
         )
-        wc = LPushButton("文字计数")
-        tm = LPushButton("游戏时间")
-        wc.setCheckable(True)
-        tm.setCheckable(True)
+        btnedit.setVisible(globalconfig.get("statisticvistm", True))
 
-        def clicktm(b):
-            stack.setCurrentIndex(1 - b)
-            globalconfig["statisticvistm"] = b
-            wc.setChecked(not b)
+        def _tabswitch(idx):
+            globalconfig["statisticvistm"] = bool(idx)
+            stack.setCurrentIndex(1 - idx)
+            btnedit.setVisible(idx == 1)
             refreshcallback()
 
-        def clickwc(b):
-            stack.setCurrentIndex(b)
-            globalconfig["statisticvistm"] = not b
-            tm.setChecked(not b)
-            refreshcallback()
-
-        tm.toggled.connect(clicktm)
-        wc.toggled.connect(clickwc)
-        if globalconfig.get("statisticvistm", True):
-            tm.setChecked(True)
-        else:
-            wc.setChecked(True)
+        tabs.currentChanged.connect(_tabswitch)
+        tabs.setCurrentIndex(1 if globalconfig.get("statisticvistm", True) else 0)
 
         btn = IconButton(
-            icon="fa.line-chart",
+            # [未选中=热力图, 选中=折线]（IconButton 支持按勾选态取图标）
+            icon=["fa.calendar", "fa.line-chart"],
             parent=self,
             checkable=True,
             checkablechangecolor=False,
@@ -1002,22 +966,37 @@ class dialog_setting_game_internal(QWidget):
         btn.clicked.connect(
             lambda x: (
                 globalconfig.__setitem__("timecharttype", 0 if x else 1),
-                self.update(),
+                # 直接重绘两个图表（切换立即生效）；原先刷的是对话框，
+                # 图表未被 invalidate，要等 1s 定时器引起重绘才换模式
+                chart.update(),
+                chart2.update(),
             )
         )
+        # this/all 切换（原图表右键菜单）：本游戏=fa.cube，全部=fa.cubes
+        btn2 = IconButton(
+            icon=["fa.cube", "fa.cubes"],
+            parent=self,
+            checkable=True,
+            checkablechangecolor=False,
+            tips="所有游戏" if self.__quanju_wc else "this",
+        )
+        btn2.setChecked(self.__quanju_wc)
+
+        def _clickquanju(x):
+            self.__quanju_wc = x
+            btn2.setToolTip("所有游戏" if x else "this")
+            btn2.setAccessibleName("所有游戏" if x else "this")
+            refreshcallback()
+
+        btn2.clicked.connect(_clickquanju)
         formLayout.addLayout(
             getboxlayout(
                 [
-                    wc,
-                    self._wordlabel,
-                    "",
-                    tm,
-                    self._timelabel,
-                    getIconButton(
-                        icon="fa.edit", callback=functools.partial(timelistediter, self)
-                    ),
-                    getIconButton(self.__refresh, "fa.refresh"),
+                    tabs,
+                    1,
+                    btnedit,
                     btn,
+                    btn2,
                 ]
             )
         )
@@ -1079,9 +1058,14 @@ class dialog_setting_game_internal(QWidget):
 
         __ = gobject.base.somedatabase.querytraceplaytime(_gameuid)
         _cnt = sum([_[1] - _[0] for _ in __])
-        self._timelabel.setText(self.formattime(_cnt))
         count = savehook_new_data[gameuid].get("statistic_wordcount", 0)
-        self._wordlabel.setText(str(count) if _gameuid else "")
+        tabs = self._stattabs
+        # 计数放进页签文本（原先两个悬空标签不知道是干啥的）；
+        # 计数为 0 时不带数字
+        tabs.setTabText(
+            0, _TR("文字计数") + (" " + str(count) if _gameuid and count else ""))
+        tabs.setTabText(
+            1, _TR("游戏时间") + (" " + self.formattime(_cnt) if _cnt else ""))
         chart.setdata(self.split_range_into_days(__))
 
         __ = gobject.base.somedatabase.querywordcount(_gameuid)
