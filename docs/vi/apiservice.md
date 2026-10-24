@@ -54,6 +54,8 @@
 
     Nếu không, nó sẽ truy vấn tất cả các từ điển và trả về `event/text-stream`, trong đó mỗi sự kiện là một đối tượng JSON chứa ID từ điển `id`, tên từ điển `name`, và nội dung HTML `result`.
 
+    Nếu tham số `stream` được chỉ định, kết quả trung gian và kết quả cuối cùng của mỗi từ điển sẽ được trả về theo luồng, phân biệt bằng `done`.
+
 1. #### /api/mecab
 
    Tham số truy vấn `text` phải được chỉ định.

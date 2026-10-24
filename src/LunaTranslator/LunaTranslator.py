@@ -1348,6 +1348,17 @@ class BASEOBJECT(QObject):
                         translatorsetting.pop(key)
                     except:
                         pass
+            # 清理 rank 中已不存在的引擎项（如被删除的多实例 uuid）：它们
+            # 不会被 commonloader_warp 移除（只遍历存在的引擎），却一直占着
+            # 优先级序号，使自动切换条件 thisp==max(thisps) 永不成立
+            rankkey = {
+                "cishu": "cishuvisrank",
+                "fanyi": "fix_translate_rank_rank",
+            }.get(fanyiorcishu)
+            if rankkey:
+                for key in list(globalconfig[rankkey]):
+                    if key not in globalconfig[fanyiorcishu]:
+                        globalconfig[rankkey].remove(key)
             for key in globalconfig[fanyiorcishu]:
                 self.commonloader_warp(fanyiorcishu, dictobject, initmethod, key)
 

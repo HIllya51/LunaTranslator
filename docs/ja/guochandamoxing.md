@@ -178,10 +178,6 @@
 >[!WARNING]
 >**API Key**は、百度智能雲IAMのAccess KeyとSecret Keyを使用してインターフェースのBearerTokenを生成し、それを**API Key**として記入するか、`Access Key`:`Secret Key`の形式で直接記入してください。千帆ModelBuilderの旧版v1バージョンのAPI KeyとSecret Keyとは互換性がないので注意してください。
 
-== MiniMax
-
-**API Key** https://platform.minimaxi.com/document/Fast%20access?key=66701cf51d57f38758d581b2
-
 :::
 
 ### API集約マネージャー

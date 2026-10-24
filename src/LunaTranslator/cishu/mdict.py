@@ -680,12 +680,18 @@ if(window.LUNAJSObject)
 
         return content
 
-    def search(self, word):
+    def search(self, word, sentence=None):
+        """流式查词：每个词典查完即 yield 当前累积的完整结果（排序+
+        包装一致）。生成器自然结束即完成，最终结果=最后一个中间态。"""
         allres = []
         audiob64vals = {}
         hrefsrcvals = {}
         for i in range(len(self.builders)):
             self.searchthread(allres, i, word, audiob64vals, hrefsrcvals)
+            if allres:
+                yield self._wrapsearchresult(list(allres), audiob64vals, hrefsrcvals)
+
+    def _wrapsearchresult(self, allres, audiob64vals, hrefsrcvals):
         if len(allres) == 0:
             return
         allres.sort(key=lambda _: -_[0])

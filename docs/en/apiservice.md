@@ -55,6 +55,8 @@
 
     Otherwise, it will query all dictionaries and return `event/text-stream`, where each event is a JSON object containing the dictionary ID `id`, dictionary name `name`, and HTML content `result`.
 
+    If the parameter `stream` is specified, the intermediate and final results of each dictionary will be returned as a stream, distinguished by `done`.
+
 1. #### /api/mecab
 
    The query parameter `text` must be specified.

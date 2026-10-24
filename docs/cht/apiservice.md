@@ -49,6 +49,7 @@
     - 必須指定查詢參數`word`
     - 如果指定參數`id`（詞典的 ID），則會回傳該詞典的查詢結果的`application/json`物件，包含詞典 ID`id`、詞典名稱`name`和 HTML 內容`result`。如果查詢失敗則會回傳一個空的物件
     - 否則會查詢所有詞典，回傳`event/text-stream`，每個 Event 為一個 JSON 物件，包含詞典 ID`id`、詞典名稱`name`和 HTML 內容`result`
+    - 如果指定參數`stream`，則會串流回傳各詞典的中間結果與最終結果，以`done`區分
 
 1. #### /api/mecab
 

@@ -176,10 +176,6 @@
 >[!WARNING]
 >**API 키** 바이두 스마트 클라우드 IAM의 Access Key, Secret Key를 사용하여 인터페이스의 BearerToken 생성 후 **API 키**로 입력하거나, `Access Key`:`Secret Key` 형식으로 직접 **API 키**에 함께 입력. 주의: 첸판 ModelBuilder의 구버전 v1 인터페이스 API Key, Secret Key와 혼용 불가.
 
-== MiniMax
-
-**API Key** https://platform.minimaxi.com/document/Fast%20access?key=66701cf51d57f38758d581b2
-
 :::
 
 ### API 애그리게이션 매니저

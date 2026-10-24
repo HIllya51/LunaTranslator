@@ -54,6 +54,8 @@
 
     그렇지 않으면 모든 사전을 조회하여 `event/text-stream`을 반환하며, 각 event는 JSON 객체로 사전 ID `id`, 사전 이름 `name`, HTML 내용 `result`를 포함합니다.
 
+    파라미터 `stream`을 지정할 경우 각 사전의 중간 결과와 최종 결과가 스트리밍으로 반환되며, `done`으로 구분됩니다.
+
 1. #### /api/mecab
 
     반드시 쿼리 파라미터 `text`를 지정해야 합니다.

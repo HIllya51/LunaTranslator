@@ -203,6 +203,7 @@
     }
     const currentUrl = new URL(window.location.href);
     currentUrl.pathname = '/api/dictionary';
+    currentUrl.searchParams.append('stream', 'true');
     const newUrl = currentUrl.toString();
     var idx = 0
 
@@ -236,31 +237,43 @@
     const word = urlParams.get('word');
     if (word) {
         document.getElementById('searchInput').value = word
+        // 流式：同一词典的中间态/最终更新同一个页签，不同词典各一个
+        const dictTabs = {}
         fetchSSE(newUrl, (data) => {
             data = JSON.parse(data)
-            klass2 = "tab-pane_1_internal"
-            klass1 = "tab-button_1_internal"
-            if (idx == 0) {
-                klass2 += " active"
-                klass1 += " active"
+            let entry = dictTabs[data.id]
+            if (!entry) {
+                idx += 1
+                let klass2 = "tab-pane_1_internal"
+                let klass1 = "tab-button_1_internal"
+                if (idx == 1) {
+                    klass2 += " active"
+                    klass1 += " active"
+                }
+                const btn = document.createElement('button')
+                btn.type = "button"
+                btn.id = `buttonid_1_internal${idx}`
+                btn.className = klass1
+                btn.setAttribute('data-tab', `tab_1_internal${idx}`)
+                btn.textContent = data.name
+                btn.onclick = () => onclickbtn_1_internal(btn.id)
+                document.getElementById('btnsdiv').appendChild(btn)
+                const pane = document.createElement('div')
+                pane.className = klass2
+                pane.id = `tab_1_internal${idx}`
+                document.getElementById('contentsdiv').appendChild(pane)
+                const content = document.createElement('div')
+                if ((data.result || '').includes(`<script>`))
+                    pane.appendChild(content)
+                else
+                    pane.attachShadow({ mode: 'open' }).appendChild(content)
+                entry = dictTabs[data.id] = { content }
             }
-            idx += 1
-            document.getElementById('btnsdiv').innerHTML +=
-                `<button type="button" onclick="onclickbtn_1_internal('buttonid_1_internal${idx}')" id="buttonid_1_internal${idx}" class="${klass1}" data-tab="tab_1_internal${idx}">${data.name}</button>`
-            let div = document.createElement('div')
-            div.className = klass2
-            div.id = `tab_1_internal${idx}`
-            document.getElementById('contentsdiv').appendChild(div)
-            let div2 = document.createElement('div')
-            if (data.result.includes(`<script>`)) {
-                div.appendChild(div2)
-                _setHTMLWithScript(div2, data.result)
-            }
-            else {
-                div2.innerHTML = data.result
-                let shadow = div.attachShadow({ mode: 'open' });
-                shadow.appendChild(div2);
-            }
+            const html = data.error ? `<pre>${data.error}</pre>` : (data.result || '')
+            if (html.includes(`<script>`))
+                _setHTMLWithScript(entry.content, html)
+            else
+                entry.content.innerHTML = html
         });
     }
 

@@ -175,10 +175,6 @@ Thay thế `{endpoint}` và `{deployName}` bằng endpoint và deployName của 
 >[!WARNING]
 >**API Key** nên được tạo bằng cách sử dụng Access Key và Secret Key của Baidu Intelligent Cloud IAM để tạo BearerToken cho giao diện, hoặc điền trực tiếp theo định dạng `Access Key`:`Secret Key` trong trường **API Key**. Lưu ý rằng đây không phải là API Key và Secret Key của phiên bản cũ v1 của Qianfan ModelBuilder; chúng không thể thay thế cho nhau.
 
-== MiniMax
-
-**API Key** https://platform.minimaxi.com/document/Fast%20access?key=66701cf51d57f38758d581b2
-
 :::
 
 ### Trình quản lý tổng hợp API

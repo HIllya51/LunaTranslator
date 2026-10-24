@@ -528,11 +528,6 @@
                 "dark": "files/static/llm_icons/cerebras_dark.svg",
                 "light": "files/static/llm_icons/cerebras.svg"
             }
-        },
-        {
-            "vis": "MiniMax",
-            "value": "https://api.minimax.chat",
-            "icon": "files/static/llm_icons/minimax.svg"
         }
     ]
 }

@@ -54,6 +54,8 @@
 
     否则会查询所有词典，返回`text/event-stream`，每个event为一个JSON对象，包含词典ID`id`、词典名称`name`和HTML内容`result`
 
+    如果指定参数`stream`，则流式返回各词典的中间结果与最终结果，以`done`区分
+
 1. #### /api/mecab
     
     必须指定查询参数`text`

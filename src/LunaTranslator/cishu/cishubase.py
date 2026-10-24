@@ -4,7 +4,7 @@ from myutils.utils import LRUCache
 from traceback import print_exc
 from myutils.commonbase import commonbase
 import uuid, hashlib
-import inspect
+import inspect, types
 from tinycss2 import parse_stylesheet, serialize
 from tinycss2.ast import (
     WhitespaceToken,
@@ -79,7 +79,14 @@ class cishubase(commonbase):
     _setting_dict = globalconfig["cishu"]
 
     @threader
-    def safesearch(self, callback, word, sentence=None):
+    def safesearch(self, callback, word, sentence=None, on_chunk=None):
+        """查词入口（流式/非流式统一）：引擎的 search 返回 str 一次性
+        回调 callback；返回生成器则流式——每个中间态调 on_chunk(html)
+        （仅显示，不落缓存），耗尽后以 return 值为最终结果回调
+        callback（只有它进缓存/Anki——中间流式过程不导出）；生成器
+        没有 return 时以最后一个中间态为最终结果（写自定义流式词典只
+        需一路 yield）。on_chunk=None 时中间态被丢弃，只回调最终结果，
+        与非流式无异。缓存命中直接 callback。"""
         if self.needinit:
             self.init()
             self.needinit = False
@@ -89,11 +96,33 @@ class cishubase(commonbase):
             if cacheresult:
                 callback(cacheresult)
                 return
+
+        def _run():
+            # 用普通函数消费生成器（multiapikeywrapper 对生成器的转发会
+            # 丢 return 值）；错误照常抛给 wrapper 做多 key 轮换
+            ret = self.search_XX(word, sentence)
+            if not isinstance(ret, types.GeneratorType):
+                return ret
+            gen = ret
+            last = None
+            while True:
+                try:
+                    chunk = next(gen)
+                except StopIteration as e:
+                    if e.value is not None:
+                        return e.value
+                    # 没有显式 return：以最后一个中间态为最终结果
+                    return last
+                if chunk:
+                    last = chunk
+                    if on_chunk:
+                        on_chunk(chunk)
+
         try:
-            res = self.multiapikeywrapper(self.search_XX)(word, sentence)
-            callback(res)
-            if key:
+            res = self.multiapikeywrapper(_run)()
+            if res and not isinstance(res, Exception) and key:
                 self.__cache_results.put(key, res)
+            callback(res)
         except Exception as e:
             print_exc()
             self.needinit = True

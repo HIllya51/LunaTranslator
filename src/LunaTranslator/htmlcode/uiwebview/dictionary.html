@@ -197,13 +197,36 @@
             background-color: yellow;
         }
     </style>
-    __luna_dict_internal_view__
+    <div id="luna_dict_internal_streamview">__luna_dict_internal_view__</div>
+    <script>
+        // 流式中间态增量更新：只替换内容节点，不整页导航（避免闪烁、
+        // 保滚动位置）。token 不匹配（页面还是旧的/没就绪）则不生效。
+        function luna_stream_update(token, html) {
+            if (window.__luna_stream_token__ !== token) return;
+            var c = document.getElementById('luna_dict_internal_streamview');
+            if (!c) return;
+            c.innerHTML = html;
+            // innerHTML 不会执行 <script>（如 mdict 的音频/图片变量替换），手动重放
+            var scripts = c.querySelectorAll('script');
+            for (var i = 0; i < scripts.length; i++) {
+                var s = document.createElement('script');
+                s.textContent = scripts[i].textContent;
+                scripts[i].parentNode.replaceChild(s, scripts[i]);
+            }
+            // 内容整体换新后，backgroundparser 打在旧元素内联样式上的
+            // 背景处理（如 article 透明化）随之丢失——重放一次
+            if (typeof handleColorSchemeChange === 'function'
+                && typeof colorSchemeQuery !== 'undefined')
+                handleColorSchemeChange(colorSchemeQuery);
+            if (window.LUNAJSObject) LUNAJSObject.luna_stream_update_ok();
+        }
+    </script>
     <script>
         const colorSchemeQuery = window.matchMedia('(prefers-color-scheme: dark)');
         function handleColorSchemeChange(e) {
             __luna_dict_internal_handle_bgcolor__
         }
         handleColorSchemeChange(colorSchemeQuery);
-        colorSchemeQuery.addEventListener('change', handleColorSchemeChange); 
+        colorSchemeQuery.addEventListener('change', handleColorSchemeChange);
     </script>
 </div>

@@ -176,10 +176,6 @@
 >[!WARNING]
 >**API Key** Для заполнения **API Key** используйте Access Key и Secret Key из Baidu Intelligent Cloud IAM для генерации BearerToken интерфейса, либо введите их напрямую в **API Key** в формате `Access Key`:`Secret Key`. Обратите внимание, что это не API Key и Secret Key устаревшей версии v1 интерфейса Qianfan ModelBuilder - они не взаимозаменяемы.
 
-== MiniMax
-
-**API Key** https://platform.minimaxi.com/document/Fast%20access?key=66701cf51d57f38758d581b2
-
 :::
 
 ### Менеджер агрегации API

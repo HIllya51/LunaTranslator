@@ -1611,6 +1611,8 @@ class WordViewer(QWidget):
     from_webview_search_word = pyqtSignal(str)
     from_webview_search_word_in_new_window = pyqtSignal(str)
     __show_dict_result = pyqtSignal(object, str, object)
+
+    __stream_chunk = pyqtSignal(object, str, str)
     first_result_shown = pyqtSignal()
     use_bg_color_parser = False
 
@@ -1663,37 +1665,117 @@ class WordViewer(QWidget):
                     self.thisps.pop(k, None)
                     self.bad_result.add(k)
                     continue
+            # 引擎的 search 返回生成器则流式（中间态进显示：tab 提前创建+
+            # loading；最终结果才进 cache_results——Anki 只导出最终结果）；
+            # 返回 str 则 on_chunk 永不触发，与非流式无异
             _cishu.safesearch(
                 functools.partial(self.__show_dict_result.emit, current, k),
                 word,
                 sentence,
+                on_chunk=functools.partial(self.__stream_chunk.emit, current, k),
             )
 
     @tryprint
+    def __stream_chunk_function(self, timestamp, k, html: str):
+        if self.current != timestamp:
+            return
+        if not html or k in self.bad_result:
+            return
+        if k in self.cache_results:
+            return  # 迟到的 chunk（已完成）
+        if self._render_busy:
+            self._chunk_queue.append((timestamp, k, html))
+            return
+        self.__process_chunk(timestamp, k, html)
+        self.__drain_chunk_queue()
+
+    def __drain_chunk_queue(self):
+        while self._chunk_queue:
+            ts, k, html = self._chunk_queue.pop(0)
+            if self.current == ts and k not in self.cache_results:
+                self.__process_chunk(ts, k, html)
+
+    def __process_chunk(self, timestamp, k, html: str):
+        # 先存缓冲：下面的自动切换（tabclicked）会立刻读取它渲染
+        self.stream_buffers[k] = html
+        if k not in self.streaming:
+            # 首个中间态：tab 提前创建（同 __show_dict_result_function
+            # 的排序插入与自动切换），进入 loading 态
+            self.streaming.add(k)
+            self.__start_spinner()
+            self.thisps.setdefault(k, 0)
+            thisp = self.thisps.get(k, 0)
+            idx = 0
+            for kk in self.tabks:
+                if self.thisps.get(kk, 0) >= thisp:
+                    idx += 1
+            self.tabks.insert(idx, k)
+            self.tab.insertTab(idx, dynamiccishuname(k))
+            if not self.hasclicked:
+                if self.tabonehide or thisp == max(self.thisps.values()):
+                    self.tab.setCurrentIndex(idx)
+                    # 直接以流式态渲染（读缓冲；经 tabBarClicked.emit 会
+                    # 以非流式路径查 cache_results 而 KeyError 跳过渲染）
+                    self.tabclicked(idx, streaming=True)
+                    self.hasclicked = True
+            if self.__firstresult != timestamp:
+                self.__firstresult = timestamp
+                self.first_result_shown.emit()
+        if not self.hasclicked:
+            return
+        if self.tabks[self.tab.currentIndex()] == k:
+            self.tabclicked(self.tab.currentIndex(), streaming=True)
+
     def __show_dict_result_function(self, timestamp, k, res: "str|Exception"):
         if self.current != timestamp:
             return
+        was_streaming = k in self.streaming
+        if was_streaming:
+            self.streaming.discard(k)
+            self.stream_buffers.pop(k, None)
+            self.__stop_spinner_if_idle()
         if not res:
+            if was_streaming and k in self.tabks:
+                # 流式中途失败：移除已提前创建的 tab
+                idx = self.tabks.index(k)
+                self.tab.removeTab(idx)
+                self.tabks.pop(idx)
             if (
                 not self.hasclicked
-                and self.thisps[k] == max(self.thisps.values())
+                and self.thisps.get(k) == max(self.thisps.values())
                 and len(self.cache_results)
             ):
                 self.tab.setCurrentIndex(0)
                 self.tab.tabBarClicked.emit(0)
                 self.hasclicked = True
-            self.thisps.pop(k)
+            self.thisps.pop(k, None)
             self.bad_result.add(k)
             return
         self.cache_results[k] = res
+        if was_streaming:
+            if k in self.tabks:
+                idx = self.tabks.index(k)
+                self.tab.setTabText(idx, dynamiccishuname(k))
+            if not self.hasclicked:
+                # 与非流式路径一致的自动切换兜底（中间态可能从未触发过
+                # 自动切换，如 thisps 中有更高优先级的残留项时）
+                thisp = self.thisps.get(k, 0)
+                if self.tabonehide or thisp == max(self.thisps.values()):
+                    self.tab.setCurrentIndex(0)
+                    self.tab.tabBarClicked.emit(0)
+                    self.hasclicked = True
+            if self.hasclicked and self.tabks[self.tab.currentIndex()] == k:
+                self.tabclicked(self.tab.currentIndex())
+            return
 
         thisp = self.thisps.get(k, 0)
         idx = 0
         for kk in self.tabks:
             if self.thisps.get(kk, 0) >= thisp:
                 idx += 1
-        self.tabks.insert(idx, k)
-        self.tab.insertTab(idx, (dynamiccishuname(k)))
+        if k not in self.tabks:
+            self.tabks.insert(idx, k)
+            self.tab.insertTab(idx, (dynamiccishuname(k)))
         if not self.hasclicked:
             if self.tabonehide or thisp == max(self.thisps.values()):
                 self.tab.setCurrentIndex(0)
@@ -1703,11 +1785,53 @@ class WordViewer(QWidget):
             self.__firstresult = timestamp
             self.first_result_shown.emit()
 
+    # ---- 流式 loading 指示（tab 标题转字符）----
+    def __start_spinner(self):
+        if not self._spinner_timer.isActive():
+            self._spinner_idx = 0
+            self._spinner_timer.start()
+
+    def __stop_spinner_if_idle(self):
+        if not self.streaming:
+            self._spinner_timer.stop()
+            # 复位所有 tab 文本（防极端时序下残留 spinner 字符）
+            for i, k in enumerate(self.tabks):
+                if k in self.streaming:
+                    continue
+                self.tab.setTabText(i, dynamiccishuname(k))
+
+    def __spinner_tick(self):
+        if not self.streaming:
+            self._spinner_timer.stop()
+            return
+        self._spinner_idx = (self._spinner_idx + 1) % len(self._spinner_frames)
+        frame = self._spinner_frames[self._spinner_idx]
+        for i, k in enumerate(self.tabks):
+            if k in self.streaming:
+                self.tab.setTabText(
+                    i, dynamiccishuname(k) + " " + frame)
+
+    def is_dict_streaming(self, k):
+        """词典 k 是否仍在流式加载中。"""
+        return k in self.streaming
+
+    def get_completed_dict_result(self, k):
+        """流式加载完成后的完整结果（Anki 导出用）：仍在流式或无结果
+        返回 None——中间流式过程不会导出。"""
+        if k in self.streaming:
+            return None
+        v = self.cache_results.get(k)
+        if isinstance(v, Exception):
+            return None
+        return v
+
     def generate_dictionarys(self):
         res = []
         tabks = []
         for k in self.cache_results:
             if k in globalconfig["ignoredict"]:
+                continue
+            if k in self.streaming:
                 continue
             v = self.cache_results_highlighted.get(k, self.cache_results[k])
             if (not v) or (isinstance(v, Exception)):
@@ -1727,6 +1851,8 @@ class WordViewer(QWidget):
         pxx = 999
         use = 0
         for k in globalconfig["cishuvisrank"]:
+            if k not in globalconfig["cishu"]:
+                continue  # 残留项（引擎已删除），不占优先级序号
             self.thisps[k] = pxx
             pxx -= 1
             if unuse and k in unuse:
@@ -1745,6 +1871,15 @@ class WordViewer(QWidget):
         self.bad_result.clear()
         self.cache_results_highlighted.clear()
         self.savemdictfoldstate.clear()
+        self.streaming.clear()
+        self.stream_buffers.clear()
+        self._last_rendered = None
+        self._rendered_stream_k = None
+        self._stream_token = None
+        self._stream_shown = True
+        self._chunk_queue.clear()
+        self._render_pending = False
+        self._spinner_timer.stop()
 
     def __tabcurrentChanged(self, idx):
         if self.tabcurrentindex == idx:
@@ -1787,6 +1922,12 @@ class WordViewer(QWidget):
             globalconfig["mecabautoreadembedaudio"] = autoread.isChecked()
 
     def __internal_on_menu(self, selectedtext: str):
+        # 当前词典仍在流式加载中：不提供加亮（对未完成内容的加亮
+        # 会落在中间态上，最终渲染即丢失）
+        try:
+            _cursreaming = self.tabks[self.tab.currentIndex()] in self.streaming
+        except:
+            _cursreaming = False
         if selectedtext:
 
             def __():
@@ -1826,20 +1967,32 @@ class WordViewer(QWidget):
                     text="朗读",
                     clicked=functools.partial(gobject.base.read_text, selectedtext),
                 ),
-                MenuItem(
-                    text="加亮",
-                    clicked=lambda: self.textOutput.eval("highlightSelection()"),
+                (
+                    MenuItem(
+                        text="加亮",
+                        clicked=lambda: self.textOutput.eval("highlightSelection()"),
+                    )
+                    if not _cursreaming
+                    else None
                 ),
             ]
         else:
             return [
-                MenuItem(
-                    text="加亮模式",
-                    clicked=self.switch_hightlightmode,
-                    checkable=True,
-                    checked=self.ishightlight,
+                (
+                    MenuItem(
+                        text="加亮模式",
+                        clicked=self.switch_hightlightmode,
+                        checkable=True,
+                        checked=self.ishightlight,
+                    )
+                    if not _cursreaming
+                    else None
                 ),
-                MenuItem(text="清除加亮", clicked=self.clear_hightlight),
+                (
+                    MenuItem(text="清除加亮", clicked=self.clear_hightlight)
+                    if not _cursreaming
+                    else None
+                ),
             ]
 
     def __init__(self, parent=None, tabonehide=False, transp=False):
@@ -1856,8 +2009,35 @@ class WordViewer(QWidget):
         self.cache_results = {}
         self.bad_result = set()
         self.cache_results_highlighted = {}
+        # 流式状态：streaming=未完成的词典键集，stream_buffers=中间态
+        # HTML（仅显示）；spinner 在 tab 标题上转（loading 指示）
+        self.streaming = set()
+        self.stream_buffers = {}
+        # 最近一次已渲染的完整 html（去重：内容未变不重复 setHtml）
+        self._last_rendered = None
+        # 流式增量更新状态：_rendered_stream_k=当前页是哪个词典的流式
+        # 中间态；_stream_token=该页令牌（防 eval 落在旧页上误生效）；
+        # _stream_shown=页面是否已确认显示 _last_rendered（eval 更新经
+        # luna_stream_update 回执确认，未确认则最终渲染不跳过）
+        self._rendered_stream_k = None
+        self._stream_token = None
+        self._stream_shown = True
+        # 渲染重入门控：setHtml 期间原生层会泵消息队列（WaitForLoad 等），
+        # 排队的流式 chunk 信号会被嵌套执行——嵌套 setHtml 直接崩；渲染
+        # 中进来的重渲染挂起，完成后经 singleShot 串行补一次
+        self._render_busy = False
+        self._render_pending = False
+        # setHtml 泵消息（WebView2 WaitForLoad 的 GetMessage 循环）期间到达
+        # 的流式 chunk：嵌套做 UI 变更/渲染会崩，入队到渲染完成后串行处理
+        self._chunk_queue = []
+        self._spinner_frames = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]
+        self._spinner_idx = 0
+        self._spinner_timer = QTimer(self)
+        self._spinner_timer.setInterval(120)
+        self._spinner_timer.timeout.connect(self.__spinner_tick)
         self.tab = CustomTabBar()
         self.__show_dict_result.connect(self.__show_dict_result_function)
+        self.__stream_chunk.connect(self.__stream_chunk_function)
         self.tab.tabBarClicked.connect(self.tabclicked)
 
         self.tabcurrentindex = -1
@@ -1898,6 +2078,7 @@ class WordViewer(QWidget):
             "luna_recheck_current_html", self.luna_recheck_current_html
         )
         self.textOutput.bind("luna_search_word", self.from_webview_search_word.emit)
+        self.textOutput.bind("luna_stream_update_ok", self.__stream_update_ok)
         self.textOutput.bind(
             "luna_audio_play_b64",
             lambda b64: gobject.base.audioplayer.play(
@@ -1931,17 +2112,55 @@ class WordViewer(QWidget):
         if k in self.cache_results_highlighted:
             self.cache_results_highlighted.pop(k)
 
-    def tabclicked(self, idx):
+    def tabclicked(self, idx, streaming=False):
         buttons = QApplication.mouseButtons()
 
         if buttons == Qt.MouseButton.RightButton:
             return self.tabmenu(idx)
 
+        if self._render_busy:
+            # setHtml 泵消息期间被嵌套调用：挂起，外层渲染完成后补
+            self._render_pending = True
+            return
+        self._render_busy = True
+        try:
+            self.__tabclicked_render(idx, streaming)
+        finally:
+            self._render_busy = False
+        self.__drain_chunk_queue()
+        if self._render_pending:
+            self._render_pending = False
+            QTimer.singleShot(0, self.__render_current_deferred)
+
+    def __render_current_deferred(self):
+        idx = self.tab.currentIndex()
+        if 0 <= idx < len(self.tabks):
+            self.tabclicked(idx, self.tabks[idx] in self.streaming)
+
+    def __stream_update_ok(self):
+        # luna_stream_update 应用成功的回执（webview 消息，主线程回调）。
+        # eval 更新可能落在未就绪的旧页上而失效——未确认时，内容相同的
+        # 最终渲染不跳过，整页重渲自愈
+        self._stream_shown = True
+
+    def __tabclicked_render(self, idx, streaming):
         self.tab.setCurrentIndex(idx)
         self.hasclicked = True
         try:
             k = self.tabks[idx]
-            html = self.cache_results_highlighted.get(k, self.cache_results[k])
+            # 以实际流式状态为准（调用方参数可能未带，如用户点击页签）：
+            # 决定走增量更新、以及是否附加自动朗读脚本
+            streaming = k in self.streaming
+            # 注意不能写成 get(k, cache_results[k])——default 会立即求值，
+            # 流式中间态时 cache_results 尚无 k，KeyError 会吞掉整个渲染
+            html = self.cache_results_highlighted.get(k, None)
+            if html is None:
+                # 流式中间态：从缓冲取（cache_results 尚无最终结果）
+                html = self.stream_buffers.get(k, None)
+            if html is None:
+                html = self.cache_results.get(k, None)
+            if html is None:
+                return
             backgroundparser = gobject.base.cishus[k].backgroundparser
             use_github_md_css = gobject.base.cishus[k].use_github_md_css
         except:
@@ -1959,14 +2178,27 @@ class WordViewer(QWidget):
             html += "<br>".join(
                 traceback.format_exception(type(exp), exp, exp.__traceback__)
             )
-            html += '<script>document.querySelector("#luna_dict_internal_view > article").style.backgroundColor="rgba(0,0,0,0)"</script>'
+            html += '<script>document.querySelector("#luna_dict_internal_view article").style.backgroundColor="rgba(0,0,0,0)"</script>'
             use_github_md_css = True
         if use_github_md_css:
             with open(
                 r"files\static\github-markdown-css\template.html", "r", encoding="utf8"
             ) as ff:
                 template = ff.read()
+            # 模板里的 <link> 异步加载：流式增量更新时旧 link 随旧 DOM
+            # 移除（样式即刻失效）、新 link 未就绪，每次更新都会闪无样式
+            # 内容——这里换成内联 <style>（同步应用，无空窗）
+            with open(
+                r"files\static\github-markdown-css\github-markdown.css",
+                "r",
+                encoding="utf8",
+            ) as ff:
+                template = template.replace(
+                    '<link rel="stylesheet" href="../../../files/static/github-markdown-css/github-markdown.css">',
+                    "<style>" + ff.read() + "</style>",
+                )
             html = template.replace("__MARKDOWN__BODY__", html)
+        content_html = html  # 内容节点（流式增量更新用）
         if self.use_bg_color_parser:
             backgroundparser = backgroundparser.replace(
                 "{color}", "(e.matches ? '' : 'rgba(0,0,0,0)')"
@@ -1977,8 +2209,43 @@ class WordViewer(QWidget):
             "__luna_dict_internal_handle_bgcolor__", backgroundparser
         )
         html += self.loadmdictfoldstate(k)
-        html += self.__parsemaybeplaymdictaudio(html)
-
+        if not streaming:
+            # 流式中间态不附加自动朗读脚本——每次中间态重渲染都会重放
+            html += self.__parsemaybeplaymdictaudio(html)
+        if self._rendered_stream_k == k:
+            # 增量更新：当前页已是该词典的流式页（中间态，或刚流完的
+            # 最终结果），只换内容节点（luna_stream_update），不整页导
+            # 航——中间态连续到达不再逐个 navigate 闪烁；完成时用户可
+            # 能已在阅读，整页刷新会丢滚动位置。页面令牌不匹配（首个
+            # 中间态的导航尚未完成，eval 落在旧页上）则本次不生效，由
+            # 下一个中间态或最终渲染覆盖
+            if html == self._last_rendered and self._stream_shown:
+                return
+            if not streaming:
+                # 最终结果：自动朗读脚本附在内容里（内容中的 <script>
+                # 会被 luna_stream_update 重放执行）
+                content_html += self.__parsemaybeplaymdictaudio(html)
+            self._stream_shown = False
+            self._last_rendered = html
+            self.textOutput.eval(
+                "luna_stream_update({},{})".format(
+                    json.dumps(self._stream_token), json.dumps(content_html)
+                )
+            )
+            return
+        if html == self._last_rendered and self._stream_shown:
+            # 内容未变（如最终结果==最后一个中间态）且页面已确认显示：
+            # 跳过重复渲染
+            return
+        self._last_rendered = html
+        self._rendered_stream_k = k if streaming else None
+        self._stream_shown = True
+        if streaming:
+            # 页面令牌：防止旧页面误应用流式更新
+            self._stream_token = str(uuid.uuid4())
+            html += "<script>window.__luna_stream_token__={}</script>".format(
+                json.dumps(self._stream_token)
+            )
         self.textOutput.setHtml(html)
 
     def __parsemaybeplaymdictaudio(self, html):
