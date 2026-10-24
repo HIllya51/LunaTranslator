@@ -39,6 +39,11 @@ STDAPI
 WindowsDeleteString(
     _In_opt_ HSTRING string);
 
+STDAPI
+WindowsDuplicateString(
+    _In_opt_ HSTRING string,
+    _Outptr_result_maybenull_ _Result_nullonfailure_ HSTRING *newString);
+
 STDAPI_(PCWSTR)
 WindowsGetStringRawBuffer(
     _In_opt_ HSTRING string,

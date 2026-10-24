@@ -755,6 +755,50 @@ typedef IIterable<HSTRING> __FIIterable_1_HSTRING_t;
 #endif // !defined(RO_NO_TEMPLATE_NAME)
 #endif /* DEF___FIIterable_1_HSTRING_USE */
 
+#ifndef DEF___FIIterator_1_HSTRING_USE
+#define DEF___FIIterator_1_HSTRING_USE
+#if !defined(RO_NO_TEMPLATE_NAME)
+namespace ABI { namespace Windows { namespace Foundation { namespace Collections {
+template <>
+struct __declspec(uuid("8c304ebb-6615-50a4-8829-879ecd443236"))
+IIterator<HSTRING> : IIterator_impl<HSTRING>
+{
+    static const wchar_t* z_get_rc_name_impl()
+    {
+        return L"Windows.Foundation.Collections.IIterator`1<String>";
+    }
+};
+// Define a typedef for the parameterized interface specialization's mangled name.
+// This allows code which uses the mangled name for the parameterized interface to access the
+// correct parameterized interface specialization.
+typedef IIterator<HSTRING> __FIIterator_1_HSTRING_t;
+#define __FIIterator_1_HSTRING ABI::Windows::Foundation::Collections::__FIIterator_1_HSTRING_t
+/* Collections */ } /* Foundation */ } /* Windows */ } /* ABI */ }
+
+#endif // !defined(RO_NO_TEMPLATE_NAME)
+#endif /* DEF___FIIterator_1_HSTRING_USE */
+
+#ifndef DEF___FIAsyncOperationCompletedHandler_1_HSTRING_USE
+#define DEF___FIAsyncOperationCompletedHandler_1_HSTRING_USE
+#if !defined(RO_NO_TEMPLATE_NAME)
+namespace ABI { namespace Windows { namespace Foundation {
+template <>
+struct __declspec(uuid("b79a741f-7fb5-50ae-9e99-911201ec3d41"))
+IAsyncOperationCompletedHandler<HSTRING> : IAsyncOperationCompletedHandler_impl<HSTRING>
+{
+    static const wchar_t* z_get_rc_name_impl()
+    {
+        return L"Windows.Foundation.AsyncOperationCompletedHandler`1<String>";
+    }
+};
+// Define a typedef for the parameterized interface specialization's mangled name.
+typedef IAsyncOperationCompletedHandler<HSTRING> __FIAsyncOperationCompletedHandler_1_HSTRING_t;
+#define __FIAsyncOperationCompletedHandler_1_HSTRING ABI::Windows::Foundation::__FIAsyncOperationCompletedHandler_1_HSTRING_t
+/* Foundation */ } /* Windows */ } /* ABI */ }
+
+#endif // !defined(RO_NO_TEMPLATE_NAME)
+#endif /* DEF___FIAsyncOperationCompletedHandler_1_HSTRING_USE */
+
 #if !defined(____x_ABI_CWindows_CWeb_CUI_CIWebViewControlNavigationStartingEventArgs_INTERFACE_DEFINED__)
 #define ____x_ABI_CWindows_CWeb_CUI_CIWebViewControlNavigationStartingEventArgs_INTERFACE_DEFINED__
 extern const __declspec(selectany) _Null_terminated_ WCHAR InterfaceName_Windows_Web_UI_IWebViewControlNavigationStartingEventArgs[] = L"Windows.Web.UI.IWebViewControlNavigationStartingEventArgs";
