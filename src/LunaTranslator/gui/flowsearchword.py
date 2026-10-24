@@ -491,7 +491,13 @@ class WordViewTooltip(resizableframeless, DraggableQWidget):
         if self.__state != 2:
             return
         if fromhover and not force:
-            if word == self.lastword:
+            # 注意不能只看 lastword：Leave()/close() 会把它清掉，但窗口
+            # 可能还开着且正显示同一个词——此时同词 hover 再来（阅读中
+            # 鼠标晃出去又回来）会触发完整重查，整页刷新丢滚动位置。
+            # 窗口可见且正在显示该词时只追踪不重查；隐藏时才完整重查。
+            if word == self.lastword or (
+                not append and self.isVisible() and word == self.view.currWord
+            ):
                 return self.moveresult_1()
             self.lastword = word
             if not show:

@@ -1877,6 +1877,7 @@ class WordViewer(QWidget):
         self._rendered_stream_k = None
         self._stream_token = None
         self._stream_shown = True
+        self._stream_confirmed = False
         self._chunk_queue.clear()
         self._render_pending = False
         self._spinner_timer.stop()
@@ -2018,10 +2019,14 @@ class WordViewer(QWidget):
         # 流式增量更新状态：_rendered_stream_k=当前页是哪个词典的流式
         # 中间态；_stream_token=该页令牌（防 eval 落在旧页上误生效）；
         # _stream_shown=页面是否已确认显示 _last_rendered（eval 更新经
-        # luna_stream_update 回执确认，未确认则最终渲染不跳过）
+        # luna_stream_update 回执确认，未确认则最终渲染不跳过）；
+        # _stream_confirmed=本次查词中 eval 通道是否曾回执过（最终结果
+        # 走增量的门槛——回执是异步的，最后一个中间态的回执常晚于最终
+        # 结果到达，按"上一次已回执"判定会让最终结果整页刷新丢滚动）
         self._rendered_stream_k = None
         self._stream_token = None
         self._stream_shown = True
+        self._stream_confirmed = False
         # 渲染重入门控：setHtml 期间原生层会泵消息队列（WaitForLoad 等），
         # 排队的流式 chunk 信号会被嵌套执行——嵌套 setHtml 直接崩；渲染
         # 中进来的重渲染挂起，完成后经 singleShot 串行补一次
@@ -2139,9 +2144,11 @@ class WordViewer(QWidget):
 
     def __stream_update_ok(self):
         # luna_stream_update 应用成功的回执（webview 消息，主线程回调）。
-        # eval 更新可能落在未就绪的旧页上而失效——未确认时，内容相同的
-        # 最终渲染不跳过，整页重渲自愈
+        # _stream_shown：页面已确认显示 _last_rendered（去重跳过的依据）；
+        # _stream_confirmed：eval 通道工作正常（本次查词至少成功过一次，
+        # 最终结果走增量的门槛——坏后端从未回执，最终整页渲染自愈）
         self._stream_shown = True
+        self._stream_confirmed = True
 
     def __tabclicked_render(self, idx, streaming):
         self.tab.setCurrentIndex(idx)
@@ -2212,7 +2219,7 @@ class WordViewer(QWidget):
         if not streaming:
             # 流式中间态不附加自动朗读脚本——每次中间态重渲染都会重放
             html += self.__parsemaybeplaymdictaudio(html)
-        if self._rendered_stream_k == k and (streaming or self._stream_shown):
+        if self._rendered_stream_k == k and (streaming or self._stream_confirmed):
             # 当前页已是该词典的流式页（中间态，或刚流完的最终结果）：
             # 只换内容节点（luna_stream_update），不整页导航——中间态连
             # 续到达不再逐个 navigate 闪烁；完成时用户可能已在阅读，整
