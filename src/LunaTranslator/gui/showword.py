@@ -2212,18 +2212,20 @@ class WordViewer(QWidget):
         if not streaming:
             # 流式中间态不附加自动朗读脚本——每次中间态重渲染都会重放
             html += self.__parsemaybeplaymdictaudio(html)
-        if self._rendered_stream_k == k:
-            # 增量更新：当前页已是该词典的流式页（中间态，或刚流完的
-            # 最终结果），只换内容节点（luna_stream_update），不整页导
-            # 航——中间态连续到达不再逐个 navigate 闪烁；完成时用户可
-            # 能已在阅读，整页刷新会丢滚动位置。页面令牌不匹配（首个
-            # 中间态的导航尚未完成，eval 落在旧页上）则本次不生效，由
-            # 下一个中间态或最终渲染覆盖
+        if self._rendered_stream_k == k and (streaming or self._stream_shown):
+            # 当前页已是该词典的流式页（中间态，或刚流完的最终结果）：
+            # 只换内容节点（luna_stream_update），不整页导航——中间态连
+            # 续到达不再逐个 navigate 闪烁；完成时用户可能已在阅读，整
+            # 页刷新会丢滚动位置。页面令牌不匹配（首个中间态的导航尚未
+            # 完成，eval 落在旧页上）则本次不生效，由下一个中间态或最
+            # 终渲染覆盖。最终结果仅在上次增量更新已回执确认时才走增
+            # 量——后端跑不动 eval（如旧版 IE）收不到回执，自动落回整
+            # 页渲染自愈，不会卡在第一个中间态
             if html == self._last_rendered and self._stream_shown:
                 return
             if not streaming:
-                # 最终结果：自动朗读脚本附在内容里（内容中的 <script>
-                # 会被 luna_stream_update 重放执行）
+                # 最终结果：自动朗读脚本附在内容里（内容中的
+                # <script> 会被 luna_stream_update 重放执行）
                 content_html += self.__parsemaybeplaymdictaudio(html)
             self._stream_shown = False
             self._last_rendered = html

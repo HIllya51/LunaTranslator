@@ -21,7 +21,9 @@ HRESULT await(ABI::Windows::Foundation::IAsyncOperation<T *> *pAsync, IT **ppRes
 {
     CoAsyncTaskWaiter co;
     HRESULT hrCallback = E_FAIL;
-    auto hr = pAsync->put_Completed(new awaithelper_CompleteCallback<T, IT>(pAsync, co, hrCallback, ppResult));
+    CComPtr<awaithelper_CompleteCallback<T, IT>> handler(
+        new awaithelper_CompleteCallback<T, IT>(pAsync, co, hrCallback, ppResult));
+    auto hr = pAsync->put_Completed(handler);
     if (FAILED(hr))
         return hr;
     co.Wait();

@@ -1,6 +1,102 @@
 #include "edgehtml.hpp"
 #include "../winrt/await.hpp"
 
+namespace
+{
+    struct EdgeHtmlStringIterator
+        : ComImpl<ABI::Windows::Foundation::Collections::IIterator<HSTRING>>
+    {
+        HSTRING hstr = nullptr;
+        bool done = false;
+        ~EdgeHtmlStringIterator()
+        {
+            if (hstr)
+                WindowsDeleteString(hstr);
+        }
+        HRESULT STDMETHODCALLTYPE GetIids(ULONG *iidCount, IID **iids) override
+        {
+            *iidCount = 0;
+            *iids = nullptr;
+            return S_OK;
+        }
+        HRESULT STDMETHODCALLTYPE GetRuntimeClassName(HSTRING *className) override
+        {
+            *className = nullptr;
+            return E_NOTIMPL;
+        }
+        HRESULT STDMETHODCALLTYPE GetTrustLevel(TrustLevel *trustLevel) override
+        {
+            *trustLevel = BaseTrust;
+            return S_OK;
+        }
+        HRESULT STDMETHODCALLTYPE get_Current(HSTRING *current) override
+        {
+            if (done || !hstr)
+                return E_BOUNDS;
+            return WindowsDuplicateString(hstr, current);
+        }
+        HRESULT STDMETHODCALLTYPE get_HasCurrent(boolean *hasCurrent) override
+        {
+            *hasCurrent = (!done && hstr) ? TRUE : FALSE;
+            return S_OK;
+        }
+        HRESULT STDMETHODCALLTYPE MoveNext(boolean *hasCurrent) override
+        {
+            done = true;
+            return get_HasCurrent(hasCurrent);
+        }
+        HRESULT STDMETHODCALLTYPE GetMany(
+            UINT32 capacity, HSTRING *value, UINT32 *actual) override
+        {
+            *actual = 0;
+            if (capacity && !done && hstr)
+            {
+                auto hr = WindowsDuplicateString(hstr, value);
+                if (FAILED(hr))
+                    return hr;
+                *actual = 1;
+                done = true;
+            }
+            return S_OK;
+        }
+    };
+    struct EdgeHtmlStringIterable
+        : ComImpl<ABI::Windows::Foundation::Collections::IIterable<HSTRING>>
+    {
+        HSTRING hstr = nullptr;
+        ~EdgeHtmlStringIterable()
+        {
+            if (hstr)
+                WindowsDeleteString(hstr);
+        }
+        HRESULT STDMETHODCALLTYPE GetIids(ULONG *iidCount, IID **iids) override
+        {
+            *iidCount = 0;
+            *iids = nullptr;
+            return S_OK;
+        }
+        HRESULT STDMETHODCALLTYPE GetRuntimeClassName(HSTRING *className) override
+        {
+            *className = nullptr;
+            return E_NOTIMPL;
+        }
+        HRESULT STDMETHODCALLTYPE GetTrustLevel(TrustLevel *trustLevel) override
+        {
+            *trustLevel = BaseTrust;
+            return S_OK;
+        }
+        HRESULT STDMETHODCALLTYPE First(
+            ABI::Windows::Foundation::Collections::IIterator<HSTRING> **first) override
+        {
+            auto it = new EdgeHtmlStringIterator();
+            if (hstr)
+                WindowsDuplicateString(hstr, &it->hstr);
+            *first = it;
+            return S_OK;
+        }
+    };
+}
+
 double EdgeHtml::get_ZoomFactor()
 {
     DOUBLE scale;
@@ -24,17 +120,16 @@ void EdgeHtml::resize(int w, int h)
 }
 void EdgeHtml::evaljs(const wchar_t *js, evaljs_callback_t cb)
 {
-    CComPtr<IPropertyValueStatics> propertyValueStatics;
-    CHECK_FAILURE_NORET(GetActivationFactory(AutoHString(RuntimeClass_Windows_Foundation_PropertyValue), &propertyValueStatics));
-    CComPtr<IInspectable> inspectable;
-    HSTRING arr[1] = {AutoHString(js)};
-    CHECK_FAILURE_NORET(propertyValueStatics->CreateStringArray(1, arr, &inspectable));
-    CComPtr<IVectorView<HSTRING>> args;
-    CHECK_FAILURE_NORET(inspectable.QueryInterface(&args));
+    CComPtr<EdgeHtmlStringIterable> iterable = new EdgeHtmlStringIterable();
+    CHECK_FAILURE_NORET(WindowsCreateString(js, lstrlenW(js), &iterable->hstr));
     CComPtr<ABI::Windows::Foundation::IAsyncOperation<HSTRING>> asyncOp;
-    CComPtr<IIterable<HSTRING>> ihs;
-    CHECK_FAILURE_NORET(args.QueryInterface(&ihs));
-    control->InvokeScriptAsync(AutoHString(L"eval"), ihs, &asyncOp);
+    CHECK_FAILURE_NORET(control->InvokeScriptAsync(AutoHString(L"eval"), iterable, &asyncOp));
+    if (cb)
+    {
+        AutoHString result;
+        CHECK_FAILURE_NORET(await(asyncOp.p, &result));
+        cb(result);
+    }
 }
 void EdgeHtml::navigate(const wchar_t *u)
 {
