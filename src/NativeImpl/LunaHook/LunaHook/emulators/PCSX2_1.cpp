@@ -111,6 +111,13 @@ namespace
         strReplace(s, "#r");
         buffer->from(s);
     }
+    void SLPM65370(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        s = re::sub(s, R"((\x81\x40)*\n(\x81\x40)*)");
+        s = re::sub(s, R"(^(\x81\x40)*)");
+        buffer->from(s);
+    }
     void FSLPM65914(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strAW();
@@ -2786,6 +2793,8 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x17e928, {USING_CHAR | CODEC_UTF16, PCSX2_REG_OFFSET(a1), 0, DevilSummonerGlyph, 0, "SLPM-66246"}},
     // デビルサマナー 葛葉ライドウ 対 アバドン王 Plus
     {0x193720, {USING_CHAR | CODEC_UTF16, PCSX2_REG_OFFSET(a1), 0, DevilSummonerGlyph, 0, "SLPM-66679"}},
+    // テニスの王子様 SWEAT&TEARS 2
+    {0x15C430, {FULL_STRING, PCSX2_REG_OFFSET(a1), 0, 0, SLPM65370, "SLPM-65370"}},
     // テニスの王子様 ドキドキサバイバル 山麓のMystic
     {0x15e1b0, {USING_CHAR | CODEC_UTF16, PCSX2_REG_OFFSET(a3), 0, SLPM66219<1>, 0, "SLPM-66608"}},
     // テニスの王子様 ～学園祭の王子様～
