@@ -101,7 +101,7 @@ def gethookgrid_em(dic=None):
             "显示模式",
             "",
             D_getsimplecombobox(
-                ["翻译", "原文_翻译", "翻译_原文"],
+                ["翻译", "原文_翻译", "翻译_原文", "原文"],
                 dic,
                 "displaymode",
                 default=0,

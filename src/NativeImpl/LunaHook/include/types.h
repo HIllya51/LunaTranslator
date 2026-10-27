@@ -367,7 +367,8 @@ enum class Displaymode
 {
 	TRANS,
 	ORI_TRANS,
-	TRANS_ORI
+	TRANS_ORI,
+	ORI,
 };
 struct CommonSharedMem
 {

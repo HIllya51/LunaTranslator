@@ -276,6 +276,11 @@ bool checktranslatedok(TextBuffer buff)
 }
 bool TextHook::waitfornotify(TextBuffer *buff, ThreadParam tp)
 {
+  if (commonsharedmem->displaymode == Displaymode::ORI)
+  {
+    solvefont(hp);
+    return false;
+  }
   auto hostcodepage = hp.codepage ? hp.codepage : (commonsharedmem->codepage ? commonsharedmem->codepage : hp.detectedCodepage);
   if (hp.isAscii() && !hostcodepage)
   {
