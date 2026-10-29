@@ -166,15 +166,29 @@ def __rs():
         dic=ui_settings,
         kRdf=0,
     )
-    return getboxlayout(
-        [
-            "窗口特效",
-            lay,
-            "",
-            getsmalllabel("圆角"),
-            spin,
-        ]
-    )
+
+    # 卡内标签字体与单行卡一致（15px）——createsomecontrols 里的
+    # 阴影/使用系统圆角等 getsmalllabel 是默认字号
+    def _setlabelfont(item):
+        if isinstance(item, QLayout):
+            for i in range(item.count()):
+                _it = item.itemAt(i)
+                if _it.widget():
+                    _setlabelfont(_it.widget())
+                elif _it.layout():
+                    _setlabelfont(_it.layout())
+        elif isinstance(item, QLabel):
+            _f = item.font()
+            _f.setPixelSize(15)
+            item.setFont(_f)
+
+    for _ in (lay, spin):
+        _setlabelfont(_)
+    yuanjiaolbl = getsmalllabel("圆角")()
+    _setlabelfont(yuanjiaolbl)
+    # 与页面其他行同款卡片（高度/边距/标题字体）。fill=True：标题紧挨
+    # 特效下拉，下拉与圆角组之间留 stretch
+    return makecardrow("窗口特效", lay, 1, yuanjiaolbl, spin, fill=True)
 
 
 def switch_darklight():
@@ -205,13 +219,7 @@ def uisetting(self):
     autohideexp.addContentWidget(getboxwidget(["隐藏延迟_(s)", 1, delay]))
 
     __ = mainuisetting(self) + [
-        [
-            dict(
-                type="grid",
-                card=True,
-                grid=([__rs],),
-            )
-        ],
+        [(__rs(), 0)],
         [
             (
                 makecardrow(

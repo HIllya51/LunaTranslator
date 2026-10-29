@@ -230,7 +230,8 @@ def initinternal(self, names):
                     callback=lambda: selectdebugfile("selfbuild_cishu.py"),
                     icon="fa.edit",
                 ),
-                "", ""
+                "",
+                "",
             ]
         elif cishu == "mdict":
             # MDict 也有 args，但走本分支：设置之外再挂下载图标
@@ -755,8 +756,10 @@ def setTabcishu_l(self):
         enable=globalconfig.get("isshowrawtext", True),
         grid=(
             [(yufajialiang, 0)],
-            [hoverinfoexp], [copywordexp],
-            [searchwordexp], [searchword_Sexp],
+            # [hoverinfoexp],
+            [copywordexp],
+            [searchwordexp],
+            [searchword_Sexp],
         ),
     )
 

@@ -81,8 +81,7 @@ def createsomecontrols(
             return dic.get(kDWM, 0) != 0 and not vRsys()
 
         vR = functools.partial(__vR, kDWM, vRsys)
-        if not vR():
-            spin1.hide()
+        spin1.setEnabled(vR())
         yinyinguse = functools.partial(__yinyinguse, kDWM, vRsys)
         __shadowxx = getsmalllabel("阴影")()
         __shadowxx2 = getsimpleswitch(
@@ -101,9 +100,9 @@ def createsomecontrols(
             callbackR,
             _,
         ):
-            spin1.setVisible(vR()),
-            __shadowxx.setVisible(yinyinguse()),
-            __shadowxx2.setVisible(yinyinguse()),
+            spin1.setEnabled(vR()),
+            __shadowxx.setEnabled(yinyinguse()),
+            __shadowxx2.setEnabled(yinyinguse()),
             callbackR()
 
         if gobject.sys_ge_win_11:
@@ -116,11 +115,8 @@ def createsomecontrols(
                 ),
             )
 
-        if not yinyinguse():
-            __shadowxx.hide()
-            __shadowxx2.hide()
-        __shadowxx = __shadowxx
-        __shadowxx2 = __shadowxx2
+        __shadowxx.setEnabled(yinyinguse())
+        __shadowxx2.setEnabled(yinyinguse())
 
         def __cb(
             yinyinguse,
@@ -131,9 +127,9 @@ def createsomecontrols(
             callbackDWM,
             _,
         ):
-            __shadowxx.setVisible(yinyinguse())
-            __shadowxx2.setVisible(yinyinguse())
-            spin1.setVisible(vR())
+            __shadowxx.setEnabled(yinyinguse())
+            __shadowxx2.setEnabled(yinyinguse())
+            spin1.setEnabled(vR())
             callbackR()
             callbackDWM()
 
@@ -158,7 +154,18 @@ def createsomecontrols(
                 __shadowxx2,
             ],
         )
-    return getboxlayout([spin1, "", "使用系统圆角", sw]) if sw else spin1, effectlayout
+    return (
+        getboxlayout(
+            [
+                getsmalllabel("使用系统圆角"),
+                sw,
+                getsmalllabel(""),
+                spin1,
+            ]
+        )
+        if sw
+        else spin1
+    ), effectlayout
 
 
 class dialog_syssetting(LDialog):
