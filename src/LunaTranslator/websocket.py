@@ -8,5 +8,10 @@ def create_connection(url, header=None, http_proxy_host=None, http_proxy_port=No
         from network.client.winhttp.websocket import WebSocket
 
     _ = WebSocket()
-    _.connect(url, header, http_proxy_host, http_proxy_port)
+    _.connect(
+        url,
+        header=header,
+        http_proxy_host=http_proxy_host,
+        http_proxy_port=http_proxy_port,
+    )
     return _
