@@ -7,6 +7,8 @@ from qtsymbols import *
 
 
 def _sort_text_lines(boxs, texts, vertical, space: str):
+    """按视觉行分组排序：行内（横排左右/竖排上下）以 space 连接。
+    返回 [(行文本, 行并集 box4), ...]，行间连接符由调用方决定。"""
     if not boxs:
         return []
     mids_idx = 1 if not vertical else 0
@@ -49,7 +51,41 @@ def _sort_text_lines(boxs, texts, vertical, space: str):
 
     juhe.sort(key=lambda x: mids[x[0]][mids_idx], reverse=vertical)
 
-    return [space.join([texts[idx] for idx in line]) for line in juhe]
+    lines = []
+    for group in juhe:
+        lines.append(
+            (
+                space.join([texts[idx] for idx in group]),
+                (
+                    min(ranges[idx][0][0] for idx in group),
+                    min(ranges[idx][1][0] for idx in group),
+                    max(ranges[idx][0][1] for idx in group),
+                    max(ranges[idx][1][1] for idx in group),
+                ),
+            )
+        )
+    return lines
+
+
+def _joinlines(lines, vertical, space: str):
+    """合并块内多行的连接符，不能无脑 space：横排时上一行右侧明显短于
+    下一行右侧（没写到右边界——是独立短行，不是写到头换行的续行）→ 用
+    换行；竖排对称（上一列底部 vs 本列底部）。容差取行高/列宽的较小值
+    （约一个字号，容许 OCR 抖动与尾字符宽度）。"""
+    parts = []
+    prev = None
+    for text, (x1, y1, x2, y2) in lines:
+        if prev is not None:
+            if vertical:
+                tol = min(prev[2] - prev[0], x2 - x1)
+                sep = "\n" if prev[3] < y2 - tol else space
+            else:
+                tol = min(prev[3] - prev[1], y2 - y1)
+                sep = "\n" if prev[2] < x2 - tol else space
+            parts.append(sep)
+        parts.append(text)
+        prev = (x1, y1, x2, y2)
+    return "".join(parts)
 
 
 class _OCRBlockS:
@@ -97,13 +133,13 @@ class _OCRBlockS:
         ]
 
     def asblock(self, vertical, space: str):
-        texts = _sort_text_lines(
+        lines = _sort_text_lines(
             list(_.box4 for _ in self.blocks),
             list(_.text for _ in self.blocks),
             vertical,
             space,
         )
-        return OCRBlock(text=space.join(texts), box=self.__unionbox())
+        return OCRBlock(text=_joinlines(lines, vertical, space), box=self.__unionbox())
 
 
 class OCRBlock:
@@ -382,7 +418,8 @@ class OCRResultParsed:
             textonly = "\n".join((_.text for _ in self.result.blocks))
         else:
             textonly = "\n".join(
-                _sort_text_lines(
+                _[0]
+                for _ in _sort_text_lines(
                     list(_.box4 for _ in self.result.blocks),
                     list(_.text for _ in self.result.blocks),
                     self.result.vertical,
