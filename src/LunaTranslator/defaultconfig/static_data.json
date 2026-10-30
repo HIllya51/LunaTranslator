@@ -528,6 +528,14 @@
                 "dark": "files/static/llm_icons/cerebras_dark.svg",
                 "light": "files/static/llm_icons/cerebras.svg"
             }
+        },
+        {
+            "vis": "Opper",
+            "value": "https://api.opper.ai/v3/compat/chat/completions",
+            "icon": {
+                "dark": "files/static/llm_icons/opper_dark.svg",
+                "light": "files/static/llm_icons/opper.svg"
+            }
         }
     ]
 }

@@ -122,6 +122,10 @@ Thay thế `{endpoint}` và `{deployName}` bằng endpoint và deployName của 
 
 **API Key** https://cloud.cerebras.ai/  ->  API Keys
 
+== Opper
+
+**API Key** https://platform.opper.ai/  ->  API Keys
+
 :::
 
 ### Nền tảng mô hình lớn ở Trung Quốc  

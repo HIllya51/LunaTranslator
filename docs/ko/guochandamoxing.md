@@ -124,6 +124,10 @@
 
 **API Key** https://cloud.cerebras.ai/  ->  API Keys
 
+== Opper
+
+**API Key** https://platform.opper.ai/  ->  API Keys
+
 :::
 
 ### 중국의 대규모 모델 플랫폼

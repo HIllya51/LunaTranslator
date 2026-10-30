@@ -124,6 +124,10 @@ Replace `{endpoint}` and `{deployName}` with your endpoint and deployName.
 
 **API Key** https://cloud.cerebras.ai/  ->  API Keys
 
+== Opper
+
+**API Key** https://platform.opper.ai/  ->  API Keys
+
 :::
 
 ### Large-scale model platforms in China  
