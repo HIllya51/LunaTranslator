@@ -2726,6 +2726,12 @@ namespace
             buffer->from_t(ch);
         }
     }
+    void SLPM55223(TextBuffer *buffer, HookParam *hp)
+    {
+        if ((WORD)PCSX2_REG(a2) != 0xffff)
+            return buffer->clear();
+        NewLineCharFilterA(buffer, hp);
+    }
     void SLPM66841(TextBuffer *buffer, HookParam *hp)
     {
         if ((DWORD)PCSX2_REG(t2) != 0)
@@ -2752,6 +2758,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // ナデプロ！！ ～キサマも声優やってみろ！～
+    {0x1897B8, {FULL_STRING, PCSX2_REG_OFFSET(a1), 0, 0, SLPM55223, "SLPM-55223"}},
     // 召しませ浪漫茶房
     {0x19fd30, {0, 0, 0, SLPM65737add, 0, "SLPM-65737"}}, // EvMsgWin_AddStr a0=JIS串
     {0x1a0010, {0, 0, 0, SLPM65737add, 0, "SLPM-65737"}}, // EvMsgWin_SetNameStr a0=名
