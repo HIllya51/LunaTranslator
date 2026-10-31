@@ -1113,11 +1113,6 @@
             "name": "jpdb",
             "langs": ["ja"]
         },
-        "japandict": {
-            "use": true,
-            "name": "JapanDict",
-            "langs": ["ja"]
-        },
         "weblio": {
             "use": true,
             "name": "weblio",
