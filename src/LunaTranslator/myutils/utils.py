@@ -125,6 +125,13 @@ def __cishu_exits(cishu):
 
 
 def cishuexits(cishu, only_copy=False):
+    # 实例复制（不拷引擎文件）：带 copyfrom 的实例回溯到原型的引擎模块
+    cp = globalconfig["cishu"].get(cishu, {}).get("copyfrom")
+    if cp:
+        _ = __cishu_exits(cp)
+        if _ is None:
+            return None
+        return ("cishu." if _ == 0 else "copyed.") + cp
     _ = __cishu_exits(cishu)
     if _ is None:
         return None

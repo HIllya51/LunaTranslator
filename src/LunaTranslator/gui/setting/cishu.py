@@ -1,5 +1,5 @@
 from qtsymbols import *
-import functools, os
+import functools, os, uuid, shutil, copy
 import gobject
 from myutils.utils import splitocrtypes, dynamiccishuname, selectdebugfile, cishuexits
 from myutils.config import globalconfig, _TR
@@ -152,6 +152,9 @@ def renameapi(qlabel: QLabel, apiuid, self, _=None):
     menu = QMenu(qlabel)
     editname = LAction("重命名", menu)
     menu.addAction(editname)
+    copy = LAction("复制", menu)
+    if _selfbuildorigin(apiuid) == "selfbuild":
+        menu.addAction(copy)
     useproxy = LAction("使用代理", menu)
     useproxy.setCheckable(True)
     if globalconfig.get("useproxy", True) and globalconfig["cishu"][apiuid].get(
@@ -179,6 +182,9 @@ def renameapi(qlabel: QLabel, apiuid, self, _=None):
     elif action == useproxy:
         globalconfig["cishu"][apiuid]["useproxy"] = useproxy.isChecked()
 
+    elif action == copy:
+        copyselfbuild(self, apiuid)
+
     elif action == delete:
         deletecishu(self, apiuid)
 
@@ -188,6 +194,37 @@ def getrenameablellabel(uid, self):
     fn = functools.partial(renameapi, name, uid, self)
     name.clicked.connect(fn)
     return name
+
+
+def _selfbuildorigin(apiuid):
+    xx = apiuid
+    while True:
+        cp = globalconfig["cishu"].get(xx, {}).get("copyfrom")
+        if not cp:
+            return xx
+        xx = cp
+
+
+def copyselfbuild(self, apiuid):
+    """复制自定义辞书实例：不拷引擎文件（cishuexits 经 copyfrom 回溯
+    解析到 cishu.selfbuild，同一引擎类以自身 typename 实例化），副本带
+    隐藏 arg selfbuild_file 指向自己的用户文件（复制来源实例的文件创建），
+    各实例配置/代码互不影响；未设置该 arg 的原型加载默认文件。"""
+    uid = str(uuid.uuid4())
+    globalconfig["cishu"][uid] = copy.deepcopy(globalconfig["cishu"][apiuid])
+    globalconfig["cishu"][uid]["copyfrom"] = "selfbuild"
+    globalconfig["cishu"][uid]["use"] = False
+    globalconfig["cishu"][uid].pop("name_self_set", None)
+    globalconfig["cishu"][uid]["name"] = dynamiccishuname(apiuid) + "_copy"
+    fname = "selfbuild_cishu_{}.py".format(uid[:8])
+    src = gobject.getconfig(
+        globalconfig["cishu"][apiuid].get("selfbuild_file") or "selfbuild_cishu.py"
+    )
+    if os.path.exists(src):
+        shutil.copy(src, gobject.getconfig(fname))
+    globalconfig["cishu"][uid]["selfbuild_file"] = fname
+    rebuildcishugrid(self)
+    return uid
 
 
 def initinternal(self, names):
@@ -224,10 +261,15 @@ def initinternal(self, names):
         ]
         if "args" in globalconfig["cishu"][cishu] and cishu != "mdict":
             line += [_gear(cishu, which, reloadcb), "", ""]
-        elif cishu == "selfbuild":
+        elif _selfbuildorigin(cishu) == "selfbuild":
+            # 原型与复制实例（编辑各自加载的用户文件）
             line += [
                 D_getIconButton(
-                    callback=lambda: selectdebugfile("selfbuild_cishu.py"),
+                    callback=functools.partial(
+                        selectdebugfile,
+                        globalconfig["cishu"][cishu].get("selfbuild_file")
+                        or "selfbuild_cishu.py",
+                    ),
                     icon="fa.edit",
                 ),
                 "",
