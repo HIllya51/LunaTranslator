@@ -85,7 +85,7 @@ Một số nút có hai biểu tượng để biểu thị hai trạng thái kh�
     Khi không có phạm vi OCR nào được chọn, sử dụng nút này để hiển thị phạm vi OCR, nó sẽ tự động đặt phạm vi OCR thành OCR cuối cùng đã chọn.
 
     Khi nhấn nút phải, tất cả các phạm vi đã chọn sẽ bị xóa
-1. #### <i class="fa fa-crop"></i> <i class="fa fa-icon fa-rotate-right"></i> Thực hiện OCR {#anchor-ocr_once_1}
+1. #### <i class="fa fa-cut"></i> <i class="fa fa-icon fa-rotate-right"></i> Thực hiện OCR {#anchor-ocr_once_1}
     Nút này tương tự như `Đọc Clipboard`, bất kể nguồn đầu vào văn bản mặc định hiện tại, nó sẽ đầu tiên chọn phạm vi OCR, sau đó thực hiện OCR một lần, và sau đó tiếp tục với quá trình dịch.
 
     Nút này thường được sử dụng trong chế độ HOOK, khi gặp các lựa chọn, để tạm thời sử dụng OCR để dịch các lựa chọn. Hoặc trong chế độ OCR, để tạm thời nhận diện một vị trí mới thỉnh thoảng xuất hiện.

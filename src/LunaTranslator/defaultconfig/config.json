@@ -418,7 +418,7 @@
             "ocr_once_1": {
                 "use": true,
                 "tip": "进行一次OCR",
-                "icon": "fa.crop",
+                "icon": "fa.cut",
                 "align": 2
             },
             "ocr_once_follow": {

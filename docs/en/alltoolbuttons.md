@@ -85,7 +85,7 @@ Some buttons have two icons to indicate two different states. Some buttons only 
     When no OCR range is selected, use this button to display the OCR range, which will automatically set the OCR range to the last selected OCR.
 
     When the right button is pressed, all selected ranges will be cleared
-1. #### <i class="fa fa-crop"></i> <i class="fa fa-icon fa-rotate-right"></i> Perform OCR {#anchor-ocr_once_1}
+1. #### <i class="fa fa-cut"></i> <i class="fa fa-icon fa-rotate-right"></i> Perform OCR {#anchor-ocr_once_1}
     This button is similar to `Read Clipboard`, regardless of the current default text input source, it will first select the OCR range, then perform OCR once, and then proceed with the translation process.
 
     This button is generally used in HOOK mode, when encountering choices, to temporarily use OCR for translation of choices. Or in OCR mode, to temporarily recognize a new position that occasionally appears.

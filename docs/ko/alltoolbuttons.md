@@ -87,7 +87,7 @@
     OCR 범위를 선택하지 않은 상태에서 이 버튼을 사용하면 OCR 범위가 표시되며, 자동으로 마지막으로 선택한 OCR 범위로 설정됩니다.
 
     오른쪽 버튼을 누르면 모든 선택된 범위가 지워집니다.
-1. #### <i class="fa fa-crop"></i> <i class="fa fa-icon fa-rotate-right"></i> OCR 실행 {#anchor-ocr_once_1}
+1. #### <i class="fa fa-cut"></i> <i class="fa fa-icon fa-rotate-right"></i> OCR 실행 {#anchor-ocr_once_1}
     이 버튼은 '클립보드 읽기'와 유사하며, 현재의 기본 텍스트 입력 소스와 관계없이 먼저 OCR 범위를 선택하고 OCR을 실행한 후 번역 프로세스를 진행합니다.
 
     이 버튼은 일반적으로 HOOK 모드에서 선택지가 나타났을 때 일시적으로 OCR을 사용해 선택지를 번역하거나, OCR 모드에서 가끔 나타나는 새로운 위치를 일시적으로 인식할 때 사용합니다.

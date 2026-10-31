@@ -94,7 +94,7 @@
 
     當按下右鍵時，會清除所有已選取範圍。
 
-1. #### <i class="fa fa-crop"></i> <i class="fa fa-icon fa-rotate-right"></i> 進行一次 OCR {#anchor-ocr_once_1}
+1. #### <i class="fa fa-cut"></i> <i class="fa fa-icon fa-rotate-right"></i> 進行一次 OCR {#anchor-ocr_once_1}
     該按鈕和`讀取剪貼簿`類似，不管目前的預設文字輸入來源是什麼，都會先進行 OCR 範圍選擇，然後進行一次 OCR，然後進行翻譯流程。
 
     該按鈕一般用於：在 HOOK 模式下，遊戲中遇到選項（選擇肢）時，臨時使用一次 OCR 來翻譯該選項的文字；或者在 OCR 模式下，臨時去辨識一次其他偶爾出現的新的位置。
