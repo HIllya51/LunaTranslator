@@ -95,7 +95,7 @@ Một số nút có hai biểu tượng để biểu thị hai trạng thái kh�
 
     Chức năng của chuột trái và chuột phải có thể hoán đổi cho nhau trong cài đặt.
 1. #### <i class="fa fa-spinner"></i> <i class="fa fa-icon fa-rotate-right"></i> Thực hiện OCR lần nữa {#anchor-ocr_once_follow}
-    Sau khi sử dụng `Thực hiện OCR một lần`, sử dụng nút này để thực hiện OCR lại tại vị trí ban đầu mà không cần phải chọn lại khu vực nhận diện.
+    Sau khi sử dụng `Thực hiện OCR một lần`, sử dụng nút này để thực hiện OCR lại tại vị trí ban đầu mà không cần phải chọn lại khu vực nhận diện. Sẽ thực hiện lại theo chế độ (thường / hiển thị tại chỗ) được dùng ở lần `Thực hiện OCR` gần nhất.
     
 1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> Thay thế trước khi dịch {#anchor-noundict_direct}
 1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> Dịch danh từ riêng {#anchor-noundict}

@@ -1,5 +1,5 @@
 from qtsymbols import *
-import functools, gobject, NativeUtils, uuid, shutil, time, math, windows
+import functools, gobject, NativeUtils, uuid, shutil, time, math, os, windows
 from myutils.config import globalconfig, _TR, saveallconfig
 from myutils.hwnd import grabwindow
 from traceback import print_exc
@@ -72,6 +72,10 @@ def createreloadablewrapper(self, name):
         gobject.base.safeinvokefunction.emit(module.OnHotKeyClicked)
     except:
         print_exc()
+
+
+def myhotkeyscriptexists(name):
+    return os.path.exists(gobject.getconfig("myhotkeys/{}.py".format(name)))
 
 
 liandianqi_stoped = True
@@ -229,9 +233,7 @@ def registrhotkeys(self):
         "41": lambda: gobject.base.translation_ui.fullsgame_signal.emit(False),
         "42": lambda: gobject.base.translation_ui.fullsgame_signal.emit(True),
         "_26": gobject.base.translation_ui.ocr_once_signal.emit,
-        "_26_1": lambda: gobject.base.translation_ui.ocr_do_function(
-            gobject.base.translation_ui.ocr_once_follow_rect
-        ),
+        "_26_1": gobject.base.translation_ui.ocr_once_follow_hotkey_function,
         "_28": lambda: NativeUtils.ClipBoard.setText(gobject.base.currenttranslate),
         "_29": lambda: gobject.base.searchwordW.ankiwindow.recordbtn1.click(),
         "_30": lambda: gobject.base.searchwordW.ankiwindow.recordbtn2.click(),
@@ -263,6 +265,8 @@ def registrhotkeys(self):
     }
 
     for name in globalconfig["myquickkeys"]:
+        if not myhotkeyscriptexists(name):
+            continue
         self.bindfunctions[name] = functools.partial(
             createreloadablewrapper, self, name
         )
@@ -412,7 +416,7 @@ def _fillkeyrow(tree, host, item, name, doc=True, custom=False):
 class HotkeyListTree(FluentSettingTree):
     """快捷键行列表（无分组、无标题四列）：查词窗口的快捷键页复用。"""
 
-    def __init__(self, host, names, doc=True, parent=None):
+    def __init__(self, host, names, doc=True, parent=None, custom=False):
         super().__init__(parent, titles=None, draggable=False)
         self._host = host
         self._customroot = None
@@ -420,7 +424,7 @@ class HotkeyListTree(FluentSettingTree):
         for name in names:
             item = QTreeWidgetItem()
             self.addTopLevelItem(item)
-            _fillkeyrow(self, host, item, name, doc=doc)
+            _fillkeyrow(self, host, item, name, doc=doc, custom=custom)
 
 
 class _CustomKeyTree(HotkeyListTree):
@@ -428,8 +432,10 @@ class _CustomKeyTree(HotkeyListTree):
     删除）+ 末尾 + 行点击追加。"""
 
     def __init__(self, host, parent=None):
-        super().__init__(host, globalconfig["myquickkeys"], doc=False,
-                         parent=parent)
+        names = [
+            _ for _ in globalconfig["myquickkeys"] if myhotkeyscriptexists(_)
+        ]
+        super().__init__(host, names, doc=False, parent=parent, custom=True)
         self._addplusrow()
 
     # ---- + 行追加 ----
@@ -524,6 +530,10 @@ def regist_or_not_key(self, name, _=None):
         NativeUtils.UnRegisterHotKey(self.registok[name])
     __: dict = globalconfig["quick_setting"]["all"].get(name)
     if not __:
+        return
+    if (name in globalconfig["myquickkeys"]) and (
+        not myhotkeyscriptexists(name)
+    ):
         return
     keystring = __.get("keystring")
     if (not keystring) or (

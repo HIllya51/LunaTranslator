@@ -101,11 +101,11 @@
     Xóa tất cả các phạm vi đã chọn.
 
 1. #### Thực hiện OCR {#anchor-_26}
-    Tương tự như `Đọc Clipboard`, bất kể nguồn đầu vào văn bản mặc định hiện tại là gì, nó sẽ đầu tiên chọn phạm vi OCR, sau đó thực hiện OCR một lần, và sau đó tiếp tục với quá trình dịch thuật.
+    Tương tự như `Đọc Clipboard`, bất kể nguồn đầu vào văn bản mặc định hiện tại là gì, nó sẽ đầu tiên chọn phạm vi OCR, sau đó thực hiện OCR một lần, và sau đó tiếp tục với quá trình dịch thuật. Khi bật `Hiển thị bản dịch tại chỗ`, sẽ chuyển sang chế độ tại chỗ: sau khi chọn phạm vi, bản dịch được hiển thị ngay trong phạm vi đó.
     Thường được sử dụng trong chế độ HOOK, tạm thời sử dụng OCR để dịch các nhánh lựa chọn khi gặp phải, hoặc trong chế độ OCR, tạm thời nhận diện.
 
 1. #### Thực hiện OCR lần nữa {#anchor-_26_1}
-    Sau khi sử dụng `Thực Hiện OCR Một Lần`, sử dụng phím tắt này sẽ thực hiện OCR lại tại vị trí ban đầu mà không cần chọn lại khu vực nhận diện.
+    Sau khi sử dụng `Thực Hiện OCR Một Lần`, sử dụng phím tắt này sẽ thực hiện OCR lại tại vị trí ban đầu mà không cần chọn lại khu vực nhận diện. Khi bật `Hiển thị bản dịch tại chỗ`, sẽ nhận diện lại tại vị trí ban đầu ở chế độ tại chỗ.
 
 1. #### Chế độ đa vùng Chuyển sang khu vực trước đó. {#anchor-46}
     **Chỉ khả dụng trong chế độ OCR**

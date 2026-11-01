@@ -102,11 +102,11 @@
     Clear all selected ranges
 
 1. #### Perform OCR {#anchor-_26}
-    Similar to `Read Clipboard`, regardless of the current default text input source, it will first select the OCR range, then perform OCR once, and then proceed with the translation process.
+    Similar to `Read Clipboard`, regardless of the current default text input source, it will first select the OCR range, then perform OCR once, and then proceed with the translation process. When `In-place Translation` is enabled, it switches to in-place mode: after selecting a range, the translation is displayed in place within the range.
     Generally used for, in HOOK mode, temporarily using OCR to translate selection branches when encountering them, or in OCR mode, temporarily recognizing a new occasional position.
 
 1. #### Perform OCR Again {#anchor-_26_1}
-    After using `Perform OCR Once`, using this shortcut key will perform OCR again in the original position without reselecting the recognition area.
+    After using `Perform OCR Once`, using this shortcut key will perform OCR again in the original position without reselecting the recognition area. When `In-place Translation` is enabled, it will recognize again at the original position in in-place mode.
 
 1. #### Multi-Region Mode Switch to the previous area. {#anchor-46}
     **Only available in OCR mode**

@@ -97,7 +97,7 @@
 
     왼쪽 클릭과 오른쪽 클릭의 기능은 설정에서 서로 바꿀 수 있습니다.
 1. #### <i class="fa fa-spinner"></i> <i class="fa fa-icon fa-rotate-right"></i> OCR 다시 실행 {#anchor-ocr_once_follow}
-    'OCR 실행하기'를 한 번 사용한 후, 이 버튼을 사용하면 인식 영역을 다시 선택하지 않고도 원래 위치에서 OCR을 다시 실행할 수 있습니다.
+    'OCR 실행하기'를 한 번 사용한 후, 이 버튼을 사용하면 인식 영역을 다시 선택하지 않고도 원래 위치에서 OCR을 다시 실행할 수 있습니다. 직전 `OCR 실행`에서 사용된 모드(일반/제자리 표시)로 다시 실행합니다.
 
 1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> 번역 전 대체 {#anchor-noundict_direct}
 1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> 고유 명사 번역 {#anchor-noundict}

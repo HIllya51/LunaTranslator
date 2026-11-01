@@ -96,7 +96,7 @@
 
     左クリックと右クリックの機能は設定で切り替えられます。
 1. #### <i class="fa fa-spinner"></i> <i class="fa fa-icon fa-rotate-right"></i> OCRを再実行 {#anchor-ocr_once_follow}
-    `1回OCRを実行`を使用した後、このボタンを使用して、元の位置で再度OCRを実行し、認識エリアを再選択する必要はありません。
+    `1回OCRを実行`を使用した後、このボタンを使用して、元の位置で再度OCRを実行し、認識エリアを再選択する必要はありません。前回の`OCRを実行`で使用されたモード（通常／その場表示）で再実行します。
     
 1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> 翻訳前の置換 {#anchor-noundict_direct}
 1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> 固有名詞翻訳 {#anchor-noundict}

@@ -104,7 +104,7 @@
 
     可以設定切換右鍵和左鍵點擊的功能。
 1. #### <i class="fa fa-spinner"></i> <i class="fa fa-icon fa-rotate-right"></i> 再次進行 OCR {#anchor-ocr_once_follow}
-    當使用過一次`進行一次 OCR`後，使用這個按鈕，可以在原來的位置上再次進行一次 OCR 而無需重新選擇辨識區域。
+    當使用過一次`進行一次 OCR`後，使用這個按鈕，可以在原來的位置上再次進行一次 OCR 而無需重新選擇辨識區域。將按照上一次`進行一次 OCR`所使用的模式（普通/原地顯示翻譯）來再次進行。
 
 1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> 翻譯前取代 {#anchor-noundict_direct}
 1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> 專有名詞翻譯 {#anchor-noundict}

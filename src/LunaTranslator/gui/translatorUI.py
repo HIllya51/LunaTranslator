@@ -349,17 +349,28 @@ class TranslatorWindow(resizableframeless):
     def ocr_once_function(self):
         def ocroncefunction(rect, img=None):
             self.ocr_once_follow_rect = rect
+            self.ocr_once_follow_inplace = False
             self.ocr_do_function(rect, img)
 
         rangeselct_function(ocroncefunction, hideshow=True)
 
+    def ocr_once_hotkey_function(self):
+        """快捷键的进行一次OCR：按 原地显示翻译 设置选模式。"""
+        if globalconfig.get("ocr_translation_overlay", False):
+            self.ocr_once_box_function()
+        else:
+            self.ocr_once_function()
+
     def ocr_once_box_function(self):
-        """单次OCR的原地模式（默认右键，可在工具按钮设置里换到左键）：
-        框选后创建常驻容器（范围框同款），框内原地显示翻译。"""
+        """单次OCR的原地模式（工具按钮左/右键其一，快捷键在 原地显示
+        翻译 开启时也走这里）：框选后创建常驻容器（范围框同款），框内
+        原地显示翻译。"""
 
         def createbox(rect, img=None):
             if not rect.isValid():
                 return
+            self.ocr_once_follow_rect = rect
+            self.ocr_once_follow_inplace = True
             from textio.textsource.ocrtext import ocrbox
 
             # img：框选完成时立即截的图，传给容器用于识别（不再重截）
@@ -369,13 +380,40 @@ class TranslatorWindow(resizableframeless):
 
         rangeselct_function(createbox, hideshow=True)
 
+    @threader
+    def ocr_once_follow_function(self, inplace=None):
+        """再次进行OCR：上次位置重新截当前画面再走一遍——普通模式
+        ocr_do_function，原地模式重建容器。inplace 省略时沿用上一次
+        进行一次OCR的模式（工具按钮）；指定时用指定模式（快捷键按
+        原地显示翻译 设置）。"""
+        if inplace is None:
+            inplace = self.ocr_once_follow_inplace
+        rect = self.ocr_once_follow_rect
+        if not rect:
+            return
+        if inplace:
+            from textio.textsource.ocrtext import ocrbox
+
+            img = imageCut(0, QRect(rect))
+            gobject.base.safeinvokefunction.emit(
+                lambda: ocrbox(QRect(rect), img)
+            )
+        else:
+            self.ocr_do_function(rect)
+
+    def ocr_once_follow_hotkey_function(self):
+        """快捷键的再次进行OCR：按 原地显示翻译 设置选模式。"""
+        self.ocr_once_follow_function(
+            globalconfig.get("ocr_translation_overlay", False)
+        )
+
     def ocr_once_click(self, is_left):
         # 左/右键哪个触发原地显示由工具按钮设置决定（默认右键）
         left_inplace = globalconfig.get("ocr_once_left_inplace", False)
         if is_left == left_inplace:
             self.ocr_once_box_function()
         else:
-            self.ocr_once_signal.emit()
+            self.ocr_once_function()
 
     @threader
     def simulate_key_ctrl(self):
@@ -616,7 +654,7 @@ class TranslatorWindow(resizableframeless):
             ),
             (
                 "ocr_once_follow",
-                lambda: self.ocr_do_function(self.ocr_once_follow_rect),
+                lambda: self.ocr_once_follow_function(),
             ),
             ("minmize", self.hide_),
             ("quit", self.close),
@@ -813,6 +851,7 @@ class TranslatorWindow(resizableframeless):
         self.isbindedwindow = False
         self.setontopthread_lock = threading.Lock()
         self.ocr_once_follow_rect = None
+        self.ocr_once_follow_inplace = False
 
     def displayglobaltooltip_f(self, string):
         QToolTip.showText(QCursor.pos(), string, self)
@@ -820,7 +859,7 @@ class TranslatorWindow(resizableframeless):
     def initsignals(self):
         self.hotkeyuse_selectprocsignal.connect(gobject.base.createattachprocess)
         self.displayglobaltooltip.connect(self.displayglobaltooltip_f)
-        self.ocr_once_signal.connect(self.ocr_once_function)
+        self.ocr_once_signal.connect(self.ocr_once_hotkey_function)
         self.displaystatus.connect(self.showstatus)
         self.displaystatusklass.connect(self.showstatus)
         self.showhideuisignal.connect(self.showhideui)

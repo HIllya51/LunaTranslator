@@ -95,7 +95,7 @@ Some buttons have two icons to indicate two different states. Some buttons only 
 
     The left and right click functions can be swapped in the settings.
 1. #### <i class="fa fa-spinner"></i> <i class="fa fa-icon fa-rotate-right"></i> Perform OCR Again {#anchor-ocr_once_follow}
-    After using `Perform OCR Once`, use this button to perform OCR again at the original location without having to re-select the recognition area.
+    After using `Perform OCR Once`, use this button to perform OCR again at the original location without having to re-select the recognition area. It will follow the mode (normal / in-place display) used by the last `Perform OCR`.
     
 1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> Pre-translation substitution {#anchor-noundict_direct}
 1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> Proper Noun Translation {#anchor-noundict}
