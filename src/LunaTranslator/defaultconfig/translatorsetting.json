@@ -555,6 +555,60 @@
 			}
 		}
 	},
+	"opencode": {
+		"args": {
+			"API接口地址": "http://127.0.0.1:45278",
+			"SECRET_KEY": "",
+			"model": "",
+			"modellistcache": [],
+			"附带上下文个数": 0,
+			"流式输出": true,
+			"使用自定义promt": false,
+			"自定义promt": "",
+			"use_user_user_prompt": false,
+			"user_user_prompt": ""
+		},
+		"argstype": {
+			"API接口地址": {
+				"rank": 0.7,
+				"placeholder": "http://127.0.0.1:45278"
+			},
+			"SECRET_KEY": {
+				"name": "password",
+				"rank": 0.8
+			},
+			"model": {
+				"rank": 2,
+				"type": "lineedit_or_combo",
+				"list_function": "list_models",
+				"list_cache": "modellistcache"
+			},
+			"附带上下文个数": {
+				"type": "intspin",
+				"min": 0,
+				"max": 99999,
+				"rank": 2.4
+			},
+			"流式输出": {
+				"type": "switch",
+				"rank": 2.3
+			},
+			"自定义promt": {
+				"type": "multiline",
+				"refswitch": "使用自定义promt",
+				"name": "自定义_system prompt",
+				"rank": 5,
+				"placeholder": "You are a translator. Please help me translate the following {srclang} text into {tgtlang}. You should only tell me the translation result without any additional explanations."
+			},
+			"user_user_prompt": {
+				"name": "自定义_user message",
+				"refswitch": "use_user_user_prompt",
+				"rank": 5.1,
+				"placeholder": "{DictWithPrompt[When translating, please ensure to translate the specified nouns into the translations I have designated: ]}\n{sentence}",
+				"type": "multiline"
+			}
+		}
+	},
 	"jb7": {
 		"args": {
 			"path": ""

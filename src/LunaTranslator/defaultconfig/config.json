@@ -1448,6 +1448,14 @@
             "name": "大模型通用接口",
             "is_gpt_like": true
         },
+        "opencode": {
+            "type": "api",
+            "use": false,
+            "color": "blue",
+            "name": "opencode",
+            "is_gpt_like": true,
+            "useproxy": false
+        },
         "microsoft": {
             "use": false,
             "color": "gray",
