@@ -319,7 +319,10 @@ class gptcommon(basetrans):
                 extraheader,
             )
             _json = common_create_gpt_data(
-                self.config, self.__parse_qwen_mt_turbo(apitype, messages), extrabody
+                self.config,
+                self.__parse_qwen_mt_turbo(apitype, messages),
+                extrabody,
+                apitype,
             )
             response = self.proxysession.post(
                 apitype.finalurl(), headers=headers, json=_json, stream=usingstream

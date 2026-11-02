@@ -123,7 +123,7 @@ class Cishu(cishubase):
         message = [{"role": "system", "content": sysprompt}]
         message.append({"role": "user", "content": query})
         _json = common_create_gpt_data(
-            dict(self.config, **{"流式输出": True}), message, extrabody
+            dict(self.config, **{"流式输出": True}), message, extrabody, apitype
         )
         return self.proxysession.post(
             apitype.finalurl(), headers=headers, json=_json, stream=True

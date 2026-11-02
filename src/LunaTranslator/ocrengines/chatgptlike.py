@@ -130,7 +130,9 @@ class OCR(baseocr):
         response = self.proxysession.post(
             apitype.finalurl(),
             headers=h,
-            json=common_create_gpt_data(self.config, message, extrabody),
+            json=common_create_gpt_data(
+                self.config, message, extrabody, apitype
+            ),
         )
         return response
 

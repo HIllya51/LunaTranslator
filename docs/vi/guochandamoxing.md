@@ -61,9 +61,6 @@ Tuy nhiên, đôi khi bạn có thể muốn sử dụng nhiều địa chỉ gi
     
     none/minimal -> 0 (tắt suy luận, không áp dụng cho mô hình Gemini-2.5-Pro), low -> 512, medium -> -1 (bật suy luận động), high/xhigh -> 24576.
 
-1. #### thinking.type
-    Công tắc chế độ suy nghĩ được hỗ trợ bởi một số nền tảng (chủ yếu là DeepSeek).
-
 1. #### Các tham số khác
 
     Trên đây chỉ cung cấp một số tham số phổ biến. Nếu nền tảng bạn sử dụng cung cấp các tham số hữu ích khác chưa được liệt kê, có thể tự thêm cặp khóa-giá trị.

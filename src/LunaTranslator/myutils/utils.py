@@ -1040,6 +1040,9 @@ class APIType:
     class mistral(openai):
         pass
 
+    class deepseek(openai):
+        pass
+
     class zhipuocr:
         pass
 
@@ -1066,6 +1069,8 @@ class APIType:
             self._value_ = APIType.cohere
         elif url.startswith("https://api.mistral.ai"):
             self._value_ = APIType.mistral
+        elif "api.deepseek.com" in url:
+            self._value_ = APIType.deepseek
         elif url == "https://open.bigmodel.cn/api/paas/v4/files/ocr":
             self._value_ = APIType.zhipuocr
         else:
@@ -1168,7 +1173,7 @@ def common_list_models(
         raise Exception(resp)
 
 
-def common_create_gpt_data(config: dict, message, extrabody):
+def common_create_gpt_data(config: dict, message, extrabody, apitype: APIType = None):
 
     data = dict(
         model=config["model"],
@@ -1191,8 +1196,9 @@ def common_create_gpt_data(config: dict, message, extrabody):
         data.update(top_p=config["top_p"])
     if config.get("reasoning_effort_use", False):
         data.update(reasoning_effort=config["reasoning_effort"])
-    if config.get("thinking.type.use", False):
-        data.update(thinking={"type": config.get("thinking.type", "disabled")})
+    if apitype == APIType.deepseek:
+        # deepseek V3.1+ 默认开启思考（慢且贵），翻译固定关闭
+        data.update(thinking={"type": "disabled"})
     if extrabody:
         data.update(extrabody)
     return data
