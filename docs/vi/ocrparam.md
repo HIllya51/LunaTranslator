@@ -3,6 +3,9 @@
 
 ## Hiển thị bản dịch tại chỗ
 
+>[!WARNING]
+>Tính năng này có thể không hoạt động hoàn hảo trên các phiên bản Windows dưới 23H2. Do vị trí bản dịch hiển thị trùng với văn bản của trò chơi, nên cần dùng API hệ thống để loại bỏ nội dung phần mềm hiển thị ra khỏi ảnh chụp màn hình. Mặc dù tài liệu của Microsoft tuyên bố API này được hỗ trợ từ 20H1, nhưng theo phản hồi, API này thường gặp vấn đề trên các phiên bản dưới 23H2 và tôi không thể khắc phục điều này.
+
 Khi bật, bản dịch sẽ hiển thị ngay trong khung chọn OCR, phủ lên văn bản gốc. Có thể bật/tắt bất kỳ lúc nào qua menu chuột phải của khung OCR.
 
 - Mỗi vùng văn bản được nhận dạng sẽ hiển thị bản dịch tương ứng ngay tại vị trí cũ; cỡ chữ tự động phù hợp với kích thước vùng, văn bản nghiêng cũng được hiển thị theo cùng góc nghiêng.

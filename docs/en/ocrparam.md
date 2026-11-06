@@ -3,6 +3,9 @@
 
 ## In-place Translation
 
+>[!WARNING]
+>This feature may not work perfectly on Windows versions below 23H2. Since the displayed translation overlaps the game text, a system API is required to remove the software's displayed content from screenshots. Although Microsoft's documentation claims this API has been supported since 20H1, according to feedback it often misbehaves below 23H2, and I cannot fix this.
+
 When enabled, the translation is displayed directly inside the OCR selection box, covering the original text. It can also be toggled at any time from the right-click menu of the OCR box.
 
 - Each recognized text area shows its translation in place; the font size adapts to the area size, and tilted text is displayed at the same angle.
