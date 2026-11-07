@@ -314,6 +314,9 @@ bool NewHook_1(HookParam &hp, LPCSTR lpname, bool silentlyfail = false)
 	if (lpname && *lpname)
 		strncpy_s(hp.name, lpname, HOOK_NAME_SIZE - 1);
 
+	if (hp.type & FULL_STRING)
+		hp.type |= USING_STRING;
+
 	wcscpy_s(hp.hookcode, HOOKCODE_LEN, HookCode::Generate(hp, GetCurrentProcessId()).c_str());
 	if (!(*hooks)[currentHook].Insert(hp))
 	{

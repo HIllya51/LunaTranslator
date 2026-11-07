@@ -11,6 +11,7 @@
 #include "engine32/LCScript.h"
 #include "engine32/Hug.h"
 #include "engine32/TEANAM.h"
+#include "engine32/CODEPINK.h"
 #include "engine32/Seraphim.h"
 #include "engine32/ArcSystemWorks.h"
 #include "engine32/TERIOS.h"
@@ -507,5 +508,6 @@ std::vector<ENGINE *> check_engines()
         new ivory,
         new AZSystem,
         new RibbonMagic,
+        new CODEPINK,
     };
 }
