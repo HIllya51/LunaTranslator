@@ -1036,6 +1036,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // 東京陰陽師 ～天現寺橋 怜の場合～
+    {0x801408A2, {FULL_STRING, 0, 0, 0, FPCSG01124, "PCSG00631"}},
     // 下天の華 with 夢灯り 愛蔵版
     {0x80129BE0, {FULL_STRING, 0, 0, PCSG01124, FPCSG01124, "PCSG00921"}}, // 下天の華
     {0x8014C56C, {FULL_STRING, 0, 0, PCSG01124, FPCSG01124, "PCSG00921"}}, // 下天の華 with 夢灯り
