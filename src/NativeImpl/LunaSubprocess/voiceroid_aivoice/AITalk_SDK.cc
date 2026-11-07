@@ -8,8 +8,10 @@ namespace magic_enum::customize
     template <>
     struct enum_range<AITalkReturnCodeEnum>
     {
+        // 注意必须覆盖所有命名值：CallbackSuccess(2000)在范围外的话，
+        // 新版magic_enum会static_assert，且enum_name对其返回空串
         static constexpr int min = AITalkReturnCode_NotImplementedError;
-        static constexpr int max = AITalkReturnCode_Ok;
+        static constexpr int max = AITalkReturnCode_CallbackSuccess;
     };
 }
 

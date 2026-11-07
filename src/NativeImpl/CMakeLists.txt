@@ -86,7 +86,7 @@ include(FetchContent)
 if(WIN32)
     FetchContent_Declare(magic_enum
         GIT_REPOSITORY https://github.com/Neargye/magic_enum
-        GIT_TAG master
+        GIT_TAG v0.9.8
         GIT_SHALLOW TRUE
     )
     FetchContent_MakeAvailable(magic_enum)
