@@ -186,36 +186,13 @@ namespace
     // LPCSTR text1; // 0x10 only for old games
     ULONG unknown[7];
     LPCSTR text; // 0x20
-
-    bool isValid() const { return Engine::isAddressWritable(text) && *text; }
-
-    Engine::TextRole role() const
-    {
-      if (split >= 0xff)
-        return Engine::OtherRole;
-      static ULONG maxSplit_ = 0;
-      if (split > maxSplit_)
-        maxSplit_ = split;
-      if (split == maxSplit_)
-        return Engine::ScenarioRole;
-      return Engine::NameRole; // scenario role is larger than name role
-    }
   };
-  LPCSTR trimmedText;
-  void hook_before(hook_context *s, HookParam *hp, TextBuffer *buffer, uintptr_t *role)
-  {
-
-    auto arg = (HookArgument *)s->stack[1];
-    if ((long)arg == -1 || !Engine::isAddressWritable(arg) || !arg->isValid())
-      return;
-    trimmedText = _escudeltrim(arg->text);
-    *role = arg->role();
-    buffer->from(trimmedText);
-  }
   void embed_fun(hook_context *s, TextBuffer buffer, HookParam *)
   {
     auto data_ = buffer.strA();
     auto arg = (HookArgument *)s->stack[1];
+    // keep the leading <...> tag that SpecialHookEscude stripped
+    auto trimmedText = _escudeltrim(arg->text);
     if (trimmedText != arg->text)
       data_.insert(0, std::string(arg->text, trimmedText - arg->text));
     arg->text = allocateString(data_);
@@ -241,7 +218,6 @@ bool InsertEscudeHook()
   }
   HookParam hp;
   hp.address = addr;
-  hp.text_fun = hook_before;
   hp.embed_fun = embed_fun;
   hp.embed_hook_font = F_TextOutA | F_GetTextExtentPoint32A;
   hp.text_fun = SpecialHookEscude;
