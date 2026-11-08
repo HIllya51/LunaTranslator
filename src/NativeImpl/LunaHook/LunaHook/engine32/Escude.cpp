@@ -191,6 +191,8 @@ namespace
   {
     auto data_ = buffer.strA();
     auto arg = (HookArgument *)s->stack[1];
+    // keep the leading <...> tag that SpecialHookEscude stripped
+    auto trimmedText = _escudeltrim(arg->text);
     if (trimmedText != arg->text)
       data_.insert(0, std::string(arg->text, trimmedText - arg->text));
     arg->text = allocateString(data_);
