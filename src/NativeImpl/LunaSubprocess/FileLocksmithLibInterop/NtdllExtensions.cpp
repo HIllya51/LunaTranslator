@@ -248,13 +248,15 @@ std::vector<NtdllExtensions::HandleInfo> NtdllExtensions::handles() noexcept
             }
         });
 
-        offload_function.detach();
+        // Don't detach here: after detach() native_handle() is NULL, so the TerminateThread below would do nothing,
+        // and a hung thread could wake up later and access this function's destroyed locals (captured by [&]).
         do
         {
             Sleep(200); // Timeout in milliseconds for detecting that the system hang on getting information for a handle.
             if (i >= handle_count)
             {
                 // We're done.
+                offload_function.join();
                 break;
             }
 
@@ -264,6 +266,14 @@ std::vector<NtdllExtensions::HandleInfo> NtdllExtensions::handles() noexcept
 
                 // HACK: This is unsafe and may leak something, but looks like there's no way to properly clean up a thread when it's hanging on a system call.
                 TerminateThread(offload_function.native_handle(), 1);
+                // TerminateThread is asynchronous, wait for the thread to actually exit.
+                if (WaitForSingleObject(offload_function.native_handle(), 1000) != WAIT_OBJECT_0)
+                {
+                    // Still stuck in a kernel call, which may write into the buffer when it returns: leak it on purpose and use a new one.
+                    (void)new std::vector<BYTE>(std::move(object_info_buffer));
+                    object_info_buffer = std::vector<BYTE>(DefaultResultBufferSize);
+                }
+                offload_function.detach();
 
                 // Close Handles that might be lingering.
                 if (handle_copy!=NULL)
