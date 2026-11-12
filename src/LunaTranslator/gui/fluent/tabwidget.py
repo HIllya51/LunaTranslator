@@ -10,7 +10,12 @@ from qtsymbols import (
     Qt,
     QFrame,
     QHBoxLayout,
+    QLabel,
     QModelIndex,
+    QParallelAnimationGroup,
+    QPixmap,
+    QPropertyAnimation,
+    QRect,
     QTabBar,
     QTabWidget,
     QTreeWidgetItem,
@@ -19,10 +24,12 @@ from qtsymbols import (
     pyqtSignal,
     QApplication,
     QColor,
+    QEasingCurve,
     QPainter,
     QPainterPath,
     QPen,
     QPalette,
+    QPoint,
     QRectF,
     QSizePolicy,
 )
@@ -256,10 +263,127 @@ def make_content_card(w, margins=(16, 8, 16, 16)):
 class _NoPaneTabWidget(QTabWidget):
     """QTabWidget::paintEvent 只画 pane（PE_FrameTabWidget：1px 边框 +
     Base 底色）。置空以去掉 pane——不能用 QSS，容器级样式表会给全部
-    后代套 QStyleSheetStyle，破坏插件渲染与字体继承。"""
+    后代套 QStyleSheetStyle，破坏插件渲染与字体继承。
+
+    切页滑动动画（Gallery ExTabWidget / 主窗口 ExStackedWidget 同款：
+    纵向、300ms、InOutSine）：currentChanged 后把前后两页 render 成
+    QPixmap，用两个透明 QLabel 覆盖层做平移动画，结束后回到真实页面。
+    animatePageChange 必须连在 FluentTabWidget.__stack_changed 之后——
+    懒加载页在同一次 currentChanged 里构建，渲染要等构建完成。"""
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._duration = 300
+        self._curve = QEasingCurve.Type.InOutSine
+        self._animating = False
+        self._last_index = -1
+        self._current_overlay = None
+        self._next_overlay = None
+        self._animation_group = None
 
     def paintEvent(self, e):
         pass
+
+    def animatePageChange(self, index):
+        if index < 0 or index >= self.count():
+            return
+        if self._animating:
+            self._finish_animation()
+        if (
+            not self.isVisible()
+            or self._last_index < 0
+            or self._last_index == index
+            or self._duration <= 0
+        ):
+            self._last_index = index
+            return
+        current_widget = self.widget(self._last_index)
+        next_widget = self.widget(index)
+        if not current_widget or not next_widget:
+            self._last_index = index
+            return
+        stack = current_widget.parentWidget() or self
+        area = QRect(QPoint(0, 0), stack.size())
+        if area.isEmpty():
+            self._last_index = index
+            return
+        # 懒加载页刚构建完，布局是脏的（LayoutRequest 还在队列里）——
+        # 强制激活，否则 render 出的快照里子控件位置不对
+        for page in (current_widget, next_widget):
+            page.resize(area.size())
+            if page.layout() is not None:
+                page.layout().activate()
+        current_pixmap = QPixmap(area.size())
+        current_pixmap.fill(Qt.GlobalColor.transparent)
+        current_widget.render(current_pixmap)
+        next_pixmap = QPixmap(area.size())
+        next_pixmap.fill(Qt.GlobalColor.transparent)
+        next_widget.render(next_pixmap)
+
+        current_overlay = QLabel(stack)
+        current_overlay.setPixmap(current_pixmap)
+        current_overlay.setScaledContents(False)
+        current_overlay.setGeometry(area)
+        current_overlay.setAttribute(Qt.WA_TransparentForMouseEvents, True)
+        current_overlay.show()
+        current_overlay.raise_()
+
+        next_overlay = QLabel(stack)
+        next_overlay.setPixmap(next_pixmap)
+        next_overlay.setScaledContents(False)
+        next_overlay.setAttribute(Qt.WA_TransparentForMouseEvents, True)
+
+        # 纵向滑动：前进（索引增大）= 旧页上移出、新页自下方进入
+        forward = index > self._last_index
+        offset = area.height()
+        current_end = QPoint(0, -offset if forward else offset)
+        next_start = QPoint(0, offset if forward else -offset)
+
+        next_overlay.setGeometry(QRect(next_start, area.size()))
+        next_overlay.show()
+        next_overlay.raise_()
+
+        # 动画期间真实页面藏起，只见覆盖层
+        next_widget.hide()
+
+        current_animation = QPropertyAnimation(current_overlay, b"pos", self)
+        current_animation.setDuration(self._duration)
+        current_animation.setEasingCurve(self._curve)
+        current_animation.setStartValue(QPoint(0, 0))
+        current_animation.setEndValue(current_end)
+
+        next_animation = QPropertyAnimation(next_overlay, b"pos", self)
+        next_animation.setDuration(self._duration)
+        next_animation.setEasingCurve(self._curve)
+        next_animation.setStartValue(next_start)
+        next_animation.setEndValue(QPoint(0, 0))
+
+        group = QParallelAnimationGroup(self)
+        group.addAnimation(current_animation)
+        group.addAnimation(next_animation)
+
+        self._animating = True
+        self._current_overlay = current_overlay
+        self._next_overlay = next_overlay
+        self._animation_group = group
+        self._last_index = index
+        group.finished.connect(self._finish_animation)
+        group.start()
+
+    def _finish_animation(self):
+        if self._animation_group is not None:
+            self._animation_group.stop()
+            self._animation_group.deleteLater()
+            self._animation_group = None
+        current = self.currentWidget()
+        if current is not None:
+            current.show()
+        for attr in ("_current_overlay", "_next_overlay"):
+            overlay = getattr(self, attr)
+            if overlay is not None:
+                overlay.deleteLater()
+                setattr(self, attr, None)
+        self._animating = False
 
 
 def make_lazy_page(getrealwidgetfunction, main=True):
@@ -342,10 +466,13 @@ class FluentTabWidget(QWidget):
         # 单一发射点：stack 变化 -> currentChanged（makesubtab_lazy 据此懒加载）
         self.nav.pageIndexChanged.connect(self.__nav_changed)
         self.nav_footer.pageIndexChanged.connect(self.__nav_changed)
+        # 切页滑动动画：连在 __stack_changed 之后——懒加载页在同一次
+        # currentChanged 里构建，动画覆盖层的渲染须等构建完成
+        self.tab_widget.currentChanged.connect(self.__stack_changed)
+        self.tab_widget.currentChanged.connect(self.tab_widget.animatePageChange)
         # 主导航展开/收起 -> 底部导航跟随（两棵树独立）
         self.nav.navigationExpandedChanged.connect(
             self.nav_footer.setNavigationExpanded)
-        self.tab_widget.currentChanged.connect(self.__stack_changed)
 
         # 跨导航取消选中（点主导航时清底部，反之亦然）
         self.nav.currentItemChanged.connect(
