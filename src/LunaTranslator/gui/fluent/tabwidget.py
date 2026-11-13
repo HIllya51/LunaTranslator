@@ -35,6 +35,7 @@ from qtsymbols import (
 )
 
 import functools
+from traceback import print_exc
 
 from myutils.config import _TR
 from gui.dynalang import LTabWidget
@@ -283,6 +284,21 @@ class _NoPaneTabWidget(QTabWidget):
 
     def paintEvent(self, e):
         pass
+
+    def setCurrentIndex(self, index):
+        # 先把懒加载页构建完再切页：动画滑入的即是完整内容（也保证
+        # 页面先走正常显示流程，覆盖层 render 到的快照不是未上妆的
+        # 空壳）。构建后 makesubtab_lazy 的 __ 里 lazyfunction 已删，
+        # 不会重复构建。
+        w = self.widget(index) if 0 <= index < self.count() else None
+        lf = getattr(w, "lazyfunction", None)
+        if lf is not None:
+            delattr(w, "lazyfunction")
+            try:
+                lf()
+            except:
+                print_exc()
+        super().setCurrentIndex(index)
 
     def animatePageChange(self, index):
         if index < 0 or index >= self.count():
