@@ -1165,7 +1165,8 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // 月に寄りそう乙女の作法
     {0x8002aefa, {0, 2, 0, 0, 0, "PCSG00648"}}, // dialogue,sjis
     // 熱血異能部活譚 Trigger Kiss
-    {0x8004e44a, {0, 0, 0, 0, FPCSG00410, "PCSG00410"}}, // dialogue,sjis
+    {0x8004e44a, {0, 0, 0, 0, FPCSG00410, "PCSG00410"}},
+    {0x8004049E, {FULL_STRING, 6, 0, 0, FPCSG00410, "PCSG00410"}}, // 1.01
     // バイナリースター
     {0x800B85C6, {FULL_STRING, 0, 0, 0, PCSG00766, "PCSG00389"}}, // 1.00
     {0x800B849A, {FULL_STRING, 0, 0, 0, PCSG00766, "PCSG00389"}}, // 1.01
