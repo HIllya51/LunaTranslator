@@ -1,6 +1,6 @@
 #include "CODEPINK.h"
 
-bool CODEPINK::attach_function()
+static bool SEXFRIEND()
 {
   // strstr
   BYTE bytes[] = {
@@ -41,4 +41,36 @@ bool CODEPINK::attach_function()
     buffer->from(s);
   };
   return NewHook(hp, "SEXFRIEND");
+}
+
+static bool JOROSIN()
+{
+  char log[] = "font_no = %d";
+  auto a = MemDbg::findBytes(log, sizeof(log), processStartAddress, processStopAddress);
+  if (!a)
+    return false;
+  a = MemDbg::find_leaorpush_addr(a, processStartAddress, processStopAddress);
+  if (!a)
+    return false;
+  a = MemDbg::findEnclosingAlignedFunction(a);
+  if (!a)
+    return false;
+  HookParam hp;
+  hp.address = a;
+  hp.type = FULL_STRING;
+  hp.offset = stackoffset(3);
+  hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
+  {
+    auto s = buffer->strA();
+    s = re::sub(s, "@F4@B05.*?@F0");
+    s = re::sub(s, "@[A-Z][0-9]+");
+    s = re::sub(s, "@n");
+    buffer->from(s);
+  };
+  return NewHook(hp, "JOROSIN");
+}
+
+bool CODEPINK::attach_function()
+{
+  return SEXFRIEND() | JOROSIN();
 }
