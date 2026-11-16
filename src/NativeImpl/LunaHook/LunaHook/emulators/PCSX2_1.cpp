@@ -265,7 +265,7 @@ namespace
         auto s = buffer->strAW();
         s = re::sub(s, LR"(\{(.*?)\}\[(.*?)\])", L"$1");
         s = re::sub(s, L"%CG(.*?)%CE");
-        s = re::sub(s, L"%[A-Z]+");
+        s = re::sub(s, L"%[A-Z]+[0-9]*");
         buffer->fromWA(s);
         StringFilter(buffer, TEXTANDLEN("\x81\xe8"));
         StringReplacer(buffer, TEXTANDLEN("\x84\xa5\x84\xa7"), TEXTANDLEN("\x81\x5c\x81\x5c"));
@@ -3319,6 +3319,8 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x1A1528, {0, PCSX2_REG_OFFSET(s3), 0, 0, SLPM55197, "SLPM-66988"}},
     // Memories Off 6 Next Relation
     {0x17F334, {0, PCSX2_REG_OFFSET(v1), 0, 0, SLPM55197, "SLPM-55197"}},
+    // Your Memories Off ～Girls Style～
+    {0x1DC840, {FULL_STRING, PCSX2_REG_OFFSET(a1), 0, 0, SLPM55170, "SLPM-66928"}},
     // メモオフみっくす
     {0x1943860, {DIRECT_READ, 0, 0, 0, SLPS25278, "SLPS-25278"}},
     // メルティブラッド アクトレスアゲイン
