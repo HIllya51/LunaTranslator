@@ -220,6 +220,7 @@ struct il2cpp_impl : monoil2cpp
 	{
 		game_dll = game_module;
 		RESOLVE_IMPORT(il2cpp_type_get_name);
+		RESOLVE_IMPORT(il2cpp_method_get_name);
 		RESOLVE_IMPORT(il2cpp_method_get_param_count);
 		RESOLVE_IMPORT(il2cpp_string_new_utf16);
 		RESOLVE_IMPORT(il2cpp_string_chars);
@@ -243,6 +244,12 @@ struct il2cpp_impl : monoil2cpp
 		RESOLVE_IMPORT(il2cpp_thread_attach);
 		RESOLVE_IMPORT(il2cpp_thread_detach);
 		RESOLVE_IMPORT(il2cpp_class_get_field_from_name);
+		RESOLVE_IMPORT(il2cpp_field_get_value);
+		RESOLVE_IMPORT(il2cpp_field_set_value);
+		RESOLVE_IMPORT(il2cpp_field_static_set_value);
+		RESOLVE_IMPORT(il2cpp_field_get_offset);
+		RESOLVE_IMPORT(il2cpp_runtime_object_init);
+		RESOLVE_IMPORT(il2cpp_class_get_parent);
 		RESOLVE_IMPORT(il2cpp_class_is_assignable_from);
 		RESOLVE_IMPORT(il2cpp_class_for_each);
 		RESOLVE_IMPORT(il2cpp_class_get_nested_types);
@@ -367,11 +374,456 @@ struct il2cpp_impl : monoil2cpp
 		if (auto sw = commonsolvemonostring((uintptr_t)ret))
 			Msg::Log(WideStringToString(sw.value()).c_str());
 	}
+	void *m_font = nullptr;
+	void *m_dynFont = nullptr;
+	void *m_setFont = nullptr;
+	void *m_getFont = nullptr;
+	void *m_loadFontAsset = nullptr;
+	void *m_setAllDirty = nullptr;
+	void *m_hasChar = nullptr;
+	void *m_getFallbackTable = nullptr;
+	void *m_setFallbackTable = nullptr;
+	FieldInfo *m_fFontAsset = nullptr;
+	FieldInfo *m_fHavePropsChanged = nullptr;
+	const Il2CppClass *m_tTMP_Text = nullptr;
+	const Il2CppClass *m_tFontAsset = nullptr;
+	const Il2CppClass *m_tFontList = nullptr;
+
+	static std::wstring pick_bundle(std::wstring_view ver)
+	{
+		int n = 0;
+		bool any = false;
+		for (wchar_t c : ver)
+		{
+			if (c >= L'0' && c <= L'9')
+			{
+				n = n * 10 + (c - L'0');
+				any = true;
+			}
+			else if (any)
+				break;
+		}
+		if (n == 6)
+			return L"arialuni_sdf_u6000";
+		if (n >= 2022)
+			return L"arialuni_sdf_u2022";
+		if (n == 2020 || n == 2021)
+			return L"arialuni_sdf_u2021";
+		if (n == 2019)
+			return L"arialuni_sdf_u2019";
+		if (n == 2018)
+			return L"arialuni_sdf_u2018";
+		return L"arialuni_sdf-u55to2017";
+	}
+
+	const MethodInfo *find_method_in_hierarchy(const Il2CppClass *klass, const char *name, int argsCount)
+	{
+		const Il2CppClass *cur = klass;
+		while (cur)
+		{
+			if (auto m = (SafeFptr(il2cpp_class_get_method_from_name))(cur, name, argsCount))
+				return m;
+			cur = il2cpp_class_get_parent ? (SafeFptr(il2cpp_class_get_parent))(const_cast<Il2CppClass *>(cur)) : cur->parent;
+		}
+		return nullptr;
+	}
+
+	void add_to_font_list(void *listObj, void *fontObj)
+	{
+		if (!listObj || !fontObj)
+			return;
+		auto listKlass = ((Il2CppObject *)listObj)->klass;
+		if (!listKlass)
+			return;
+		if (!m_tFontList)
+			m_tFontList = listKlass;
+		auto mContains = (void *)getmethodofklass_1(listKlass, "Contains", 1);
+		auto mAdd = (void *)getmethodofklass_1(listKlass, "Add", 1);
+		if (!mAdd)
+			return;
+		void *exc = nullptr;
+		if (mContains)
+		{
+			void *args[1] = {fontObj};
+			void *res = invoke(mContains, listObj, args, &exc);
+			if (!exc && res && *(bool *)((uintptr_t)res + sizeof(Il2CppObject)))
+				return;
+		}
+		void *args[1] = {fontObj};
+		invoke(mAdd, listObj, args, &exc);
+	}
+
+	void attach_fallbacks_to_font(void *fontObj)
+	{
+		if (!fontObj || !m_getFallbackTable)
+			return;
+		void *exc = nullptr;
+		void *fbList = invoke(m_getFallbackTable, fontObj, nullptr, &exc);
+		if ((exc || !fbList) && m_tFontList && m_setFallbackTable)
+		{
+			fbList = (SafeFptr(il2cpp_object_new))(const_cast<Il2CppClass *>(m_tFontList));
+			if (fbList)
+			{
+				(SafeFptr(il2cpp_runtime_object_init))((Il2CppObject *)fbList);
+				void *sArgs[1] = {fbList};
+				invoke(m_setFallbackTable, fontObj, sArgs, &exc);
+			}
+		}
+		if (fbList)
+		{
+			if (m_dynFont && m_dynFont != fontObj)
+				add_to_font_list(fbList, m_dynFont);
+			if (m_font && m_font != fontObj && m_font != m_dynFont)
+				add_to_font_list(fbList, m_font);
+		}
+	}
+
+	bool has_char_il2cpp(void *fontAsset, wchar_t ch)
+	{
+		if (!fontAsset || !m_hasChar)
+			return true;
+		void *args[1] = {&ch};
+		void *exc = nullptr;
+		void *res = invoke(m_hasChar, fontAsset, args, &exc);
+		if (exc || !res)
+			return true;
+		return *(bool *)((uintptr_t)res + sizeof(Il2CppObject));
+	}
+
+	void *invoke_create_font_asset(void *osFont)
+	{
+		if (!osFont || !m_tFontAsset)
+			return nullptr;
+		void *iter = nullptr;
+		const MethodInfo *m1 = nullptr;
+		const MethodInfo *m8 = nullptr;
+		const MethodInfo *m7 = nullptr;
+		while (auto m = (SafeFptr(il2cpp_class_get_methods))(const_cast<Il2CppClass *>(m_tFontAsset), &iter))
+		{
+			auto mname = (SafeFptr(il2cpp_method_get_name))(m);
+			if (!mname || strcmp(mname, "CreateFontAsset") != 0)
+				continue;
+			uint32_t pc = (SafeFptr(il2cpp_method_get_param_count))(m);
+			auto p0 = (SafeFptr(il2cpp_method_get_param))(m, 0);
+			auto p0n = p0 ? (SafeFptr(il2cpp_type_get_name))(p0) : nullptr;
+			if (!p0n || strstr(p0n, "Font") == nullptr)
+				continue;
+			if (pc == 1)
+				m1 = m;
+			else if (pc == 8)
+				m8 = m;
+			else if (pc == 7)
+				m7 = m;
+		}
+		void *exc = nullptr;
+		if (m1)
+		{
+			void *args[1] = {osFont};
+			void *fa = invoke((void *)m1, nullptr, args, &exc);
+			if (!exc && fa)
+				return fa;
+		}
+		int32_t samplingPointSize = 90;
+		int32_t atlasPadding = 9;
+		int32_t renderMode = 4165; // GlyphRenderMode.SDFAA
+		int32_t atlasWidth = 1024;
+		int32_t atlasHeight = 1024;
+		int32_t atlasPopulationMode = 1; // AtlasPopulationMode.Dynamic
+		bool enableMultiAtlas = true;
+		if (m8)
+		{
+			void *args[8] = {osFont, &samplingPointSize, &atlasPadding, &renderMode, &atlasWidth, &atlasHeight, &atlasPopulationMode, &enableMultiAtlas};
+			exc = nullptr;
+			void *fa = invoke((void *)m8, nullptr, args, &exc);
+			if (!exc && fa)
+				return fa;
+		}
+		if (m7)
+		{
+			void *args[7] = {osFont, &samplingPointSize, &atlasPadding, &renderMode, &atlasWidth, &atlasHeight, &atlasPopulationMode};
+			exc = nullptr;
+			void *fa = invoke((void *)m7, nullptr, args, &exc);
+			if (!exc && fa)
+				return fa;
+		}
+		return nullptr;
+	}
+
 	bool load_managed_plugin_impl() override
 	{
-		return false;
+		AutoThread::attach_thread();
+		m_tTMP_Text = (const Il2CppClass *)get_class_pointer("Unity.TextMeshPro", "TMPro", "TMP_Text", false);
+		m_tFontAsset = (const Il2CppClass *)get_class_pointer("Unity.TextMeshPro", "TMPro", "TMP_FontAsset", false);
+		if (m_tTMP_Text)
+		{
+			m_setFont = (void *)find_method_in_hierarchy(m_tTMP_Text, "set_font", 1);
+			m_getFont = (void *)find_method_in_hierarchy(m_tTMP_Text, "get_font", 0);
+			m_loadFontAsset = (void *)find_method_in_hierarchy(m_tTMP_Text, "LoadFontAsset", 0);
+			m_setAllDirty = (void *)find_method_in_hierarchy(m_tTMP_Text, "SetAllDirty", 0);
+			m_fFontAsset = (SafeFptr(il2cpp_class_get_field_from_name))(const_cast<Il2CppClass *>(m_tTMP_Text), "m_fontAsset");
+			m_fHavePropsChanged = (SafeFptr(il2cpp_class_get_field_from_name))(const_cast<Il2CppClass *>(m_tTMP_Text), "m_havePropertiesChanged");
+		}
+		if (m_tFontAsset)
+		{
+			m_hasChar = (void *)getmethodofklass_1(m_tFontAsset, "HasCharacter", 1);
+			m_getFallbackTable = (void *)getmethodofklass_1(m_tFontAsset, "get_fallbackFontAssetTable", 0);
+			m_setFallbackTable = (void *)getmethodofklass_1(m_tFontAsset, "set_fallbackFontAssetTable", 1);
+			if (m_getFallbackTable)
+			{
+				if (auto retType = (SafeFptr(il2cpp_method_get_return_type))((const MethodInfo *)m_getFallbackTable))
+					m_tFontList = (SafeFptr(il2cpp_class_from_type))(retType);
+			}
+		}
+
+		using fn_DontDestroyOnLoad = void (*)(void *);
+		auto icall_dontDestroy = (fn_DontDestroyOnLoad)(SafeFptr(il2cpp_resolve_icall))("UnityEngine.Object::DontDestroyOnLoad");
+
+		// 1. Load bundle TMP_FontAsset via icalls if unityfontdir is available
+		if (commonsharedmem && commonsharedmem->unityfontdir[0] && m_tFontAsset)
+		{
+			std::wstring ver;
+			using fn_get_unityVersion = Il2CppString *(*)();
+			if (auto icall_ver = (fn_get_unityVersion)(SafeFptr(il2cpp_resolve_icall))("UnityEngine.Application::get_unityVersion"))
+			{
+				if (auto verObj = icall_ver())
+					if (auto sv = get_string(verObj))
+						ver = sv.value();
+			}
+			std::filesystem::path bundlePath = std::filesystem::path(commonsharedmem->unityfontdir) / pick_bundle(ver);
+			if (std::filesystem::exists(bundlePath))
+			{
+				using fn_LoadFromFile_Internal = void *(*)(void *, uint32_t, uint64_t);
+				using fn_LoadAssetWithSubAssets_Internal = Il2CppArraySize *(*)(void *, void *, void *);
+				auto icall_loadFromFile = (fn_LoadFromFile_Internal)(SafeFptr(il2cpp_resolve_icall))("UnityEngine.AssetBundle::LoadFromFile_Internal");
+				auto icall_loadAssets = (fn_LoadAssetWithSubAssets_Internal)(SafeFptr(il2cpp_resolve_icall))("UnityEngine.AssetBundle::LoadAssetWithSubAssets_Internal");
+				if (icall_loadFromFile && icall_loadAssets)
+				{
+					void *pathStr = create_string(bundlePath.wstring());
+					void *ab = icall_loadFromFile(pathStr, 0, 0);
+					if (ab)
+					{
+						(SafeFptr(il2cpp_gchandle_new))(ab, true);
+						if (icall_dontDestroy)
+							icall_dontDestroy(ab);
+						auto tObject = (const Il2CppClass *)get_class_pointer("UnityEngine.CoreModule", "UnityEngine", "Object", false);
+						const Il2CppClass *filterKlass = m_tFontAsset ? m_tFontAsset : tObject;
+						void *typeObj = filterKlass ? (SafeFptr(il2cpp_type_get_object))((SafeFptr(il2cpp_class_get_type))(const_cast<Il2CppClass *>(filterKlass))) : nullptr;
+						if (typeObj)
+						{
+							Il2CppArraySize *arr = icall_loadAssets(ab, create_string(L""), typeObj);
+							if (arr)
+							{
+								for (uintptr_t i = 0; i < arr->max_length && i < 256; i++)
+								{
+									void *elem = arr->vector[i];
+									if (!elem)
+										continue;
+									auto k = ((Il2CppObject *)elem)->klass;
+									if (k && (k == m_tFontAsset || (SafeFptr(il2cpp_class_is_assignable_from))(const_cast<Il2CppClass *>(m_tFontAsset), const_cast<Il2CppClass *>(k))))
+									{
+										m_font = elem;
+										(SafeFptr(il2cpp_gchandle_new))(m_font, true);
+										if (icall_dontDestroy)
+											icall_dontDestroy(m_font);
+										break;
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		// Ensure ShaderUtilities.k_ShaderRef_MobileSDF is populated before CreateFontAsset
+		if (m_tFontAsset)
+		{
+			auto tShaderUtil = (const Il2CppClass *)get_class_pointer("Unity.TextMeshPro", "TMPro", "ShaderUtilities", false);
+			if (tShaderUtil)
+			{
+				(SafeFptr(il2cpp_runtime_class_init))(const_cast<Il2CppClass *>(tShaderUtil));
+				void *curShader = nullptr;
+				if (auto mGetShader = (void *)getmethodofklass_1(tShaderUtil, "get_ShaderRef_MobileSDF", 0))
+				{
+					void *exc = nullptr;
+					curShader = invoke(mGetShader, nullptr, nullptr, &exc);
+				}
+				if (!curShader)
+				{
+					void *donorFont = m_font;
+					if (!donorFont)
+					{
+						if (auto mDefFont = get_method_internal("Unity.TextMeshPro", "TMPro", "TMP_Settings", "get_defaultFontAsset", 0, false))
+						{
+							void *exc = nullptr;
+							donorFont = invoke(mDefFont, nullptr, nullptr, &exc);
+						}
+					}
+					if (donorFont)
+					{
+						FieldInfo *fMat = (SafeFptr(il2cpp_class_get_field_from_name))(const_cast<Il2CppClass *>(m_tFontAsset), "material");
+						if (!fMat)
+							fMat = (SafeFptr(il2cpp_class_get_field_from_name))(const_cast<Il2CppClass *>(m_tFontAsset), "m_Material");
+						void *matObj = nullptr;
+						if (fMat)
+							(SafeFptr(il2cpp_field_get_value))((Il2CppObject *)donorFont, fMat, &matObj);
+						if (matObj)
+						{
+							using fn_get_shader = void *(*)(void *);
+							if (auto icall_getShader = (fn_get_shader)(SafeFptr(il2cpp_resolve_icall))("UnityEngine.Material::get_shader"))
+							{
+								void *sh = icall_getShader(matObj);
+								if (sh)
+								{
+									if (FieldInfo *fShaderRef = (SafeFptr(il2cpp_class_get_field_from_name))(const_cast<Il2CppClass *>(tShaderUtil), "k_ShaderRef_MobileSDF"))
+										(SafeFptr(il2cpp_field_static_set_value))(fShaderRef, &sh);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		// 2. Create dynamic OS TMP_FontAsset via Font icalls + CreateFontAsset(8 args / 1 arg)
+		if (m_tFontAsset)
+		{
+			auto tUIFont = (const Il2CppClass *)get_class_pointer("UnityEngine.TextRenderingModule", "UnityEngine", "Font", false);
+			if (tUIFont)
+			{
+				using fn_Internal_CreateFontFromPath = void (*)(void *, void *);
+				using fn_Internal_CreateDynamicFont = void (*)(void *, void *, int32_t);
+				auto icall_fromPath = (fn_Internal_CreateFontFromPath)(SafeFptr(il2cpp_resolve_icall))("UnityEngine.Font::Internal_CreateFontFromPath");
+				auto icall_dynFont = (fn_Internal_CreateDynamicFont)(SafeFptr(il2cpp_resolve_icall))("UnityEngine.Font::Internal_CreateDynamicFont");
+
+				if (icall_dynFont)
+				{
+					auto tString = (const Il2CppClass *)get_class_pointer("mscorlib", "System", "String", false);
+					if (tString)
+					{
+						Il2CppArraySize *namesArr = (SafeFptr(il2cpp_array_new))(const_cast<Il2CppClass *>(tString), 3);
+						if (namesArr)
+						{
+							const wchar_t *fname = (commonsharedmem && commonsharedmem->fontFamily[0]) ? commonsharedmem->fontFamily : L"Arial";
+							namesArr->vector[0] = create_string(fname);
+							namesArr->vector[1] = create_string(L"Arial");
+							namesArr->vector[2] = create_string(L"Tahoma");
+							void *fObj = (SafeFptr(il2cpp_object_new))(const_cast<Il2CppClass *>(tUIFont));
+							if (fObj)
+							{
+								icall_dynFont(fObj, namesArr, 32);
+								(SafeFptr(il2cpp_gchandle_new))(fObj, true);
+								if (icall_dontDestroy)
+									icall_dontDestroy(fObj);
+								m_dynFont = invoke_create_font_asset(fObj);
+							}
+						}
+					}
+				}
+				if (!m_dynFont && icall_fromPath)
+				{
+					const wchar_t *ttfCandidates[] = {
+						L"C:\\Windows\\Fonts\\arial.ttf",
+						L"C:\\Windows\\Fonts\\tahoma.ttf",
+						L"C:\\Windows\\Fonts\\segoeui.ttf",
+					};
+					for (auto ttf : ttfCandidates)
+					{
+						if (!std::filesystem::exists(ttf))
+							continue;
+						void *fObj = (SafeFptr(il2cpp_object_new))(const_cast<Il2CppClass *>(tUIFont));
+						if (!fObj)
+							break;
+						icall_fromPath(fObj, create_string(ttf));
+						(SafeFptr(il2cpp_gchandle_new))(fObj, true);
+						if (icall_dontDestroy)
+							icall_dontDestroy(fObj);
+						m_dynFont = invoke_create_font_asset(fObj);
+						if (m_dynFont)
+							break;
+					}
+				}
+				if (m_dynFont)
+				{
+					(SafeFptr(il2cpp_gchandle_new))(m_dynFont, true);
+					if (icall_dontDestroy)
+						icall_dontDestroy(m_dynFont);
+				}
+			}
+		}
+
+		if (!m_font && m_dynFont)
+			m_font = m_dynFont;
+
+		if (auto mGetSettingsFb = get_method_internal("Unity.TextMeshPro", "TMPro", "TMP_Settings", "get_fallbackFontAssets", 0, false))
+		{
+			void *exc = nullptr;
+			void *fbList = invoke(mGetSettingsFb, nullptr, nullptr, &exc);
+			if (!exc && fbList)
+			{
+				if (m_dynFont)
+					add_to_font_list(fbList, m_dynFont);
+				if (m_font && m_font != m_dynFont)
+					add_to_font_list(fbList, m_font);
+			}
+		}
+
+		if (m_font && m_dynFont && m_font != m_dynFont)
+			attach_fallbacks_to_font(m_font);
+
+		if (auto mDefFont = get_method_internal("Unity.TextMeshPro", "TMPro", "TMP_Settings", "get_defaultFontAsset", 0, false))
+		{
+			void *exc = nullptr;
+			if (void *defFont = invoke(mDefFont, nullptr, nullptr, &exc))
+				attach_fallbacks_to_font(defFont);
+		}
+
+		Msg::Log("IL2CPP FontLoader: bundleFont=%p dynFont=%p", m_font, m_dynFont);
+		return m_font != nullptr || m_dynFont != nullptr;
 	}
-	void apply_font(void *self) override {}
+
+	void apply_font(void *self) override
+	{
+		if (!self || (!m_font && !m_dynFont))
+			return;
+		void *target = m_font ? m_font : m_dynFont;
+
+		void *exc = nullptr;
+		void *curFont = nullptr;
+		if (m_getFont)
+			curFont = invoke(m_getFont, self, nullptr, &exc);
+		else if (m_fFontAsset)
+			(SafeFptr(il2cpp_field_get_value))((Il2CppObject *)self, m_fFontAsset, &curFont);
+
+		if (curFont && curFont != m_font && curFont != m_dynFont)
+			attach_fallbacks_to_font(curFont);
+
+		if (curFont == target)
+			return;
+
+		if (m_setFont)
+		{
+			void *args[1] = {target};
+			invoke(m_setFont, self, args, &exc);
+		}
+		else if (m_fFontAsset)
+		{
+			(SafeFptr(il2cpp_field_set_value))((Il2CppObject *)self, m_fFontAsset, target);
+			if (m_fHavePropsChanged)
+			{
+				bool bTrue = true;
+				(SafeFptr(il2cpp_field_set_value))((Il2CppObject *)self, m_fHavePropsChanged, &bTrue);
+			}
+			auto selfKlass = ((Il2CppObject *)self)->klass;
+			const MethodInfo *updM = selfKlass ? find_method_in_hierarchy(selfKlass, "UpdateFontAsset", 0) : nullptr;
+			if (!updM)
+				updM = selfKlass ? find_method_in_hierarchy(selfKlass, "LoadFontAsset", 0) : (const MethodInfo *)m_loadFontAsset;
+			if (updM)
+				invoke((void *)updM, self, nullptr, &exc);
+			if (m_setAllDirty)
+				invoke(m_setAllDirty, self, nullptr, &exc);
+		}
+	}
 };
 
 monoil2cpp *create_il2cpp_runtime(HMODULE module)

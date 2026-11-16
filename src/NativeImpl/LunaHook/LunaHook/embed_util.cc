@@ -140,7 +140,7 @@ void patch_fun_ptrs_patch_once()
 }
 void solvefont(HookParam hp)
 {
-  if (!wcslen(commonsharedmem->fontFamily))
+  if (!wcslen(commonsharedmem->fontFamily) && !wcslen(commonsharedmem->unityfontdir))
     return;
   if (hp.embed_hook_font & DISABLE_FONT_SWITCH)
   {

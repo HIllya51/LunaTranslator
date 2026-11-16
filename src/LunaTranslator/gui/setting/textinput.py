@@ -267,8 +267,12 @@ def creategamefont_comboBox(dic: dict):
         except:
             pass
 
+    fontname = dic.get("changefont_font", "")
+    if fontname:
+        gamefont_comboBox.setCurrentFont(QFont(fontname))
+    else:
+        dic["changefont_font"] = gamefont_comboBox.currentFont().family()
     gamefont_comboBox.currentTextChanged.connect(callback)
-    gamefont_comboBox.setCurrentFont(QFont(dic.get("changefont_font", "")))
     return gamefont_comboBox
 
 

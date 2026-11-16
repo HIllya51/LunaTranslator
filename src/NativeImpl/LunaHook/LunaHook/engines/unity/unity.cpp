@@ -33,6 +33,7 @@ namespace
   void tmpembed(hook_context *context, TextBuffer buffer, HookParam *hp)
   {
     unity_ui_string_embed_fun(context->argof(hp->offset, hp), buffer);
+    g_monoil2cpp->ensure_tmp_font_loaded();
     g_monoil2cpp->apply_font((void *)context->argof_thiscall());
   }
 
@@ -106,7 +107,7 @@ namespace
       {"Unity.TextMeshPro", "TMPro", "TMP_Text", "set_text", 1, 2, nullptr, true, true, nullptr, tmpfilter, tmpembed},
       {"Unity.TextMeshPro", "TMPro", "TextMeshPro", "set_text", 1, 2, nullptr, true, true, nullptr, tmpfilter, tmpembed},
       {"Unity.TextMeshPro", "TMPro", "TextMeshProUGUI", "SetText", 2, 2, nullptr, true, true, nullptr, tmpfilter, tmpembed},
-      {"UnityEngine.UI", "UnityEngine.UI", "Text", "set_text", 1, 2, nullptr, true},
+      {"UnityEngine.UI", "UnityEngine.UI", "Text", "set_text", 1, 2, nullptr, true, true, nullptr, nullptr, tmpembed},
       {"UnityEngine.UIElementsModule", "UnityEngine.UIElements", "TextElement", "set_text", 1, 2, nullptr, true},
       {"UnityEngine.UIElementsModule", "UnityEngine.UIElements", "TextField", "set_value", 1, 2, nullptr, true},
       {"UnityEngine.TextRenderingModule", "UnityEngine", "GUIText", "set_text", 1, 2, nullptr, true},
