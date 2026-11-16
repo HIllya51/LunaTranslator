@@ -46,9 +46,12 @@ namespace LunaTmpFontLoader
 
         static bool _resolved;
         static Type _tFontAsset, _tTMP_Text, _tSettings;
+        static Type _tUIText, _tUIFont;
         static Type _tAB, _tObject, _tApp;
         static MethodInfo _mLoadFromFile, _mLoadAllAssets, _mDontDestroy, _mFindObjectsOfType;
-        static PropertyInfo _pFontTMP, _pTextTMP, _pUnityVer, _pName, _pFallbackFonts;
+        static MethodInfo _mCreateDynFont, _mCreateFontAsset, _mHasCharUIFont;
+        static PropertyInfo _pFontTMP, _pTextTMP, _pUnityVer, _pName, _pFallbackFonts, _pFallbackFontTable;
+        static PropertyInfo _pFontUIText, _pTextUIText;
         static MethodInfo _mHasCharacter;
 
         static Type FindType(string fullName)
@@ -85,6 +88,8 @@ namespace LunaTmpFontLoader
                 _tFontAsset = FindType("TMPro.TMP_FontAsset");
                 _tTMP_Text = FindType("TMPro.TMP_Text");
                 _tSettings = FindType("TMPro.TMP_Settings");
+                _tUIText = FindType("UnityEngine.UI.Text");
+                _tUIFont = FindType("UnityEngine.Font");
                 _tAB = FindType("UnityEngine.AssetBundle");
                 _tObject = FindType("UnityEngine.Object");
                 _tApp = FindType("UnityEngine.Application");
@@ -108,18 +113,36 @@ namespace LunaTmpFontLoader
                     _pFontTMP = _tTMP_Text.GetProperty("font");
                     _pTextTMP = _tTMP_Text.GetProperty("text");
                 }
+                if (_tUIFont != null)
+                {
+                    _mCreateDynFont = FindMethod(_tUIFont, "CreateDynamicFontFromOSFont", new[] { typeof(string[]), typeof(int) });
+                    _mHasCharUIFont = FindMethod(_tUIFont, "HasCharacter", new[] { typeof(char) });
+                }
+                if (_tUIText != null)
+                {
+                    _pFontUIText = _tUIText.GetProperty("font");
+                    _pTextUIText = _tUIText.GetProperty("text");
+                }
                 if (_tFontAsset != null)
+                {
                     _mHasCharacter = FindMethod(_tFontAsset, "HasCharacter", new[] { typeof(char) });
+                    if (_tUIFont != null)
+                        _mCreateFontAsset = FindMethod(_tFontAsset, "CreateFontAsset", new[] { _tUIFont });
+                    _pFallbackFontTable = _tFontAsset.GetProperty("fallbackFontAssetTable") ?? _tFontAsset.GetProperty("fallbackFontAssets");
+                }
                 if (_tSettings != null)
                     _pFallbackFonts = _tSettings.GetProperty("fallbackFontAssets");
             }
             catch (Exception e) { Diag("ResolveTypes: threw " + e.GetType().Name + ": " + e.Message); }
             Diag("ResolveTypes: FA=" + (_tFontAsset != null) + " TMP_Text=" + (_tTMP_Text != null)
+                + " UIText=" + (_tUIText != null) + " UIFont=" + (_tUIFont != null)
                 + " AB=" + (_tAB != null) + " Obj=" + (_tObject != null) + " App=" + (_tApp != null)
                 + " HasChar=" + (_mHasCharacter != null) + " Fallback=" + (_pFallbackFonts != null));
         }
 
         static object _font;
+        static object _dynFont;
+        static object _osFont;
 
         public static void LoadFont(string bundleDir)
         {
@@ -129,12 +152,10 @@ namespace LunaTmpFontLoader
             catch (Exception e) { Diag("LoadFont: caught " + e.GetType().FullName + ": " + e.Message); throw; }
         }
 
-        static void LoadFontImpl()
+        static void LoadBundleFont()
         {
-            Diag("LoadFontImpl: start");
-            ResolveTypes();
-            if (_tAB == null || _mLoadFromFile == null || _mLoadAllAssets == null)
-            { Diag("LoadFontImpl: AssetBundle API not resolved"); return; }
+            if (string.IsNullOrEmpty(BundleDir) || _tAB == null || _mLoadFromFile == null || _mLoadAllAssets == null)
+                return;
 
             string ver = "";
             try { if (_pUnityVer != null) ver = (string)_pUnityVer.GetValue(null, null); } catch { }
@@ -147,7 +168,6 @@ namespace LunaTmpFontLoader
             object ab;
             try { ab = _mLoadFromFile.Invoke(null, new object[] { path }); }
             catch (Exception e) { Diag("LoadBundleFont: LoadFromFile threw " + e.GetType().Name + ": " + e.Message); return; }
-            Diag("LoadBundleFont: LoadFromFile=" + (ab != null ? "ok" : "NULL"));
             if (ab == null) return;
             DontDestroy(ab);
 
@@ -155,7 +175,6 @@ namespace LunaTmpFontLoader
             try { arrObj = _mLoadAllAssets.Invoke(ab, null); }
             catch (Exception e) { Diag("LoadBundleFont: LoadAllAssets threw " + e.GetType().Name + ": " + e.Message); return; }
             Array arr = arrObj as Array;
-            Diag("LoadBundleFont: arr=" + (arr != null ? "len=" + arr.Length : (arrObj != null ? arrObj.GetType().Name : "null")));
             if (arr == null) return;
 
             foreach (var o in arr)
@@ -168,8 +187,72 @@ namespace LunaTmpFontLoader
                     break;
                 }
             }
-            if (_font == null)
-            { Diag("LoadBundleFont: no TMP_FontAsset in bundle (types: " + DescribeTypes(arr) + ")"); return; }
+        }
+
+        static void LoadDynamicOSFont()
+        {
+            if (_mCreateDynFont == null) return;
+            try
+            {
+                string[] osNames = new string[] { "Arial", "Tahoma", "Segoe UI", "Microsoft YaHei" };
+                _osFont = _mCreateDynFont.Invoke(null, new object[] { osNames, 32 });
+                if (_osFont != null)
+                {
+                    DontDestroy(_osFont);
+                    Diag("LoadDynamicOSFont: osFont created");
+                    if (_mCreateFontAsset != null)
+                    {
+                        _dynFont = _mCreateFontAsset.Invoke(null, new object[] { _osFont });
+                        if (_dynFont != null)
+                        {
+                            DontDestroy(_dynFont);
+                            Diag("LoadDynamicOSFont: dynFont TMP_FontAsset created");
+                        }
+                    }
+                }
+            }
+            catch (Exception e) { Diag("LoadDynamicOSFont: " + e.GetType().Name + ": " + e.Message); }
+        }
+
+        static void AddToFontList(object list, object fontAsset)
+        {
+            if (list == null || fontAsset == null || _tFontAsset == null) return;
+            try
+            {
+                var tList = list.GetType();
+                var mContains = tList.GetMethod("Contains", new[] { _tFontAsset });
+                var mAdd = tList.GetMethod("Add", new[] { _tFontAsset });
+                if (mContains == null || mAdd == null) return;
+                if (!(bool)mContains.Invoke(list, new object[] { fontAsset }))
+                    mAdd.Invoke(list, new object[] { fontAsset });
+            }
+            catch { }
+        }
+
+        static void LoadFontImpl()
+        {
+            Diag("LoadFontImpl: start");
+            ResolveTypes();
+            LoadBundleFont();
+            LoadDynamicOSFont();
+
+            if (_font == null && _dynFont != null)
+                _font = _dynFont;
+
+            if (_font != null && _dynFont != null && _font != _dynFont && _pFallbackFontTable != null)
+            {
+                try
+                {
+                    object fbList = _pFallbackFontTable.GetValue(_font, null);
+                    if (fbList == null)
+                    {
+                        fbList = Activator.CreateInstance(_pFallbackFontTable.PropertyType);
+                        _pFallbackFontTable.SetValue(_font, fbList, null);
+                    }
+                    AddToFontList(fbList, _dynFont);
+                }
+                catch { }
+            }
 
             RegisterFallback();
             ApplyToAllExisting();
@@ -200,7 +283,7 @@ namespace LunaTmpFontLoader
 
         public static void ApplyFont(object component)
         {
-            if (_font == null) return;
+            if (_font == null && _osFont == null) return;
             if (!_resolved) ResolveTypes();
             if (component != null) SetFont(component, false);
             int now = Environment.TickCount;
@@ -214,19 +297,72 @@ namespace LunaTmpFontLoader
 
         static void SetFont(object component, bool selective)
         {
-            if (component == null || _pFontTMP == null) return;
+            if (component == null) return;
+            if (_tUIText != null && _tUIText.IsInstanceOfType(component))
+            {
+                if (_osFont == null || _pFontUIText == null) return;
+                try
+                {
+                    object cur = _pFontUIText.GetValue(component, null);
+                    if (cur == _osFont) return;
+                    if (selective && !MissingGlyphsUIText(component, cur)) return;
+                    _pFontUIText.SetValue(component, _osFont, null);
+                }
+                catch (Exception e) { Diag("ApplyFont UIText: " + e.GetType().Name + ": " + e.Message); }
+                return;
+            }
+            if (_font == null || _pFontTMP == null) return;
             _applyCalls++;
             if (_applyCalls == 1) Diag("ApplyFont: first call compType=" + component.GetType().FullName);
             try
             {
                 object cur = _pFontTMP.GetValue(component, null);
-                if (cur == _font) return;
+                object targetFont = ChooseTmpFont(component);
+                if (cur == targetFont) return;
                 if (selective && !MissingGlyphs(component, cur)) return;
-                _pFontTMP.SetValue(component, _font, null);
+                _pFontTMP.SetValue(component, targetFont, null);
                 _applySets++;
                 if (_applySets <= 3) Diag("ApplyFont: set font (#" + _applySets + " on " + component.GetType().Name + ")");
             }
             catch (Exception e) { Diag("ApplyFont: " + e.GetType().Name + ": " + e.Message); }
+        }
+
+        static object ChooseTmpFont(object component)
+        {
+            if (_dynFont == null || _font == null || _font == _dynFont || _pTextTMP == null || _mHasCharacter == null)
+                return _font;
+            try
+            {
+                string text = (string)_pTextTMP.GetValue(component, null);
+                if (!string.IsNullOrEmpty(text))
+                {
+                    foreach (char c in text)
+                    {
+                        if (c < 0x0080) continue;
+                        if (!((bool)_mHasCharacter.Invoke(_font, new object[] { c })))
+                            return _dynFont;
+                    }
+                }
+            }
+            catch { }
+            return _font;
+        }
+
+        static bool MissingGlyphsUIText(object component, object font)
+        {
+            if (_pTextUIText == null || _mHasCharUIFont == null || font == null) return true;
+            try
+            {
+                string text = (string)_pTextUIText.GetValue(component, null);
+                if (string.IsNullOrEmpty(text)) return false;
+                foreach (char c in text)
+                {
+                    if (c < 0x0080) continue;
+                    if (!((bool)_mHasCharUIFont.Invoke(font, new object[] { c }))) return true;
+                }
+                return false;
+            }
+            catch { return true; }
         }
 
         static bool MissingGlyphs(object component, object font)
@@ -238,7 +374,7 @@ namespace LunaTmpFontLoader
                 if (string.IsNullOrEmpty(text)) return false;
                 foreach (char c in text)
                 {
-                    if (c < 0x2E00) continue;
+                    if (c < 0x0080) continue;
                     if (!((bool)_mHasCharacter.Invoke(font, new object[] { c }))) return true;
                 }
                 return false;
@@ -248,39 +384,52 @@ namespace LunaTmpFontLoader
 
         static void ApplyToAllExisting()
         {
-            if (_font == null) return;
-            if (_mFindObjectsOfType == null || _tTMP_Text == null)
-            { Diag("ApplyToAllExisting: FindObjectsOfType not resolved"); return; }
-            try
+            if (_mFindObjectsOfType == null) return;
+            if (_font != null && _tTMP_Text != null)
             {
-                var arrObj = _mFindObjectsOfType.Invoke(null, new object[] { _tTMP_Text });
-                Array arr = arrObj as Array;
-                if (arr == null)
-                { Diag("ApplyToAllExisting: FindObjectsOfType returned " + (arrObj != null ? arrObj.GetType().Name : "null")); return; }
-                int visited = 0;
-                foreach (var o in arr)
-                    if (o != null) { SetFont(o, true); visited++; }
-                _scanCount++;
-                if (_scanCount <= 3) Diag("ApplyToAllExisting: found=" + arr.Length + " visited=" + visited);
+                try
+                {
+                    var arrObj = _mFindObjectsOfType.Invoke(null, new object[] { _tTMP_Text });
+                    Array arr = arrObj as Array;
+                    if (arr != null)
+                    {
+                        int visited = 0;
+                        foreach (var o in arr)
+                            if (o != null) { SetFont(o, true); visited++; }
+                        _scanCount++;
+                        if (_scanCount <= 3) Diag("ApplyToAllExisting: found=" + arr.Length + " visited=" + visited);
+                    }
+                }
+                catch (Exception e) { Diag("ApplyToAllExisting: " + e.GetType().Name + ": " + e.Message); }
             }
-            catch (Exception e) { Diag("ApplyToAllExisting: " + e.GetType().Name + ": " + e.Message); }
+            if (_osFont != null && _tUIText != null)
+            {
+                try
+                {
+                    var arrObj = _mFindObjectsOfType.Invoke(null, new object[] { _tUIText });
+                    Array arr = arrObj as Array;
+                    if (arr != null)
+                    {
+                        foreach (var o in arr)
+                            if (o != null) SetFont(o, true);
+                    }
+                }
+                catch { }
+            }
         }
 
         static void RegisterFallback()
         {
-            if (_font == null || _tSettings == null || _pFallbackFonts == null)
+            if ((_font == null && _dynFont == null) || _tSettings == null || _pFallbackFonts == null)
             { Diag("RegisterFallback: not resolved"); return; }
             try
             {
                 var list = _pFallbackFonts.GetValue(null, null);
                 if (list == null) { Diag("RegisterFallback: fallbackFontAssets null"); return; }
-                var tList = list.GetType();
-                var mContains = tList.GetMethod("Contains", new[] { _tFontAsset });
-                var mAdd = tList.GetMethod("Add", new[] { _tFontAsset });
-                if (mContains == null || mAdd == null) { Diag("RegisterFallback: List<>.Contains/Add not found"); return; }
-                bool has = (bool)mContains.Invoke(list, new object[] { _font });
-                if (!has) mAdd.Invoke(list, new object[] { _font });
-                Diag("RegisterFallback: " + (has ? "already present" : "added"));
+                AddToFontList(list, _font);
+                if (_dynFont != null && _dynFont != _font)
+                    AddToFontList(list, _dynFont);
+                Diag("RegisterFallback: ok");
             }
             catch (Exception e) { Diag("RegisterFallback: " + e.GetType().Name + ": " + e.Message); }
         }

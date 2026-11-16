@@ -79,7 +79,7 @@ void monoil2cpp::load_on_main_seh()
 
 void monoil2cpp::ensure_tmp_font_loaded()
 {
-    if (!commonsharedmem || !commonsharedmem->unityfontdir[0])
+    if (!commonsharedmem || (!commonsharedmem->unityfontdir[0] && !commonsharedmem->fontFamily[0]))
         return;
     int s = g_font_state.load(std::memory_order_relaxed);
     if (s == 4 || s == -1)
