@@ -644,6 +644,82 @@ class hookselect(closeashidewindow):
             for _ in save:
                 savehook_new_data[gobject.base.gameuid]["embedablehook"].remove(_)
 
+    def on_header_clicked(self, section: int):
+        if section == 0:
+            self.sort_by_switch_column(0)
+        elif section == 1 and self.embedablenum:
+            self.sort_by_switch_column(1)
+
+    def sort_by_switch_column(self, col: int):
+        model = self.ttCombomodelmodel
+        row_count = model.rowCount()
+        col_count = model.columnCount()
+        if row_count <= 1 or col >= col_count:
+            return
+
+        priorities = []
+        for row in range(row_count):
+            w = self.tttable.indexWidgetX(row, col)
+            if w is not None and w.isChecked():
+                priorities.append(0)
+            elif w is not None:
+                priorities.append(1)
+            else:
+                priorities.append(2)
+
+        order = sorted(range(row_count), key=priorities.__getitem__)
+        if order == list(range(row_count)):
+            self.tttable.scrollToTop()
+            return
+
+        curr = self.tttable.currentIndex()
+        current_key = self.querykeyofrow(curr) if curr.isValid() else None
+        current_col = curr.column() if curr.isValid() else 0
+
+        self.tttable.setUpdatesEnabled(False)
+        try:
+            row_states = []
+            for row in range(row_count):
+                hidden = self.tttable.isRowHidden(row)
+                widgets = []
+                for col in range(col_count):
+                    wrapper = self.tttable.indexWidget(model.index(row, col))
+                    child = None
+                    if (
+                        wrapper is not None
+                        and wrapper.layout()
+                        and wrapper.layout().count()
+                    ):
+                        child = wrapper.layout().takeAt(0).widget()
+                        if child is not None:
+                            # Detach before takeRow so destroying the cell wrapper keeps MySwitch alive.
+                            child.setParent(None)
+                    widgets.append(child)
+                row_states.append([None, widgets, hidden])
+
+            for row in range(row_count - 1, -1, -1):
+                row_states[row][0] = model.takeRow(row)
+
+            for new_row, old_row in enumerate(order):
+                items, widgets, hidden = row_states[old_row]
+                model.insertRow(new_row, items)
+                for col, w in enumerate(widgets):
+                    if w is not None:
+                        self.tttable.setIndexWidget(model.index(new_row, col), w)
+                        w.show()
+                self.tttable.setRowHidden(new_row, hidden)
+
+            if current_key is not None:
+                new_curr_row = self.querykeyindex(current_key)
+                if new_curr_row != -1:
+                    self.tttable.setCurrentIndex(
+                        model.index(new_curr_row, current_col)
+                    )
+        finally:
+            self.tttable.setUpdatesEnabled(True)
+
+        self.tttable.scrollToTop()
+
     def keyPressEvent__(self, e: QKeyEvent):
         if e.key() in (Qt.Key.Key_Down, Qt.Key.Key_Up):
             curr = self.tttable.currentIndex()
@@ -668,6 +744,8 @@ class hookselect(closeashidewindow):
         self.tttable.setModel(self.ttCombomodelmodel)
         # self.tttable .horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
         self.tttable.horizontalHeader().setStretchLastSection(True)
+        self.tttable.horizontalHeader().setSectionsClickable(True)
+        self.tttable.horizontalHeader().sectionClicked.connect(self.on_header_clicked)
         self.tttable.setSelectionBehavior(
             QAbstractItemView.SelectionBehavior.SelectRows
         )
