@@ -17,6 +17,7 @@ from gui.fluent.expander import ExExpander
 import functools, os, json, gobject
 from myutils.magpie_builtin import AdapterService
 
+
 class SuperCombo__1(SuperCombo):
     signal = pyqtSignal(list)
 
@@ -61,8 +62,8 @@ def createadaptercombo(profile):
     return combo
 
 
-def __getsavedir():
-    screenshotsDir = magpie_config["overlay"]["screenshotsDir"]
+def _getsavedir(profile):
+    screenshotsDir = profile["screenshotsDir"]
     if not screenshotsDir:
         return os.path.expanduser("~/Pictures/Screenshots")
     return screenshotsDir
@@ -152,9 +153,7 @@ def developerexpander():
         ],
         [
             "启用动态检测统计",
-            D_getsimpleswitch(
-                magpie_config, "enableStatisticsForDynamicDetection"
-            ),
+            D_getsimpleswitch(magpie_config, "enableStatisticsForDynamicDetection"),
         ],
     ]
     # 同「应用主题」卡片的形式：标题在左、控件在右端（不加右侧让位）
@@ -162,9 +161,7 @@ def developerexpander():
         exp.addContentWidget(_widenctl(getboxwidget([row[0], 1, row[1]])))
 
     # 展开状态仍写入 developerMode（保持原语义），但默认折叠、不恢复上次状态
-    exp.expandedChanged.connect(
-        lambda v: magpie_config.__setitem__("developerMode", v)
-    )
+    exp.expandedChanged.connect(lambda v: magpie_config.__setitem__("developerMode", v))
     return exp
 
 
@@ -212,10 +209,31 @@ def _switchfold(label, dic, key, contentlabel, contentctl, default=False):
     )
 
 
+def _foldcard(label, rows):
+    """纯标题折叠卡（折叠条上无控件）：rows 为多行子设置，每行
+    [标题, 1, 控件]（getboxwidget 约定）。"""
+    exp = ExExpander()
+    header = QWidget()
+    hlay = QHBoxLayout(header)
+    hlay.setContentsMargins(0, 12, 0, 12)
+    hlay.setSpacing(8)
+    titlelabel = LLabel(label)
+    titlefont = titlelabel.font()
+    titlefont.setPixelSize(15)
+    titlelabel.setFont(titlefont)
+    hlay.addWidget(titlelabel)
+    hlay.addStretch(1)
+    exp.setHeaderWidget(header)
+    for row in rows:
+        exp.addContentWidget(_widenctl(getboxwidget(row)))
+    return [[(exp, 0)]]
+
+
 def makescalew(profile=None):
     isglobal = profile is None
     if profile is None:
         profile = magpie_config["profiles"][0]
+    __getsavedir = functools.partial(_getsavedir, profile)
     innermagpie = (
         _srow("常规")
         + _cardrow("缩放模式", functools.partial(__layout, isglobal, profile))
@@ -234,47 +252,42 @@ def makescalew(profile=None):
             ),
         )
         + _cardrow("3D游戏模式", D_getsimpleswitch(profile, "3DGameMode"))
-        + (_srow("工具栏") if isglobal else [])
-        + (
-            _cardrow(
-                "全屏模式缩放",
-                D_getsimplecombobox(
-                    ["关闭", "始终显示", "自动隐藏"],
-                    magpie_config["overlay"],
-                    "fullscreenInitialToolbarState",
-                ),
-            )
-            if isglobal
-            else []
-        )
-        + (
-            _cardrow(
-                "窗口模式缩放",
-                D_getsimplecombobox(
-                    ["关闭", "始终显示", "自动隐藏"],
-                    magpie_config["overlay"],
-                    "windowedInitialToolbarState",
-                ),
-            )
-            if isglobal
-            else []
-        )
-        + (
-            _cardrow(
-                "截图保存目录",
-                functools.partial(
-                    getsimplepatheditor,
-                    text=__getsavedir(),
-                    isdir=True,
-                    clearset=__getsavedir,
-                    callback=functools.partial(
-                        magpie_config["overlay"].__setitem__,
-                        "screenshotsDir",
+        + _srow("工具栏")
+        + _foldcard(
+            "工具栏初始状态",
+            [
+                [
+                    "全屏模式缩放",
+                    1,
+                    D_getsimplecombobox(
+                        ["关闭", "始终显示", "自动隐藏"],
+                        profile,
+                        "fullscreenInitialToolbarState",
                     ),
+                ],
+                [
+                    "窗口模式缩放",
+                    1,
+                    D_getsimplecombobox(
+                        ["关闭", "始终显示", "自动隐藏"],
+                        profile,
+                        "windowedInitialToolbarState",
+                    ),
+                ],
+            ],
+        )
+        + _cardrow(
+            "截图保存目录",
+            functools.partial(
+                getsimplepatheditor,
+                text=__getsavedir(),
+                isdir=True,
+                clearset=__getsavedir,
+                callback=functools.partial(
+                    profile.__setitem__,
+                    "screenshotsDir",
                 ),
-            )
-            if isglobal
-            else []
+            ),
         )
         + _srow("窗口模式缩放")
         + _cardrow(
@@ -411,14 +424,8 @@ def makescalew(profile=None):
                 "outputAlignment",
             ),
         )
-        + _cardrow(
-            "禁用DirectFlip", D_getsimpleswitch(profile, "disableDirectFlip")
-        )
-        + (
-            [[functools.partial(developerexpander)]]
-            if isglobal
-            else []
-        )
+        + _cardrow("禁用DirectFlip", D_getsimpleswitch(profile, "disableDirectFlip"))
+        + ([[functools.partial(developerexpander)]] if isglobal else [])
     )
 
     return innermagpie

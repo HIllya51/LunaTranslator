@@ -801,13 +801,12 @@ class TranslatorWindow(resizableframeless):
 
     def checksettop(self):
         def __magpid():
+            # 顶层缩放窗口取 pid 即可：原查找的子窗口类
+            # Magpie_ScalingSwapChain 2025-04 已改名 Magpie_Renderer，
+            # 且全屏模式下没有子窗口（渲染窗口=顶层），原查找恒失败
             magwindow = windows.FindWindow(
                 "Window_Magpie_967EB565-6F73-4E94-AE53-00CC42592A22", None
             )
-            if magwindow:
-                magwindow = windows.FindWindowEx(
-                    magwindow, None, "Magpie_ScalingSwapChain", None
-                )
             if magwindow:
                 return windows.GetWindowThreadProcessId(magwindow)
 

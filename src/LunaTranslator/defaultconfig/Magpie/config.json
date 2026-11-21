@@ -9,9 +9,10 @@
         "maximized": true
     },
     "shortcuts": {
-        "scale": 593,
+        "scale": 3137,
         "windowedModeScale": 3153,
-        "toolbar": 2372
+        "toolbar": 3140,
+        "takeScreenshot": 3155
     },
     "countdownSeconds": 3,
     "developerMode": false,
@@ -30,7 +31,7 @@
     "inlineParams": false,
     "autoCheckForUpdates": true,
     "checkForPreviewUpdates": false,
-    "updateCheckDate": 17207839076769319,
+    "updateCheckDate": 0,
     "duplicateFrameDetectionMode": 1,
     "enableStatisticsForDynamicDetection": false,
     "minFrameRate": 10.0,
@@ -77,10 +78,10 @@
             ]
         },
         {
-            "name": "ACNet",
+            "name": "CuNNy",
             "effects": [
                 {
-                    "name": "ACNet"
+                    "name": "CuNNy2\\CuNNy-4x12-NVL"
                 }
             ]
         },
@@ -128,11 +129,15 @@
     ],
     "profiles": [
         {
-            "scalingMode": 4,
+            "scalingMode": 0,
             "captureMethod": 0,
             "multiMonitorUsage": 0,
             "initialWindowedScaleFactor": 0,
             "customInitialWindowedScaleFactor": 1.25,
+            "fullscreenInitialToolbarState": 2,
+            "windowedInitialToolbarState": 2,
+            "screenshotsDir": "",
+            "screenshotFilenameTemplate": "",
             "graphicsCardId": {
                 "idx": -1,
                 "vendorId": 0,
@@ -142,7 +147,7 @@
             "maxFrameRate": 60.0,
             "3DGameMode": false,
             "captureTitleBar": false,
-            "adjustCursorSpeed": false,
+            "adjustCursorSpeed": true,
             "disableDirectFlip": false,
             "cursorScaling": 2,
             "customCursorScaling": 1.0,
@@ -160,9 +165,6 @@
         }
     ],
     "overlay": {
-        "fullscreenInitialToolbarState": 2,
-        "windowedInitialToolbarState": 2,
-        "screenshotsDir": "",
         "windows": {}
     }
 }
