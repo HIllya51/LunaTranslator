@@ -49,6 +49,18 @@
 
 ## よくあるエラー {#anchor-commonerrors}
 
+
+### ダウンロード時に失敗し、ウイルスが検出される
+
+![img](https://image.lunatranslator.org/zh/virus/1.jpg)
+
+![img](https://image.lunatranslator.org/zh/virus/2.jpg)
+
+`Windows セキュリティ`の`ウイルスと脅威の防止`、`設定の管理`を開き、`リアルタイム保護`をオフにしてから、再度ダウンロードしてください。
+
+![img](https://image.lunatranslator.org/zh/virus/3.jpg)
+
+
 ### 重要なコンポーネントが見つからない / Missing embedded Python3
 
 ::: danger

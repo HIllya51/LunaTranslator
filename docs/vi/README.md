@@ -51,6 +51,18 @@ Nếu muốn xóa và tải lại, chú ý không xóa thư mục userconfig, n�
 
 ## Lỗi Thường Gặp {#anchor-commonerrors}
 
+
+### Tải xuống thất bại, phát hiện virus
+
+![img](https://image.lunatranslator.org/zh/virus/1.jpg)
+
+![img](https://image.lunatranslator.org/zh/virus/2.jpg)
+
+Mở `Bảo mật Windows`, `Bảo vệ chống vi-rút & mối đe dọa`, `Quản lý cài đặt`, tắt `Bảo vệ theo thời gian thực`, sau đó tải xuống lại.
+
+![img](https://image.lunatranslator.org/zh/virus/3.jpg)
+
+
 ### Thiếu các thành phần quan trọng / Missing embedded Python3
 
 ::: danger

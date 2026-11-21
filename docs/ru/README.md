@@ -49,6 +49,18 @@
 
 ## Частые ошибки {#anchor-commonerrors}
 
+
+### Ошибка загрузки: обнаружен вирус
+
+![img](https://image.lunatranslator.org/zh/virus/1.jpg)
+
+![img](https://image.lunatranslator.org/zh/virus/2.jpg)
+
+Откройте `Безопасность Windows`, `Защита от вирусов и угроз`, `Управление настройками`, отключите `Защиту в режиме реального времени` и загрузите снова.
+
+![img](https://image.lunatranslator.org/zh/virus/3.jpg)
+
+
 ### Не найден важный компонент / Missing embedded Python3
 
 ::: danger

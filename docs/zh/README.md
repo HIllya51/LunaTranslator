@@ -50,6 +50,18 @@
 
 ## 常见错误 {#anchor-commonerrors}
 
+
+### 下载时失败，检测到病毒
+
+![img](https://image.lunatranslator.org/zh/virus/1.jpg)
+
+![img](https://image.lunatranslator.org/zh/virus/2.jpg)
+
+打开 `Windows 安全中心`，`病毒和威胁防护`，`管理设置`，关闭`实时保护`，然后重新下载。
+
+![img](https://image.lunatranslator.org/zh/virus/3.jpg)
+
+
 ### 找不到重要组件 / Missing embedded Python3
 
 ::: danger

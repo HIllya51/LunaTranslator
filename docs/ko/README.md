@@ -50,6 +50,18 @@
 
 ## 일반적인 오류 {#anchor-commonerrors}
 
+
+### 다운로드 실패, 바이러스 감지됨
+
+![img](https://image.lunatranslator.org/zh/virus/1.jpg)
+
+![img](https://image.lunatranslator.org/zh/virus/2.jpg)
+
+`Windows 보안`, `바이러스 및 위협 방지`, `설정 관리`를 열고 `실시간 보호`를 끈 후 다시 다운로드하십시오.
+
+![img](https://image.lunatranslator.org/zh/virus/3.jpg)
+
+
 ### 중요 구성 요소를 찾을 수 없음 / Missing embedded Python3
 
 ::: danger

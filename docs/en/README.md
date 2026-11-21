@@ -53,6 +53,18 @@ If you want to delete and re-download, be careful not to delete the userconfig f
 
 ## Common Errors {#anchor-commonerrors}
 
+
+### Download Failed, Virus Detected
+
+![img](https://image.lunatranslator.org/zh/virus/1.jpg)
+
+![img](https://image.lunatranslator.org/zh/virus/2.jpg)
+
+Open `Windows Security`, `Virus & threat protection`, `Manage settings`, turn off `Real-time protection`, then download again.
+
+![img](https://image.lunatranslator.org/zh/virus/3.jpg)
+
+
 ### Missing Important Components / Missing embedded Python3
 
 ::: danger
