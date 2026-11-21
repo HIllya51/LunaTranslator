@@ -20,7 +20,7 @@ from myutils.config import (
 from gui.setting.display_scale import makescalew
 from myutils.wrapper import tryprint
 from gui.dialog_memory import dialog_memory
-from gui.fluent.expander import ExExpander
+from gui.fluent.expander import ExExpander, makeexpander
 from gui.fluent.tabwidget import apply_segmented_slide_bar_style
 from gui.fluent.pillbar import ExPillBar
 from gui.fluent.settingtree import FluentSettingTree, wrap_setting_tree

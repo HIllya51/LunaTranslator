@@ -1,5 +1,6 @@
 from qtsymbols import *
 from gui.fluent.messagebox import ExMessageBox
+from gui.fluent.expander import ExExpander
 import functools, os, re, shutil, zipfile
 import gobject, math, NativeUtils, hashlib, uuid
 from myutils.config import (
@@ -2098,11 +2099,11 @@ def update_text(label: QLabel):
     gobject.base.safeinvokefunction.emit(lambda: (label.show(), label.setText(text)))
 
 
-def __showllamacpp(ref: "list[CollapsibleBoxWithButton]", checked):
+def __showllamacpp(ref: "list[ExExpander]", checked):
     isclosenotinit = ref[0].internalLayout.itemAt(0) is None
     if isclosenotinit or ref[0].internalLayout.count() == 1:
         if isclosenotinit:
-            ref[0].toggle_button.click()
+            ref[0].toggle()
         w = QWidget()
         ref[0].internalLayout.setSpacing(0)
         ref[0].internalLayout.addWidget(w)
@@ -2115,12 +2116,12 @@ def __showllamacpp(ref: "list[CollapsibleBoxWithButton]", checked):
         automakegrid(grid, grids)
         do()
     else:
-        if checked and not ref[0].toggle_button.isChecked():
-            ref[0].toggle_button.click()
+        if checked and not ref[0].isExpanded():
+            ref[0].toggle()
         ref[0].internalLayout.itemAt(1).widget().setVisible(checked)
 
 
-def leftwidget(self, ref: "list[CollapsibleBoxWithButton]"):
+def leftwidget(self, ref: "list[ExExpander]"):
     btn = IconButton("fa.plus", fix=False, tips="复制")
     btn.clicked.connect(functools.partial(btnpluscallback, self, self.__countnum))
 

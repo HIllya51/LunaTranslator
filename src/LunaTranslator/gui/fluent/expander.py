@@ -726,18 +726,26 @@ class ExExpander(QWidget):
         self.expansionFinished.emit(self._expanded)
 
 
-def _exp_items(x):
+def _exp_resolved(x):
+    """归一为控件列表：None→[]；callable→调用（结果可为单控件或列表，
+    递归展开）；list/tuple→逐项归一；单控件→[x]。"""
     if x is None:
-        return ()
+        return []
+    if callable(x):
+        return _exp_resolved(x())
     if isinstance(x, (list, tuple)):
-        return x
-    return (x,)
+        out = []
+        for w in x:
+            out.extend(_exp_resolved(w))
+        return out
+    return [x]
 
 
 def makeexpanderheader(title, leading=(), trailing=()):
     """折叠卡标准头部（全项目共用一份配方）：
     标题（15px）+ leading 挂件 + 伸缩 + trailing 控件。
-    leading/trailing 的 callable 会调用、None 跳过、单控件可直传。
+    leading/trailing 的 callable 会调用（可返回控件或控件列表）、
+    None 跳过、单控件可直传。
     返回 header QWidget（用于对已存在的 ExExpander 重设头部）。"""
     header = QWidget()
     hlay = QHBoxLayout(header)
@@ -748,17 +756,11 @@ def makeexpanderheader(title, leading=(), trailing=()):
     titlefont.setPixelSize(15)
     titlelabel.setFont(titlefont)
     hlay.addWidget(titlelabel)
-    for w in _exp_items(leading):
-        if callable(w):
-            w = w()
-        if w is not None:
-            hlay.addWidget(w)
+    for w in _exp_resolved(leading):
+        hlay.addWidget(w)
     hlay.addStretch(1)
-    for w in _exp_items(trailing):
-        if callable(w):
-            w = w()
-        if w is not None:
-            hlay.addWidget(w)
+    for w in _exp_resolved(trailing):
+        hlay.addWidget(w)
     return header
 
 
@@ -787,7 +789,7 @@ def makeexpander(
     if objectname is not None:
         exp.setObjectName(objectname)
     exp.setHeaderWidget(makeexpanderheader(title, leading, trailing))
-    for w in _exp_items(content):
+    for w in _exp_resolved(content):
         exp.addContentWidget(w)
     if expandedchanged is not None:
         exp.expandedChanged.connect(expandedchanged)

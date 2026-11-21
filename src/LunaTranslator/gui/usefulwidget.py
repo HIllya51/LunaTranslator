@@ -45,7 +45,7 @@ from gui.fluent.colorpicker import (
     paint_fluent_flyout_surface,
 )
 from gui.fluent.icons import ICON_CHEVRON_DOWN_MED
-from gui.fluent.expander import _exp_chevron_button_background
+from gui.fluent.expander import makeexpander
 
 
 def load_specific_icon_size(ico_path):
@@ -3731,173 +3731,6 @@ else:
         pass
 
 
-class CollapsibleBox(QWidget):
-    def __init__(self, delayloadfunction=None, parent=None, margin0=True):
-        super(CollapsibleBox, self).__init__(parent)
-        lay = QVBoxLayout(self)
-        if margin0:
-            lay.setContentsMargins(0, 0, 0, 0)
-        self.func = delayloadfunction
-        self.__lay = lay
-        self.toggle(False)
-
-    def toggle(self, checked):
-        if checked and self.func:
-            self.func(self.layout())
-            self.func = None
-        self.setVisible(checked)
-
-    @property
-    def internalLayout(self):
-        return self.__lay
-
-
-class _FoldHeaderButton(QAbstractButton):
-    """折叠卡片头（同 ExExpander header）：标题 + 右端 chevron
-    （随展开旋转 180°，悬停时 chevron 区 subtle 高亮，鼠标指针不变）。"""
-
-    _CHEVRON_SIZE = 32
-    _CHEVRON_TRAILING = 8
-
-    def __init__(self, title="", parent=None, fullheight=False):
-        super().__init__(parent)
-        self.setCheckable(True)
-        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-        # fullheight：与两行文字卡片同高（72px），否则 48px
-        self.setMinimumHeight(72 if fullheight else 48)
-        self.setAttribute(Qt.WA_Hover, True)
-        self._progress = 0.0
-        lay = QHBoxLayout(self)
-        lay.setContentsMargins(12, 12, 12, 12)
-        lay.setSpacing(8)
-        self._leftcount = 0
-        self.titlelabel = LLabel(title)
-        titlefont = self.titlelabel.font()
-        titlefont.setPixelSize(15)
-        self.titlelabel.setFont(titlefont)
-        self.titlelabel.setAttribute(Qt.WA_TransparentForMouseEvents, True)
-        lay.addWidget(self.titlelabel)
-        lay.addStretch(1)
-        self._anim = QVariantAnimation(self)
-        self._anim.setDuration(167)
-        self._anim.setEasingCurve(QEasingCurve.OutCubic)
-        self._anim.valueChanged.connect(self._on_anim_value)
-        self.toggled.connect(self._on_toggled)
-
-    def addLeftWidget(self, w):
-        # 挂件（doclink 等）紧随标题之后，不跑到最右端
-        self.layout().insertWidget(self._leftcount + 1, w)
-        self._leftcount += 1
-
-    def addRightWidget(self, w):
-        # 开关等挂件放在右端、折叠按钮左边（预留自绘 chevron 区域）
-        self.layout().addWidget(w)
-        self.layout().setContentsMargins(12, 12, 48, 12)
-
-    def _on_toggled(self, checked):
-        if not self.isVisible():
-            self._progress = 1.0 if checked else 0.0
-            self.update()
-            return
-        self._anim.stop()
-        self._anim.setStartValue(self._progress)
-        self._anim.setEndValue(1.0 if checked else 0.0)
-        self._anim.start()
-
-    def _on_anim_value(self, v):
-        self._progress = float(v)
-        self.update()
-
-    def paintEvent(self, _):
-        painter = QPainter(self)
-        painter.setRenderHint(QPainter.Antialiasing)
-        # chevron 按钮区（悬停/按下时 subtle 高亮）——同 ExExpander
-        chevron_rect = QRectF(
-            self.width() - self._CHEVRON_TRAILING - self._CHEVRON_SIZE,
-            (self.height() - self._CHEVRON_SIZE) * 0.5,
-            self._CHEVRON_SIZE,
-            self._CHEVRON_SIZE,
-        )
-        if self.isEnabled() and (self.underMouse() or self.isDown()):
-            painter.setPen(Qt.NoPen)
-            painter.setBrush(
-                _exp_chevron_button_background(self.palette(), self.isDown())
-            )
-            painter.drawRoundedRect(chevron_rect, 4, 4)
-        # chevron 随展开旋转 180°——同 ExExpander
-        painter.save()
-        painter.translate(chevron_rect.center())
-        painter.rotate(180.0 * self._progress)
-        painter.setPen(
-            self.palette().color(
-                QPalette.Active if self.isEnabled() else QPalette.Disabled,
-                QPalette.Text,
-            )
-        )
-        chevronfont = QFont("Segoe Fluent Icons")
-        chevronfont.setPixelSize(15)
-        painter.setFont(chevronfont)
-        painter.drawText(
-            QRectF(
-                -self._CHEVRON_SIZE * 0.5,
-                -self._CHEVRON_SIZE * 0.5,
-                self._CHEVRON_SIZE,
-                self._CHEVRON_SIZE,
-            ),
-            Qt.AlignCenter,
-            ICON_CHEVRON_DOWN_MED,
-        )
-        painter.restore()
-
-
-class CollapsibleBoxWithButton(QWidget):
-    toggled = pyqtSignal(bool)
-
-    def __init__(
-        self,
-        delayloadfunction=None,
-        title="",
-        parent=None,
-        toggled=False,
-        fullheight=False,
-    ):
-        super(CollapsibleBoxWithButton, self).__init__(parent)
-        # WinUI 卡片外观（同 GroupCardWidget / ExExpander）
-        self.setAttribute(Qt.WA_StyledBackground, True)
-        self.setProperty("isCard", True)
-        self.toggle_button = _FoldHeaderButton(title, self, fullheight=fullheight)
-        self.toggle_button.toggled.connect(self.__toggled)
-        self.toggle_button.toggled.connect(self.toggled)
-        self.content_area = CollapsibleBox(delayloadfunction, self)
-        self.content_area.layout().setContentsMargins(12, 0, 12, 12)
-        lay = QVBoxLayout(self)
-        lay.setSpacing(0)
-        lay.setContentsMargins(0, 0, 0, 0)
-        lay.addWidget(self.toggle_button)
-        lay.addWidget(self.content_area)
-        self.__toggled(toggled)
-
-    def addLeftWidget(self, ws):
-        if not isinstance(ws, (tuple, list)):
-            ws = [ws]
-        for w in ws:
-            self.toggle_button.addLeftWidget(w)
-
-    def addRightWidget(self, ws):
-        if not isinstance(ws, (tuple, list)):
-            ws = [ws]
-        for w in ws:
-            self.toggle_button.addRightWidget(w)
-
-    def __toggled(self, checked):
-        self.toggle_button.setChecked(checked)
-        self.content_area.toggle(checked)
-
-    @property
-    def internalLayout(self):
-        return self.content_area.internalLayout
-
-
 def createfoldgrid(
     grid,
     title,
@@ -3907,36 +3740,46 @@ def createfoldgrid(
     parent=None,
     leftwidget=None,
     switch=None,
-    fullheight=False,
 ):
 
     def __(grid, internallayoutname, parent, lay: QLayout):
         if callable(grid):
             grid = grid()
         w, do = makegrid(grid, delay=True)
-        # 卡片内网格零边距（边距由卡片自身提供）
+        # 卡片内网格零边距（边距由内容面板提供）
         w.layout().setContentsMargins(0, 0, 0, 0)
         lay.addWidget(w)
         if internallayoutname:
             setattr(parent, internallayoutname, w.layout())
         do()
 
-    toggled = d[k] if d else False
-    box = CollapsibleBoxWithButton(
-        functools.partial(__, grid, internallayoutname, parent),
+    # 懒构建：grid 为 callable 时首次展开才构建
+    container = QWidget()
+    containerlay = QVBoxLayout(container)
+    containerlay.setContentsMargins(0, 0, 0, 0)
+    built = False
+
+    def __onchanged(v):
+        nonlocal built
+        if v and not built:
+            built = True
+            __(grid, internallayoutname, parent, containerlay)
+
+    exp = makeexpander(
         title,
-        toggled=toggled,
-        fullheight=fullheight,
+        leading=leftwidget,
+        trailing=switch,
+        content=container,
+        pad=switch is not None,
+        expandedchanged=__onchanged,
     )
-    if leftwidget:
-        box.addLeftWidget(leftwidget())
-    if switch is not None:
-        if callable(switch):
-            switch = switch()
-        box.addRightWidget(switch)
+    # 兼容 llama.cpp Launcher 的直插用法（internalLayout.add/removeWidget）
+    exp.internalLayout = containerlay
     if d:
-        box.toggled.connect(functools.partial(d.__setitem__, k))
-    return box
+        exp.expandedChanged.connect(functools.partial(d.__setitem__, k))
+        if d.get(k):
+            exp.setExpanded(True)
+    return exp
 
 
 class SClickableLabel(QLabel):
