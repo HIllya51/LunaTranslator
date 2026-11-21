@@ -24,7 +24,7 @@ from gui.usefulwidget import (
 )
 from gui.dynalang import LLabel
 from gui.fluent.card import make_trailing_combo, make_card_contents
-from gui.fluent.expander import ExExpander
+from gui.fluent.expander import ExExpander, makeexpander
 from gui.fluent import repolish_style
 from gui.setting.display_ui import switch_darklight
 from language import UILanguages, Languages
@@ -482,21 +482,11 @@ def setTab_about(self: QWidget, basel):
 
     # 自动更新折叠卡（子项 = 最新版本）
 
-    updateexp = ExExpander()
-    updateheader = QWidget()
-    uhlay = QHBoxLayout(updateheader)
-    uhlay.setContentsMargins(0, 12, 0, 12)
-    uhlay.setSpacing(8)
-    utitlelabel = LLabel("自动更新")
-    utitlefont = utitlelabel.font()
-    utitlefont.setPixelSize(15)
-    utitlelabel.setFont(utitlefont)
-    uhlay.addWidget(utitlelabel)
-    uhlay.addStretch(1)
-    uhlay.addWidget(update_switch)
-    updateexp.setHeaderWidget(updateheader)
-    updateexp.addContentWidget(getboxwidget(["最新版本", 1, version_link]))
-    updateexp.addContentWidget(self.downloadprogress)
+    updateexp = makeexpander(
+        "自动更新",
+        trailing=update_switch,
+        content=[getboxwidget(["最新版本", 1, version_link]), self.downloadprogress],
+    )
     updateexp.setContentPanelVisible(self.downloadprogress, False)
     # 自动更新进度回调（进度条是折叠卡子项，连带面板显隐）——须在
     # updateexp 创建后连接：connectsignal 对缓存信号会立即回调

@@ -9,7 +9,7 @@ from gui.setting.textinput_ocr import getocrgrid_table
 from gui.dynalang import LLabel, LStandardItemModel, LDialog
 from myutils.wrapper import Singleton
 from textio.textsource.mssr import MSSR, LiveCaptions
-from gui.fluent.expander import ExExpander
+from gui.fluent.expander import makeexpander
 from gui.usefulwidget import (
     D_getsimplecombobox,
     D_getspinbox,
@@ -275,8 +275,6 @@ def creategamefont_comboBox(dic: dict):
 def clipusage(self):
     """剪贴板折叠卡（同 Gallery ExExpander「高级设置」的多行子设置）：
     折叠条 = 标题 + 自动输出文本开关；内容 = 原文 / 翻译 两行面板。"""
-    exp = ExExpander(content_pad=True)
-
     # 同「应用主题」卡片的形式：标题在左、控件在右端
     originrow = getboxwidget(
         [
@@ -304,29 +302,19 @@ def clipusage(self):
 
     __use(globalconfig["textoutputer"]["clipboard"].get("use", False))
 
-    header = QWidget()
-    hlay = QHBoxLayout(header)
-    hlay.setContentsMargins(0, 12, 0, 12)
-    hlay.setSpacing(8)
-    titlelabel = LLabel("剪贴板")
-    titlefont = titlelabel.font()
-    titlefont.setPixelSize(15)
-    titlelabel.setFont(titlefont)
-    hlay.addWidget(titlelabel)
-    hlay.addStretch(1)
-    hlay.addWidget(getsmalllabel("自动输出文本")())
-    hlay.addWidget(
-        getsimpleswitch(
-            globalconfig["textoutputer"]["clipboard"],
-            "use",
-            callback=__use,
-        )
+    return makeexpander(
+        "剪贴板",
+        trailing=[
+            getsmalllabel("自动输出文本")(),
+            getsimpleswitch(
+                globalconfig["textoutputer"]["clipboard"],
+                "use",
+                callback=__use,
+            ),
+        ],
+        content=rows,
+        pad=True,
     )
-    exp.setHeaderWidget(header)
-
-    exp.addContentWidget(originrow)
-    exp.addContentWidget(transrow)
-    return exp
 
 
 def selectfile(self):
@@ -541,8 +529,6 @@ def getftsgrid(self):
 def netusage(self):
     """网络服务折叠卡（同 Gallery ExExpander「高级设置」的多行子设置）：
     折叠条 = 标题 + doclink + 开启开关；内容 = 打开 / 端口号 两行面板。"""
-    exp = ExExpander(content_pad=True)
-
     # 同「应用主题」卡片的形式：标题在左、控件在右端
     openrow = getboxwidget(
         [
@@ -583,31 +569,21 @@ def netusage(self):
 
     __setrows(globalconfig.get("networktcpenable", False))
 
-    header = QWidget()
-    hlay = QHBoxLayout(header)
-    hlay.setContentsMargins(0, 12, 0, 12)
-    hlay.setSpacing(8)
-    titlelabel = LLabel("网络服务")
-    titlefont = titlelabel.font()
-    titlefont.setPixelSize(15)
-    titlelabel.setFont(titlefont)
-    hlay.addWidget(titlelabel)
-    hlay.addWidget(D_getdoclink("apiservice.html")())
-    hlay.addStretch(1)
-    hlay.addWidget(getsmalllabel("开启")())
-    hlay.addWidget(
-        getsimpleswitch(
-            globalconfig,
-            "networktcpenable",
-            callback=lambda x: (__setrows(x), gobject.base.serviceinit()),
-            default=False,
-        )
+    return makeexpander(
+        "网络服务",
+        leading=D_getdoclink("apiservice.html"),
+        trailing=[
+            getsmalllabel("开启")(),
+            getsimpleswitch(
+                globalconfig,
+                "networktcpenable",
+                callback=lambda x: (__setrows(x), gobject.base.serviceinit()),
+                default=False,
+            ),
+        ],
+        content=rows,
+        pad=True,
     )
-    exp.setHeaderWidget(header)
-
-    exp.addContentWidget(openrow)
-    exp.addContentWidget(portrow)
-    return exp
 
 
 def validator(createproxyedit_check: QLabel, text):
@@ -633,8 +609,6 @@ def validator(createproxyedit_check: QLabel, text):
 def proxyusage(self):
     """代理设置折叠卡（同 Gallery ExExpander「高级设置」的多行子设置）：
     折叠条 = 标题 + 使用开关；内容 = 使用系统代理 / 手动设置代理 两行面板。"""
-    exp = ExExpander(content_pad=True)
-
     # 子设置 2：手动设置代理
     check = QLabel()
     proxy = QLineEdit(globalconfig.get("proxy", "127.0.0.1:7890"))
@@ -669,27 +643,16 @@ def proxyusage(self):
 
     __use(globalconfig.get("useproxy", True))
 
-    # 折叠条：标题 + 使用开关
-    header = QWidget()
-    hlay = QHBoxLayout(header)
-    hlay.setContentsMargins(0, 12, 0, 12)
-    hlay.setSpacing(8)
-    titlelabel = LLabel("代理设置")
-    titlefont = titlelabel.font()
-    titlefont.setPixelSize(15)
-    titlelabel.setFont(titlefont)
-    hlay.addWidget(titlelabel)
-    hlay.addStretch(1)
-    hlay.addWidget(getsmalllabel("使用")())
-    hlay.addWidget(
-        getsimpleswitch(globalconfig, "useproxy", callback=__use, default=True)
-    )
-    exp.setHeaderWidget(header)
-
     # 多行子设置：每行独立 ContentPanel（同 C++ 多次 addContentWidget）
-    exp.addContentWidget(sysrow)
-    exp.addContentWidget(manualrow)
-    return exp
+    return makeexpander(
+        "代理设置",
+        trailing=[
+            getsmalllabel("使用")(),
+            getsimpleswitch(globalconfig, "useproxy", callback=__use, default=True),
+        ],
+        content=rows,
+        pad=True,
+    )
 
 
 def filetranslate(self):

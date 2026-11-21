@@ -35,7 +35,7 @@ from gui.usefulwidget import (
     makecardrow,
 )
 from gui.dynalang import LPushButton, LFormLayout, LLabel
-from gui.fluent.expander import ExExpander
+from gui.fluent.expander import ExExpander, makeexpander, makeexpanderheader
 from gui.fluent.colorpicker import ColorPickerButton
 from gui.ocrtranslationoverlay import refresh_overlays
 
@@ -258,18 +258,8 @@ def resetgroudswitchcallback(self, group):
     # 字体样式折叠卡：头部（标题+样式组下拉）随引擎一并重建；内容由
     # createinternalfontsettings 按所选样式建为子项
     goodfontgroupswitch = SuperCombo()
-    header = QWidget()
-    hlay = QHBoxLayout(header)
-    hlay.setContentsMargins(0, 12, 0, 12)
-    hlay.setSpacing(8)
-    titlelabel = LLabel("字体样式")
-    titlefont = titlelabel.font()
-    titlefont.setPixelSize(15)
-    titlelabel.setFont(titlefont)
-    hlay.addWidget(titlelabel)
-    hlay.addStretch(1)
-    hlay.addWidget(goodfontgroupswitch)
-    self.fontstyleexpander.setHeaderWidget(header)
+    self.fontstyleexpander.setHeaderWidget(
+        makeexpanderheader("字体样式", trailing=goodfontgroupswitch))
 
     goodfontgroupswitch.currentIndexChanged.connect(
         lambda idx: createinternalfontsettings(
@@ -429,27 +419,7 @@ def __xianshi():
 def __textbackexpander(self):
     """文字区域背景折叠卡：头部 = 标题 + 开关，内容 = 各设置为子项
     （同 自动录音 折叠卡：每项一行 addContentWidget）。"""
-    exp = ExExpander()
-    header = QWidget()
-    hlay = QHBoxLayout(header)
-    hlay.setContentsMargins(0, 12, 0, 12)
-    hlay.setSpacing(8)
-    titlelabel = LLabel("文字区域背景")
-    titlefont = titlelabel.font()
-    titlefont.setPixelSize(15)
-    titlelabel.setFont(titlefont)
-    hlay.addWidget(titlelabel)
-    hlay.addStretch(1)
-    hlay.addWidget(
-        D_getsimpleswitch(
-            ui_settings,
-            "text_area_background",
-            callback=gobject.base.translation_ui.translate_text.showtextareabackground,
-            default=False,
-        )()
-    )
-    exp.setHeaderWidget(header)
-    exp.addContentWidget(
+    rows = [
         getboxwidget(
             [
                 "颜色",
@@ -464,13 +434,13 @@ def __textbackexpander(self):
                 ),
             ]
         )
-    )
+    ]
     for text, key in (
         ("圆角", "text_area_background_r"),
         ("延展宽度", "text_area_background_w"),
         ("延展高度", "text_area_background_h"),
     ):
-        exp.addContentWidget(
+        rows.append(
             getboxwidget(
                 [
                     text,
@@ -488,27 +458,24 @@ def __textbackexpander(self):
                 ]
             )
         )
-    return exp
+    return makeexpander(
+        "文字区域背景",
+        trailing=D_getsimpleswitch(
+            ui_settings,
+            "text_area_background",
+            callback=gobject.base.translation_ui.translate_text.showtextareabackground,
+            default=False,
+        ),
+        content=rows,
+    )
 
 
 def __engineexpander(self):
     """显示引擎折叠卡：头部 = 标题 + 引擎下拉；内容（webview 的
     附加HTML等）由 resetgroudswitchcallback 建为子项。注意字体样式卡
     需先于本卡创建——引擎下拉初值变化触发的回调会重建两张卡。"""
-    exp = ExExpander()
+    exp = makeexpander("显示引擎", trailing=_createseletengeinecombo(self))
     self.engineexpander = exp
-    header = QWidget()
-    hlay = QHBoxLayout(header)
-    hlay.setContentsMargins(0, 12, 0, 12)
-    hlay.setSpacing(8)
-    titlelabel = LLabel("显示引擎")
-    titlefont = titlelabel.font()
-    titlefont.setPixelSize(15)
-    titlelabel.setFont(titlefont)
-    hlay.addWidget(titlelabel)
-    hlay.addStretch(1)
-    hlay.addWidget(_createseletengeinecombo(self))
-    exp.setHeaderWidget(header)
     resetgroudswitchcallback(self, globalconfig["rendertext_using"])
     return exp
 

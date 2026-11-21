@@ -4,7 +4,7 @@ from gui.fluent.tabwidget import (
     FluentPaneTabWidget,
     apply_pivot_bar_style,
 )
-from gui.fluent.expander import ExExpander
+from gui.fluent.expander import makeexpander
 import json, re
 import time
 import functools
@@ -460,20 +460,6 @@ class AnkiWindow(QWidget):
     def creatsetdtab(self, baselay: QVBoxLayout):
         """Fluent 设置页：每项一张单行卡片；自动录音/音频编码为折叠卡。"""
 
-        def _foldheader(title):
-            """折叠卡头部：标题在左，控件由调用方追加在右。"""
-            header = QWidget()
-            hlay = QHBoxLayout(header)
-            hlay.setContentsMargins(0, 12, 0, 12)
-            hlay.setSpacing(8)
-            titlelabel = LLabel(title)
-            titlefont = titlelabel.font()
-            titlefont.setPixelSize(15)
-            titlelabel.setFont(titlefont)
-            hlay.addWidget(titlelabel)
-            hlay.addStretch(1)
-            return header, hlay
-
         def _widen(w):
             """行内 combobox/spinbox/lineedit 统一宽度（170）对齐（switch 除外）。"""
             for c in w.findChildren(QComboBox):
@@ -489,23 +475,13 @@ class AnkiWindow(QWidget):
             return _widen(makecardrow(label, *controls))
 
         # ---- 自动录音：折叠卡（子项 = 原弹窗里的三项 VAD 设置） ----
-        luyinexp = ExExpander(content_pad=True)
-        luyinheader, luyinhlay = _foldheader("自动录音")
-        luyinhlay.addWidget(
-            getsimpleswitch(
-                globalconfig["ankiconnect"],
-                "autorecord",
-                callback=self.refsearchw.safeloadrecorder,
-                default=False,
-            )
-        )
-        luyinexp.setHeaderWidget(luyinheader)
+        luyinrows = []
         for _label, _key, _maxv, _default in (
             ("Detection threshold", "vad_threshold", 1, 0.5),
             ("Minimum silence duration in seconds", "vad_min_silence_duration", 2, 0.5),
             ("Minimum speech duration in seconds", "vad_min_speech_duration", 2, 0.25),
         ):
-            luyinexp.addContentWidget(
+            luyinrows.append(
                 getboxwidget(
                     [
                         _label,
@@ -523,6 +499,17 @@ class AnkiWindow(QWidget):
                     ]
                 )
             )
+        luyinexp = makeexpander(
+            "自动录音",
+            trailing=getsimpleswitch(
+                globalconfig["ankiconnect"],
+                "autorecord",
+                callback=self.refsearchw.safeloadrecorder,
+                default=False,
+            ),
+            content=luyinrows,
+            pad=True,
+        )
 
         # ---- 音频编码：折叠卡（子项随编码在 MP3/OPUS bitrate 间切换） ----
         stack = QStackedWidget()
@@ -554,20 +541,19 @@ class AnkiWindow(QWidget):
         def __audio(xx):
             stack.setCurrentIndex(["mp3", "opus"].index(xx))
 
-        audioexp = ExExpander(content_pad=True)
-        audioheader, audiohlay = _foldheader("音频编码")
-        audiohlay.addWidget(
-            getsimplecombobox(
+        audioexp = makeexpander(
+            "音频编码",
+            trailing=getsimplecombobox(
                 ["mp3", "opus(ogg)"],
                 globalconfig,
                 "audioformat",
                 internal=["mp3", "opus"],
                 callback=__audio,
                 default="mp3",
-            )
+            ),
+            content=stack,
+            pad=True,
         )
-        audioexp.setHeaderWidget(audioheader)
-        audioexp.addContentWidget(stack)
         __audio(globalconfig.get("audioformat", "mp3"))
 
         items = [

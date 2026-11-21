@@ -18,7 +18,7 @@ from gui.usefulwidget import (
     getsimplepatheditor,
     D_getIconSwitch,
 )
-from gui.fluent.expander import ExExpander
+from gui.fluent.expander import makeexpander
 from gui.dynalang import LLabel
 
 
@@ -202,21 +202,14 @@ def uisetting(self):
     # 隐藏目标下拉的初值回调会引用 self.disappear_delay
     delay = createdynamicdelay(self)
     target = createdynamicswitch(self)
-    autohideexp = ExExpander()
-    header = QWidget()
-    hlay = QHBoxLayout(header)
-    hlay.setContentsMargins(0, 12, 0, 12)
-    hlay.setSpacing(8)
-    titlelabel = LLabel("自动隐藏")
-    titlefont = titlelabel.font()
-    titlefont.setPixelSize(15)
-    titlelabel.setFont(titlefont)
-    hlay.addWidget(titlelabel)
-    hlay.addStretch(1)
-    hlay.addWidget(D_getsimpleswitch(globalconfig, "autodisappear", default=False)())
-    autohideexp.setHeaderWidget(header)
-    autohideexp.addContentWidget(getboxwidget(["隐藏目标", 1, target]))
-    autohideexp.addContentWidget(getboxwidget(["隐藏延迟_(s)", 1, delay]))
+    autohideexp = makeexpander(
+        "自动隐藏",
+        trailing=D_getsimpleswitch(globalconfig, "autodisappear", default=False),
+        content=[
+            getboxwidget(["隐藏目标", 1, target]),
+            getboxwidget(["隐藏延迟_(s)", 1, delay]),
+        ],
+    )
 
     __ = mainuisetting(self) + [
         [(__rs(), 0)],

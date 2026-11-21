@@ -42,7 +42,7 @@ from gui.usefulwidget import (
 )
 import qtawesome
 from gui.dynalang import LFormLayout, LLabel, LAction, LDialog
-from gui.fluent.expander import ExExpander
+from gui.fluent.expander import makeexpander
 from gui.rendertext.tooltipswidget import tooltipssetting
 from gui.showword import cishusX
 from gui.setting.cishucommunity import CommunityCishuDialog
@@ -380,8 +380,6 @@ def _createnewtextfontcom(key, df):
 
 def fontsettings(parent):
     """字体折叠卡：「跟随默认」开关放在折叠条上；跟随默认时子项禁用。"""
-    exp = ExExpander(content_pad=True)
-
     # 子项 1：相对大小（标题在左、spin 在右端）
     sizerow = getboxwidget(
         [
@@ -442,22 +440,12 @@ def fontsettings(parent):
         default=True,
         callback=__follow,
     )
-    header = QWidget()
-    hlay = QHBoxLayout(header)
-    hlay.setContentsMargins(0, 12, 0, 12)
-    hlay.setSpacing(8)
-    titlelabel = LLabel("字体")
-    titlefont = titlelabel.font()
-    titlefont.setPixelSize(15)
-    titlelabel.setFont(titlefont)
-    hlay.addWidget(titlelabel)
-    hlay.addStretch(1)
-    hlay.addWidget(getsmalllabel("跟随默认")())
-    hlay.addWidget(followswitch)
-    exp.setHeaderWidget(header)
-
-    exp.addContentWidget(sizerow)
-    exp.addContentWidget(fontrow)
+    exp = makeexpander(
+        "字体",
+        trailing=[getsmalllabel("跟随默认")(), followswitch],
+        content=[sizerow, fontrow],
+        pad=True,
+    )
     return exp
 
 
@@ -520,43 +508,21 @@ def setTabcishu_l(self):
         afterswitch=None,
         content=None,
     ):
-        """折叠卡（同 LICENSE 的 ExExpander）：标题 +（doclink 紧随）+ 开关（折叠按钮左边）。"""
+        """折叠卡（makeexpander）：标题 +（doclink 紧随）+ 开关（折叠按钮左边）。"""
         # content= 子项面板形式时内容右侧让出折叠按钮区（60px）
-        exp = ExExpander(content_pad=content is not None)
-        header = QWidget()
-        hlay = QHBoxLayout(header)
-        # 同 LICENSE：HeaderButton 自带左边距与 chevron 预留区，只留上下边距
-        hlay.setContentsMargins(0, 12, 0, 12)
-        hlay.setSpacing(8)
-        titlelabel = LLabel(title)
-        titlefont = titlelabel.font()
-        titlefont.setPixelSize(15)
-        titlelabel.setFont(titlefont)
-        hlay.addWidget(titlelabel)
-        if leading is not None:
-            # doclink 等紧随标题
-            if callable(leading):
-                leading = leading()
-            if leading is not None:
-                hlay.addWidget(leading)
-        hlay.addStretch(1)
-        if trailing is not None:
-            hlay.addWidget(trailing)
-        if switchlabel is not None:
-            hlay.addWidget(getsmalllabel(switchlabel)())
-        hlay.addWidget(switch)
-        if afterswitch is not None:
-            # 开关右边的挂件（如注音颜色按钮）
-            if callable(afterswitch):
-                afterswitch = afterswitch()
-            if afterswitch is not None:
-                hlay.addWidget(afterswitch)
-        exp.setHeaderWidget(header)
-        if content is not None:
-            # 每个 widget 一个独立子项面板（同 代理设置 的多行子项）
-            for w in content:
-                exp.addContentWidget(w)
-        else:
+        exp = makeexpander(
+            title,
+            leading=leading,
+            trailing=[
+                trailing,
+                getsmalllabel(switchlabel)() if switchlabel else None,
+                switch,
+                afterswitch,
+            ],
+            content=content,
+            pad=content is not None,
+        )
+        if content is None:
             exp.addContentWidget(makegrid(list(grid)))
         return exp
 

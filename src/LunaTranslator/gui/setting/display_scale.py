@@ -13,7 +13,7 @@ from gui.usefulwidget import (
     getsimplecombobox,
 )
 from gui.dynalang import LPushButton, LLabel
-from gui.fluent.expander import ExExpander
+from gui.fluent.expander import makeexpander
 import functools, os, json, gobject
 from myutils.magpie_builtin import AdapterService
 
@@ -109,60 +109,48 @@ def _widenctl(w):
 
 
 def developerexpander():
-    """开发者选项折叠卡（同 Gallery ExExpander「高级设置」的多行子设置）：
-    每行设置独立面板；展开/收起状态对应 magpie 的 developerMode（同原折叠区）。"""
-    exp = ExExpander()
-
-    header = QWidget()
-    hlay = QHBoxLayout(header)
-    hlay.setContentsMargins(0, 12, 0, 12)
-    hlay.setSpacing(8)
-    titlelabel = LLabel("开发者选项")
-    titlefont = titlelabel.font()
-    titlefont.setPixelSize(15)
-    titlelabel.setFont(titlefont)
-    hlay.addWidget(titlelabel)
-    hlay.addStretch(1)
-    exp.setHeaderWidget(header)
-
-    rows = [
-        ["调试模式", D_getsimpleswitch(magpie_config, "debugMode")],
-        ["性能测试模式", D_getsimpleswitch(magpie_config, "benchmarkMode")],
-        ["禁用缩放窗口置顶", D_getsimpleswitch(magpie_config, "disableTopmost")],
-        ["禁用效果缓存", D_getsimpleswitch(magpie_config, "disableEffectCache")],
+    """开发者选项折叠卡：展开/收起状态写入 magpie 的 developerMode
+    （保持原折叠区语义），默认折叠、不恢复上次状态。"""
+    return _fold(
+        "开发者选项",
         [
-            "解析效果时保存源代码",
-            D_getsimpleswitch(magpie_config, "saveEffectSources"),
+            ["调试模式", 1, D_getsimpleswitch(magpie_config, "debugMode")],
+            ["性能测试模式", 1, D_getsimpleswitch(magpie_config, "benchmarkMode")],
+            ["禁用缩放窗口置顶", 1, D_getsimpleswitch(magpie_config, "disableTopmost")],
+            ["禁用效果缓存", 1, D_getsimpleswitch(magpie_config, "disableEffectCache")],
+            [
+                "解析效果时保存源代码",
+                1,
+                D_getsimpleswitch(magpie_config, "saveEffectSources"),
+            ],
+            [
+                "编译效果时将警告视为错误",
+                1,
+                D_getsimpleswitch(magpie_config, "warningsAreErrors"),
+            ],
+            [
+                "禁止在着色器中使用 FP16",
+                1,
+                D_getsimpleswitch(magpie_config, "disableFP16"),
+            ],
+            ["禁用字体缓存", 1, D_getsimpleswitch(magpie_config, "disableFontCache")],
+            [
+                "检测重复帧",
+                1,
+                D_getsimplecombobox(
+                    ["总是检测", "动态检测", "从不检测"],
+                    magpie_config,
+                    "duplicateFrameDetectionMode",
+                ),
+            ],
+            [
+                "启用动态检测统计",
+                1,
+                D_getsimpleswitch(magpie_config, "enableStatisticsForDynamicDetection"),
+            ],
         ],
-        [
-            "编译效果时将警告视为错误",
-            D_getsimpleswitch(magpie_config, "warningsAreErrors"),
-        ],
-        [
-            "禁止在着色器中使用 FP16",
-            D_getsimpleswitch(magpie_config, "disableFP16"),
-        ],
-        ["禁用字体缓存", D_getsimpleswitch(magpie_config, "disableFontCache")],
-        [
-            "检测重复帧",
-            D_getsimplecombobox(
-                ["总是检测", "动态检测", "从不检测"],
-                magpie_config,
-                "duplicateFrameDetectionMode",
-            ),
-        ],
-        [
-            "启用动态检测统计",
-            D_getsimpleswitch(magpie_config, "enableStatisticsForDynamicDetection"),
-        ],
-    ]
-    # 同「应用主题」卡片的形式：标题在左、控件在右端（不加右侧让位）
-    for row in rows:
-        exp.addContentWidget(_widenctl(getboxwidget([row[0], 1, row[1]])))
-
-    # 展开状态仍写入 developerMode（保持原语义），但默认折叠、不恢复上次状态
-    exp.expandedChanged.connect(lambda v: magpie_config.__setitem__("developerMode", v))
-    return exp
+        expandedchanged=lambda v: magpie_config.__setitem__("developerMode", v),
+    )
 
 
 def _srow(title):
@@ -180,52 +168,26 @@ def _cardrow(label, *controls):
     return [[(_widenctl(makecardrow(label, *controls)), 0)]]
 
 
-def _foldrow(label, headerctl, contentrow, pad=True):
-    """折叠设置卡：标题+主控件在折叠条上，内容行为独立面板。
-    pad：内容右侧让出折叠按钮区（ExExpander 的 content_pad 参数处理）。"""
-    exp = ExExpander(content_pad=pad)
-    header = QWidget()
-    hlay = QHBoxLayout(header)
-    hlay.setContentsMargins(0, 12, 0, 12)
-    hlay.setSpacing(8)
-    titlelabel = LLabel(label)
-    titlefont = titlelabel.font()
-    titlefont.setPixelSize(15)
-    titlelabel.setFont(titlefont)
-    hlay.addWidget(titlelabel)
-    hlay.addStretch(1)
-    hlay.addWidget(_widenctl(getboxwidget([headerctl])))
-    exp.setHeaderWidget(header)
-    exp.addContentWidget(_widenctl(contentrow))
-    return [[(exp, 0)]]
-
-
-def _switchfold(label, dic, key, contentlabel, contentctl, default=False):
-    """开关式折叠设置卡：开关在折叠条上。"""
-    return _foldrow(
+def _fold(label, rows, headerctl=None, pad=None, expandedchanged=None):
+    """折叠设置卡（makeexpander 的网格行适配）：
+    - rows：内容行，单行可直接传 [标题, 1, 控件]，多行传
+      [[标题, 1, 控件], ...]（getboxwidget 约定：int 为 stretch、
+      callable 会调用）
+    - headerctl：折叠条右侧控件（开关/combobox 等；省略为纯标题卡）
+    - pad：内容右侧让出折叠按钮区，默认随 headerctl 有无推断——
+      有控件时让位与控件对齐
+    - expandedchanged：展开/收起回调（developerMode 这类联动用）"""
+    if rows and not isinstance(rows[0], list):
+        rows = [rows]
+    if pad is None:
+        pad = headerctl is not None
+    exp = makeexpander(
         label,
-        getsimpleswitch(dic, key, default=default),
-        getboxwidget([contentlabel, 1, contentctl]),
+        trailing=headerctl,
+        content=[_widenctl(getboxwidget(row)) for row in rows],
+        pad=pad,
+        expandedchanged=expandedchanged,
     )
-
-
-def _foldcard(label, rows):
-    """纯标题折叠卡（折叠条上无控件）：rows 为多行子设置，每行
-    [标题, 1, 控件]（getboxwidget 约定）。"""
-    exp = ExExpander()
-    header = QWidget()
-    hlay = QHBoxLayout(header)
-    hlay.setContentsMargins(0, 12, 0, 12)
-    hlay.setSpacing(8)
-    titlelabel = LLabel(label)
-    titlefont = titlelabel.font()
-    titlefont.setPixelSize(15)
-    titlelabel.setFont(titlefont)
-    hlay.addWidget(titlelabel)
-    hlay.addStretch(1)
-    exp.setHeaderWidget(header)
-    for row in rows:
-        exp.addContentWidget(_widenctl(getboxwidget(row)))
     return [[(exp, 0)]]
 
 
@@ -253,7 +215,7 @@ def makescalew(profile=None):
         )
         + _cardrow("3D游戏模式", D_getsimpleswitch(profile, "3DGameMode"))
         + _srow("工具栏")
-        + _foldcard(
+        + _fold(
             "工具栏初始状态",
             [
                 [
@@ -308,19 +270,24 @@ def makescalew(profile=None):
         )
         + _srow("性能")
         + _cardrow("显示卡", functools.partial(createadaptercombo, profile))
-        + _switchfold(
+        + _fold(
             "帧率限制",
-            profile,
-            "frameRateLimiterEnabled",
-            "最大帧率",
-            D_getspinbox(0, 9999, profile, "maxFrameRate"),
+            ["最大帧率", 1, D_getspinbox(0, 9999, profile, "maxFrameRate")],
+            getsimpleswitch(profile, "frameRateLimiterEnabled"),
         )
         + _srow("源窗口")
         + _cardrow("捕获标题栏", D_getsimpleswitch(profile, "captureTitleBar"))
         + _cardrow("自定义剪裁", D_getsimpleswitch(profile, "croppingEnabled"))
         + _srow("光标")
-        + _foldrow(
+        + _fold(
             "缩放系数",
+            [
+                "插值算法",
+                1,
+                D_getsimplecombobox(
+                    ["最邻近", "双线性"], profile, "cursorInterpolationMode"
+                ),
+            ],
             D_getsimplecombobox(
                 [
                     "0.5x",
@@ -334,28 +301,21 @@ def makescalew(profile=None):
                 profile,
                 "cursorScaling",
             ),
-            getboxwidget(
-                [
-                    "插值算法",
-                    1,
-                    D_getsimplecombobox(
-                        ["最邻近", "双线性"], profile, "cursorInterpolationMode"
-                    ),
-                ]
-            ),
         )
-        + _switchfold(
+        + _fold(
             "光标静止时自动隐藏",
-            profile,
-            "autoHideCursorEnabled",
-            "隐藏延迟（秒）",
-            D_getspinbox(
-                0.1,
-                5,
-                profile,
-                "autoHideCursorDelay",
-                double=True,
-            ),
+            [
+                "隐藏延迟（秒）",
+                1,
+                D_getspinbox(
+                    0.1,
+                    5,
+                    profile,
+                    "autoHideCursorDelay",
+                    double=True,
+                ),
+            ],
+            getsimpleswitch(profile, "autoHideCursorEnabled"),
         )
         + _cardrow(
             "缩放时调整光标速度", D_getsimpleswitch(profile, "adjustCursorSpeed")
@@ -425,7 +385,7 @@ def makescalew(profile=None):
             ),
         )
         + _cardrow("禁用DirectFlip", D_getsimpleswitch(profile, "disableDirectFlip"))
-        + ([[functools.partial(developerexpander)]] if isglobal else [])
+        + (developerexpander() if isglobal else [])
     )
 
     return innermagpie

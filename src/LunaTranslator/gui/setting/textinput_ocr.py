@@ -29,7 +29,7 @@ from gui.usefulwidget import (
     makecardrow,
     makescroll,
 )
-from gui.fluent.expander import ExExpander
+from gui.fluent.expander import makeexpander
 from gui.rangeselect import add_overlay_style_rows, set_global_mousetransp
 from gui.specialwidget import KeyPressDetector
 from traceback import print_exc
@@ -439,32 +439,6 @@ class showocrimage(saveposwindow):
         self.originlabel.showboxtext(result.result)
 
 
-def _expander_header(title, *controls, after_title=None):
-    """折叠卡头部行：标题（后可紧跟 after_title 挂件，如 doclink）在左、
-    控件靠右（同设置窗口折叠卡头部）。"""
-    header = QWidget()
-    hlay = QHBoxLayout(header)
-    hlay.setContentsMargins(0, 12, 0, 12)
-    hlay.setSpacing(8)
-    titlelabel = LLabel(title)
-    titlefont = titlelabel.font()
-    titlefont.setPixelSize(15)
-    titlelabel.setFont(titlefont)
-    hlay.addWidget(titlelabel)
-    if after_title is not None:
-        if callable(after_title):
-            after_title = after_title()
-        if after_title is not None:
-            hlay.addWidget(after_title)
-    hlay.addStretch(1)
-    for c in controls:
-        if callable(c):
-            c = c()
-        if c is not None:
-            hlay.addWidget(c)
-    return header
-
-
 def _otherspage(self, l):
     """OCR 其他设置页：每项一张卡（合并临近行/自动化执行方法为折叠卡，
     子项经折叠展开）。"""
@@ -486,12 +460,10 @@ def _otherspage(self, l):
             ),
         )
     )
-    merge = ExExpander(content_pad=True)
-    merge.setHeaderWidget(
-        _expander_header(
-            "合并临近行",
-            D_getsimpleswitch(globalconfig, "ocrmergelines", default=True),
-        )
+    merge = makeexpander(
+        "合并临近行",
+        trailing=D_getsimpleswitch(globalconfig, "ocrmergelines", default=True),
+        pad=True,
     )
     distrow = QWidget()
     dlay = QHBoxLayout(distrow)
@@ -514,10 +486,7 @@ def _otherspage(self, l):
     vlay.addWidget(merge)
     # 原地显示翻译：折叠卡，头部开关，子项 = 与右键菜单样式飞层共用
     # 的样式子项（双向同步）
-    inplace = ExExpander(content_pad=True)
-    inplace.setHeaderWidget(
-        _expander_header("原地显示翻译", _inplace_switch)
-    )
+    inplace = makeexpander("原地显示翻译", trailing=_inplace_switch, pad=True)
     add_overlay_style_rows(inplace)
     vlay.addWidget(inplace)
     vlay.addWidget(makecardrow("鼠标穿透范围框", _mousetransp_switch))
@@ -547,20 +516,18 @@ def _otherspage(self, l):
             D_getsimpleswitch(ocrerrorfix, "use"),
         )
     )
-    auto = ExExpander(content_pad=True)
-    auto.setHeaderWidget(
-        _expander_header(
-            "自动化执行方法",
-            D_getsimplecombobox(
-                ["分析图像更新", "周期执行", "鼠标键盘触发+等待稳定"],
-                globalconfig,
-                "ocr_auto_method_v2",
-                internal=["analysis", "period", "trigger"],
-                callback=functools.partial(_ocrparam_create, self),
-                default="period",
-            ),
-            after_title=D_getdoclink("ocrparam.html#anchor-auto"),
-        )
+    auto = makeexpander(
+        "自动化执行方法",
+        leading=D_getdoclink("ocrparam.html#anchor-auto"),
+        trailing=D_getsimplecombobox(
+            ["分析图像更新", "周期执行", "鼠标键盘触发+等待稳定"],
+            globalconfig,
+            "ocr_auto_method_v2",
+            internal=["analysis", "period", "trigger"],
+            callback=functools.partial(_ocrparam_create, self),
+            default="period",
+        ),
+        pad=True,
     )
     _ocrparam(self, auto)
     auto.setExpanded(True)

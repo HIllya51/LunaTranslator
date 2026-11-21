@@ -3,6 +3,7 @@
 chevron 按钮随展开进度旋转 180°。"""
 
 from gui.fluent.icons import ICON_CHEVRON_DOWN_MED
+from gui.dynalang import LLabel
 
 from qtsymbols import (
     QEvent,
@@ -723,3 +724,71 @@ class ExExpander(QWidget):
         if not self._expanded:
             self.collapsed.emit()
         self.expansionFinished.emit(self._expanded)
+
+
+def _exp_items(x):
+    if x is None:
+        return ()
+    if isinstance(x, (list, tuple)):
+        return x
+    return (x,)
+
+
+def makeexpanderheader(title, leading=(), trailing=()):
+    """折叠卡标准头部（全项目共用一份配方）：
+    标题（15px）+ leading 挂件 + 伸缩 + trailing 控件。
+    leading/trailing 的 callable 会调用、None 跳过、单控件可直传。
+    返回 header QWidget（用于对已存在的 ExExpander 重设头部）。"""
+    header = QWidget()
+    hlay = QHBoxLayout(header)
+    hlay.setContentsMargins(0, 12, 0, 12)
+    hlay.setSpacing(8)
+    titlelabel = LLabel(title)
+    titlefont = titlelabel.font()
+    titlefont.setPixelSize(15)
+    titlelabel.setFont(titlefont)
+    hlay.addWidget(titlelabel)
+    for w in _exp_items(leading):
+        if callable(w):
+            w = w()
+        if w is not None:
+            hlay.addWidget(w)
+    hlay.addStretch(1)
+    for w in _exp_items(trailing):
+        if callable(w):
+            w = w()
+        if w is not None:
+            hlay.addWidget(w)
+    return header
+
+
+def makeexpander(
+    title,
+    leading=(),
+    trailing=(),
+    content=(),
+    pad=False,
+    expandedchanged=None,
+    objectname=None,
+):
+    """折叠卡统一工厂（头部配方见 makeexpanderheader）：
+    - title：折叠条标题
+    - leading：标题后、伸缩前的挂件（doclink 等）
+    - trailing：右端控件（开关/下拉等，位于折叠按钮左侧）
+    - content：子项（单控件或列表，逐个 addContentWidget 成独立面板；
+      None 不加）
+    - pad：内容右侧让出折叠按钮区（与折叠条上的控件对齐）
+    - expandedchanged：展开/收起回调
+    - objectname：objectName（特殊 QSS 定位用）
+
+    返回 ExExpander 本体，可继续 setContentPanelVisible /
+    clearContentWidgets / addContentWidget 等后续操作。"""
+    exp = ExExpander(content_pad=pad)
+    if objectname is not None:
+        exp.setObjectName(objectname)
+    exp.setHeaderWidget(makeexpanderheader(title, leading, trailing))
+    for w in _exp_items(content):
+        exp.addContentWidget(w)
+    if expandedchanged is not None:
+        exp.expandedChanged.connect(expandedchanged)
+    return exp

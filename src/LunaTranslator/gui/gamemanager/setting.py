@@ -840,20 +840,8 @@ class dialog_setting_game_internal(QWidget):
             "launch_method",
             internal=[_.id for _ in tools],
         )
-        exp = ExExpander(content_pad=True)
+        exp = makeexpander("启动方式", trailing=__launch_method, pad=True)
         rows = _MethodRows(exp)
-        header = QWidget()
-        hlay = QHBoxLayout(header)
-        hlay.setContentsMargins(0, 12, 0, 12)
-        hlay.setSpacing(8)
-        titlelabel = LLabel("启动方式")
-        titlefont = titlelabel.font()
-        titlefont.setPixelSize(15)
-        titlelabel.setFont(titlefont)
-        hlay.addWidget(titlelabel)
-        hlay.addStretch(1)
-        hlay.addWidget(__launch_method)
-        exp.setHeaderWidget(header)
 
         def __(idx):
             exp.clearContentWidgets()
@@ -1169,17 +1157,6 @@ class dialog_setting_game_internal(QWidget):
         """跟随默认折叠卡：头部标题 + [跟随默认]开关（文字在开关旁），
         内容为各设置行子项（开关开启=跟随默认时内容禁用）。
         返回 (折叠卡, 内容网格)——调用方填充网格后 addRow 并 setExpanded。"""
-        exp = ExExpander()
-        header = QWidget()
-        hlay = QHBoxLayout(header)
-        hlay.setContentsMargins(0, 12, 0, 12)
-        hlay.setSpacing(8)
-        titlelabel = LLabel(title)
-        titlefont = titlelabel.font()
-        titlefont.setPixelSize(15)
-        titlelabel.setFont(titlefont)
-        hlay.addWidget(titlelabel)
-        hlay.addStretch(1)
         content = QWidget()
         grid = VisGridLayout(content)
         grid.setContentsMargins(0, 0, 0, 0)
@@ -1192,17 +1169,19 @@ class dialog_setting_game_internal(QWidget):
                 except:
                     print_exc()
 
-        hlay.addWidget(getsmalllabel("跟随默认")())
-        hlay.addWidget(
-            getsimpleswitch(
-                dic,
-                key,
-                callback=functools.partial(__function, content, callback),
-                default=True,
-            )
+        exp = makeexpander(
+            title,
+            trailing=[
+                getsmalllabel("跟随默认")(),
+                getsimpleswitch(
+                    dic,
+                    key,
+                    callback=functools.partial(__function, content, callback),
+                    default=True,
+                ),
+            ],
+            content=content,
         )
-        exp.setHeaderWidget(header)
-        exp.addContentWidget(content)
         content.setEnabled(not dic.get(key, True))
         return exp, grid
 
@@ -1408,34 +1387,26 @@ class dialog_setting_game_internal(QWidget):
     def getlangcard(self, formLayout: LFormLayout, gameuid):
         """语言（原独立 tab，并入 启动-启动方式 之下）：跟随默认折叠卡，
         源语言/目标语言各为一个子项（独立内容面板）。"""
-        # content_pad：子项右缘与头部跟随默认开关右缘对齐
-        exp = ExExpander(content_pad=True)
-        header = QWidget()
-        hlay = QHBoxLayout(header)
-        hlay.setContentsMargins(0, 12, 0, 12)
-        hlay.setSpacing(8)
-        titlelabel = LLabel("语言")
-        titlefont = titlelabel.font()
-        titlefont.setPixelSize(15)
-        titlelabel.setFont(titlefont)
-        hlay.addWidget(titlelabel)
-        hlay.addStretch(1)
         rows = []
 
         def __use(v):
             for r in rows:
                 r.setEnabled(not v)
 
-        hlay.addWidget(getsmalllabel("跟随默认")())
-        hlay.addWidget(
-            getsimpleswitch(
-                savehook_new_data[gameuid],
-                "lang_follow_default",
-                callback=__use,
-                default=True,
-            )
+        # content_pad：子项右缘与头部跟随默认开关右缘对齐
+        exp = makeexpander(
+            "语言",
+            trailing=[
+                getsmalllabel("跟随默认")(),
+                getsimpleswitch(
+                    savehook_new_data[gameuid],
+                    "lang_follow_default",
+                    callback=__use,
+                    default=True,
+                ),
+            ],
+            pad=True,
         )
-        exp.setHeaderWidget(header)
 
         def _langrow(label, key, langs, dflt):
             row = QWidget()
