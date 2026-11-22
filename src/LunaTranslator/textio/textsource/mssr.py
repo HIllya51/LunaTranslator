@@ -1,6 +1,7 @@
 from textio.textsource.textsourcebase import basetext
 from myutils.wrapper import threader
 import NativeUtils, windows, uuid, os, gobject, time
+from difflib import SequenceMatcher
 from LunaSubProcess import LunaSubProcess
 from myutils.config import globalconfig, _TR
 
@@ -19,18 +20,75 @@ class atendrestorwindow(NativeUtils.AutoKillProcess):
         NativeUtils.ShowLiveCaptionsWindow(self.pid, b)
 
 
-def cutafter(text: str, cut: str):
-    # 清空后只保留清空时那段文字之后新增的内容。
-    # 识别结果的末尾可能被修正，所以逐步丢掉 cut 末尾的几个字再找锚点。
-    # 返回 None 表示 text 已经不是清空时的那一段了。
-    for drop in range(min(len(cut), 8) + 1):
-        anchor = cut[: len(cut) - drop][-12:]
-        if not anchor:
+def alignend(text: str, cut: str):
+    # 把 cut（清空时已经显示过的文字）对齐到 text 上，返回 cut 的结尾在 text 中的位置。
+    # 识别结果会被不断修正（补标点、改字、开头被截掉），所以用逐字模糊对齐，而不是精确查找。
+    # 对不上（已经不是同一段了）时返回 None。
+    if text.startswith(cut):
+        return len(cut)
+    blocks = SequenceMatcher(None, cut, text, autojunk=False).get_matching_blocks()
+    a_end = b_end = matched = 0
+    for a, b, size in blocks:
+        if not size:
             break
-        pos = text.find(anchor)
-        if pos != -1:
-            return text[pos + len(anchor) :].lstrip()
-    return None
+        if matched == 0 and size < 2:
+            # 开头碰巧相同的单个字不算对上
+            continue
+        # 开头可以被截掉（a 较大），但 text 本身必须从头就对得上；
+        # 之后在 text 里跳得比 cut 远很多，说明是新内容里碰巧出现了相同的文字
+        if b - b_end > (3 if matched == 0 else a - a_end + 3):
+            break
+        a_end, b_end = a + size, b + size
+        matched += size
+    if matched < max(2, len(cut) / 2):
+        return None
+    return b_end
+
+
+class ClearCutter:
+    # 文本区被清空后，过滤掉识别结果中清空时已经显示过的部分，只留下之后新增的内容
+    giveup = 1.5
+
+    def __init__(self):
+        self.reset()
+        self.pending = False
+
+    def reset(self):
+        self.cut = None
+        self.failsince = None
+
+    def request(self, current=None):
+        if current is None:
+            self.pending = True
+        else:
+            self.reset()
+            self.cut = current
+
+    def filter(self, text: str, prevline: str = None):
+        # 返回要显示的文字；返回 None 表示这一次先不更新显示
+        if self.pending:
+            self.pending = False
+            self.reset()
+            self.cut = text
+        if self.cut is None:
+            return text
+        end = alignend(text, self.cut)
+        if end is not None:
+            self.failsince = None
+            self.cut = text[:end]
+            return text[end:].lstrip(" 　、。，．,.!?！？")
+        if prevline is not None and alignend(prevline, self.cut) is not None:
+            # 清空时那一段已经不是最后一行了，现在这一行全是新内容
+            self.reset()
+            return text
+        # 偶尔一次对不上可能只是识别结果在改写，等一会儿再放弃
+        now = time.time()
+        if self.failsince is None:
+            self.failsince = now
+        if now - self.failsince > self.giveup:
+            self.reset()
+            return text
+        return None
 
 
 class LiveCaptions:
@@ -58,16 +116,9 @@ class LiveCaptions:
                 continue
             lines = this.splitlines()
 
-            this = lines[-1]
-            if self.clearflag:
-                self.clearflag = False
-                self.cut = this
-            if self.cut is not None:
-                cutted = cutafter(this, self.cut)
-                if cutted is None:
-                    self.cut = None
-                else:
-                    this = cutted
+            this = self.cutter.filter(
+                lines[-1], lines[-2] if len(lines) > 1 else None
+            )
             if not this:
                 time.sleep(0.1)
                 continue
@@ -87,8 +138,7 @@ class LiveCaptions:
     def __init__(self, ref: "mssr"):
         self.ref = ref
         self.curr = ""
-        self.cut = None
-        self.clearflag = False
+        self.cutter = ClearCutter()
         pid = self.findlcpid()
         pidorexe = pid if pid else self.lcexe
         self.engine = atendrestorwindow(
@@ -106,7 +156,7 @@ class LiveCaptions:
         return pids[0] if pids else None
 
     def onclear(self):
-        self.clearflag = True
+        self.cutter.request()
 
 
 class MSSR:
@@ -173,8 +223,8 @@ class MSSR:
     def __init__(self, ref: "mssr"):
         self.ref = ref
         self.curr = ""
-        self.cut = None
-        self.clearflag = False
+        self.raw = ""
+        self.cutter = ClearCutter()
 
         path = globalconfig["sourcestatus2"]["mssr"]["path"]
         path = self.findallmodel(checkX=True, check=path)
@@ -201,6 +251,10 @@ class MSSR:
 
     def runornot(self, _):
         self.engine.runornot(_)
+
+    def onclear(self):
+        # 用清空这一刻识别器给出的完整原文作切口，而不是等下一次结果
+        self.cutter.request(self.raw)
 
     def gethwndppid(self, hwnd):
         pid = windows.GetWindowThreadProcessId(hwnd)
@@ -270,17 +324,16 @@ class MSSR:
                 raise Exception(text)
             elif kind == "result":
                 _, ok, offset, duration, text = rec
-                if self.clearflag:
-                    self.clearflag = False
-                    self.cut = self.curr
-                if self.cut is not None:
-                    cutted = cutafter(text, self.cut)
-                    if ok or (cutted is None):
-                        self.cut = None
-                    if cutted is not None:
-                        if not cutted:
-                            continue
-                        text = cutted
+                self.raw = "" if ok else text
+                shown = self.cutter.filter(text)
+                if ok:
+                    # 一句识别完成，下一句和清空无关
+                    self.cutter.reset()
+                    if shown is None:
+                        shown = text
+                if not shown:
+                    continue
+                text = shown
                 self.curr = text
                 increased = text[len(last) :] if text.startswith(last) else ""
                 last = text
