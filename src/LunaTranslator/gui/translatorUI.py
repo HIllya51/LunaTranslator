@@ -65,6 +65,7 @@ class TranslatorWindow(resizableframeless):
     clickRange_signal = pyqtSignal()
     showhide_signal = pyqtSignal()
     clear_signal_1 = pyqtSignal()
+    clear_text_signal = pyqtSignal()
     bindcropwindow_signal = pyqtSignal()
     fullsgame_signal = pyqtSignal(bool)
     quitf_signal = pyqtSignal()
@@ -875,6 +876,7 @@ class TranslatorWindow(resizableframeless):
         self.clear_signal_1.connect(
             lambda: tryprint(gobject.base.textsource.clearrange)()
         )
+        self.clear_text_signal.connect(self.cleartextarea)
         self.bindcropwindow_signal.connect(
             functools.partial(NativeUtils.mouseselectwindow, self.bindcropwindowcallback)
         )
@@ -1496,6 +1498,12 @@ class TranslatorWindow(resizableframeless):
             int(h * r),
             windows.SWP_NOMOVE | windows.SWP_NOZORDER | windows.SWP_NOACTIVATE,
         )
+
+    def cleartextarea(self):
+        self.translate_text.clear(False)
+        gobject.base.currenttext = ""
+        if gobject.base.textsource:
+            tryprint(gobject.base.textsource.onclear)()
 
     def textAreaChanged(self, size: QSize):
         # size只有一个维度是准确的，应当根据显示方向来使用其中有效的部分

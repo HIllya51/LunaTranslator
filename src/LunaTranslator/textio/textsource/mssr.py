@@ -19,6 +19,20 @@ class atendrestorwindow(NativeUtils.AutoKillProcess):
         NativeUtils.ShowLiveCaptionsWindow(self.pid, b)
 
 
+def cutafter(text: str, cut: str):
+    # 清空后只保留清空时那段文字之后新增的内容。
+    # 识别结果的末尾可能被修正，所以逐步丢掉 cut 末尾的几个字再找锚点。
+    # 返回 None 表示 text 已经不是清空时的那一段了。
+    for drop in range(min(len(cut), 8) + 1):
+        anchor = cut[: len(cut) - drop][-12:]
+        if not anchor:
+            break
+        pos = text.find(anchor)
+        if pos != -1:
+            return text[pos + len(anchor) :].lstrip()
+    return None
+
+
 class LiveCaptions:
 
     @threader
@@ -45,6 +59,18 @@ class LiveCaptions:
             lines = this.splitlines()
 
             this = lines[-1]
+            if self.clearflag:
+                self.clearflag = False
+                self.cut = this
+            if self.cut is not None:
+                cutted = cutafter(this, self.cut)
+                if cutted is None:
+                    self.cut = None
+                else:
+                    this = cutted
+            if not this:
+                time.sleep(0.1)
+                continue
             thist = time.time()
             need = this != last
             if thist - lastt > interval:
@@ -61,6 +87,8 @@ class LiveCaptions:
     def __init__(self, ref: "mssr"):
         self.ref = ref
         self.curr = ""
+        self.cut = None
+        self.clearflag = False
         pid = self.findlcpid()
         pidorexe = pid if pid else self.lcexe
         self.engine = atendrestorwindow(
@@ -76,6 +104,9 @@ class LiveCaptions:
     def findlcpid(self):
         pids = NativeUtils.ListProcess(self.lcexe)
         return pids[0] if pids else None
+
+    def onclear(self):
+        self.clearflag = True
 
 
 class MSSR:
@@ -142,6 +173,8 @@ class MSSR:
     def __init__(self, ref: "mssr"):
         self.ref = ref
         self.curr = ""
+        self.cut = None
+        self.clearflag = False
 
         path = globalconfig["sourcestatus2"]["mssr"]["path"]
         path = self.findallmodel(checkX=True, check=path)
@@ -237,6 +270,17 @@ class MSSR:
                 raise Exception(text)
             elif kind == "result":
                 _, ok, offset, duration, text = rec
+                if self.clearflag:
+                    self.clearflag = False
+                    self.cut = self.curr
+                if self.cut is not None:
+                    cutted = cutafter(text, self.cut)
+                    if ok or (cutted is None):
+                        self.cut = None
+                    if cutted is not None:
+                        if not cutted:
+                            continue
+                        text = cutted
                 self.curr = text
                 increased = text[len(last) :] if text.startswith(last) else ""
                 last = text
@@ -288,6 +332,10 @@ class mssr(basetext):
     def runornot(self, _):
         if isinstance(self.engine, MSSR):
             self.engine.runornot(_)
+
+    def onclear(self):
+        if self.engine:
+            self.engine.onclear()
 
     def gettextonce(self):
         if not self.engine:

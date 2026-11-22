@@ -250,8 +250,7 @@ class TextBrowser(WebviewWidget, webview_common):
         self.webview.setfocus()
 
     def ___cleartext(self):
-        self.parent().clear(False)
-        gobject.base.currenttext = ""
+        gobject.base.translation_ui.cleartextarea()
 
     def refreshcontent(self):
         gobject.base.translation_ui.translate_text.refreshcontent()
