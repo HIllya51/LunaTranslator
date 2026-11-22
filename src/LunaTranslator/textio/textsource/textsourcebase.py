@@ -90,6 +90,10 @@ class basetext:
             print_exc()
         threader(self.sqlitethread)()
 
+    def onclear(self):
+        # 文本区被手动清空时调用，持续刷新同一段文字的文本源可以在这里重置
+        pass
+
     def updaterawtext(self, text):
         if self.ending:
             return

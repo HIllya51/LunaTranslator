@@ -468,8 +468,7 @@ class TextBrowser(QWidget, dataget):
         menu.addAction(useweb)
         action = menu.exec(QCursor.pos())
         if action == search:
-            self.parent().clear(False)
-            gobject.base.currenttext = ""
+            gobject.base.translation_ui.cleartextarea()
         elif extras.get(action):
             extras[action]()
         elif action == setting:

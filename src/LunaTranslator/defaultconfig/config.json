@@ -783,6 +783,9 @@
             },
             "recordwindow": {
                 "name": "窗口录制"
+            },
+            "cleartext": {
+                "name": "清空"
             }
         }
     },
