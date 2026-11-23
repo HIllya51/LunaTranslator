@@ -43,6 +43,7 @@
 #include "engine32/ANOS.h"
 #include "engine32/FrontWing.h"
 #include "engine32/TAKUYO.h"
+#include "engine32/GSS.h"
 #include "engine32/GSX.h"
 #include "engine32/TYPEMOON.h"
 #include "engine32/GLuer.h"
@@ -472,6 +473,7 @@ std::vector<ENGINE *> check_engines()
         new FrontWing2,
         new RScript,
         new TYPEMOON,
+        new GSS,
         new TAKUYO,
         new MixwillSoft,
         new MerRouge,
