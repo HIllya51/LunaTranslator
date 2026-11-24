@@ -477,7 +477,7 @@ class hookselect(closeashidewindow):
         if self.is_focus_normal and row == self.tttable.currentIndex().row():
             self.getnewsentence(output)
         output = output[:200].replace("\n", " ")
-        colidx = 2 + int(bool(self.embedablenum))
+        colidx = 3
         self.tttable.setRowHidden(row, False)
         self.ttCombomodelmodel.item(row, colidx).setText(output)
 
@@ -485,42 +485,88 @@ class hookselect(closeashidewindow):
         row = self.querykeyindex(key)
         if row == -1:
             return
+        # 被移除的钩子若之前被选取过，须一并从 selectedhook 摘除，
+        # 否则顺序计算（及其长度）仍会把它计入
+        self.textsource.edit_selectedhook_remove(key)
         self.ttCombomodelmodel.removeRow(row)
         self.solveifembedablenumdecreaseto0(key)
+        self.refreshordercol()
 
     def solveifembedablenumdecreaseto0(self, key):
         embedable = self.saveifembedable.pop(key)
         if not embedable:
             return
         self.embedablenum -= 1
-        if self.embedablenum > 0:
-            return
-        self.currentheader.pop(1)
-        self.ttCombomodelmodel.removeColumn(1)
-        self.ttCombomodelmodel.setHorizontalHeaderLabels(self.currentheader)
+        if self.embedablenum == 0:
+            self.tttable.setColumnHidden(1, True)
 
     def solveifembedablenumincreaseto1(self, key, isembedable):
         self.saveifembedable[key] = isembedable
         if not isembedable:
             return
         self.embedablenum += 1
-        if self.embedablenum != 1:
-            return
+        if self.embedablenum == 1:
+            self.tttable.setColumnHidden(1, False)
 
-        self.currentheader.insert(1, "内嵌")
-        self.ttCombomodelmodel.insertColumn(1, [])
-        self.ttCombomodelmodel.setHorizontalHeaderLabels(self.currentheader)
-        self.tttable.horizontalHeader().setSectionResizeMode(
-            1, QHeaderView.ResizeMode.ResizeToContents
-        )
+    def refreshordercol(self):
+        """“顺序”列（恒为第 4 列，仅显隐不增删）：选中的 hook 数
+        （selectedhook 即选择/显示顺序）≥2 时显示并写入各行选中
+        序号；<2 时隐藏。"""
+        selected = list(getattr(self.textsource, "selectedhook", []))
+        model = self.ttCombomodelmodel
+        want = len(selected) >= 2
+        # 列显隐状态本身即记忆（isColumnHidden），不另设旗标
+        if want == self.tttable.isColumnHidden(4):
+            hdr = self.tttable.horizontalHeader()
+            if want:
+                # 顺序列在表尾，不能吃掉 stretchLastSection 的伸展——
+                # 伸展转交给文本列（第 3 列）；顺序列定宽收窄（表头
+                # 文字宽+少量留白，序号数字比表头窄）
+                hdr.setStretchLastSection(False)
+                hdr.setSectionResizeMode(3, QHeaderView.ResizeMode.Stretch)
+                self.tttable.setColumnHidden(4, False)
+            else:
+                self.tttable.setColumnHidden(4, True)
+                # 伸展还给文本列（恢复初始的 Interactive+表尾伸展）
+                hdr.setStretchLastSection(True)
+                hdr.setSectionResizeMode(3, QHeaderView.ResizeMode.Interactive)
+                return
+        if self.tttable.isColumnHidden(4):
+            return
+        for row in range(model.rowCount()):
+            key = self.querykeyofrow(row)
+            order = None
+            if key in selected:
+                try:
+                    order = selected.index(key) + 1
+                except ValueError:
+                    pass
+            text = str(order) if order else ""
+            item = model.item(row, 4)
+            if item is None:
+                model.setItem(row, 4, QStandardItem(text))
+            elif item.text() != text:
+                item.setText(text)
 
     def changeprocessclear(self):
-        # self.ttCombo.clear()
+        # 固定五列：显示/内嵌/HOOK/文本/顺序。内嵌、顺序仅按需
+        # setColumnHidden 显隐——列索引恒定，省去各处偏移换算
         self.ttCombomodelmodel.clear()
         self.textOutput.clear()
         self.allres = OrderedDict()
         self.hidesearchhookbuttons()
-        self.currentheader = ["显示", "HOOK", "文本"]
+        self.currentheader = ["显示", "内嵌", "HOOK", "文本", "顺序"]
+        self.ttCombomodelmodel.setHorizontalHeaderLabels(self.currentheader)
+        hdr = self.tttable.horizontalHeader()
+        hdr.setStretchLastSection(True)
+        hdr.setSectionResizeMode(0, QHeaderView.ResizeMode.ResizeToContents)
+        hdr.setSectionResizeMode(1, QHeaderView.ResizeMode.ResizeToContents)
+        hdr.setSectionResizeMode(2, QHeaderView.ResizeMode.Interactive)
+        hdr.setSectionResizeMode(3, QHeaderView.ResizeMode.Interactive)
+        hdr.setSectionResizeMode(4, QHeaderView.ResizeMode.Fixed)
+        hdr.resizeSection(4, hdr.fontMetrics().horizontalAdvance("顺序") + 12)
+        self.tttable.setColumnHidden(1, True)
+        self.tttable.setColumnHidden(4, True)
         self.saveifembedable = {}
         self.embedablenum = 0
         self.embedselectall = {}
@@ -529,17 +575,6 @@ class hookselect(closeashidewindow):
     def addnewhook(self, key, select, isembedable):
         hc, hn, tp = key
 
-        if self.ttCombomodelmodel.rowCount() == 0:
-            self.ttCombomodelmodel.setHorizontalHeaderLabels(self.currentheader)
-            self.tttable.horizontalHeader().setSectionResizeMode(
-                0, QHeaderView.ResizeMode.ResizeToContents
-            )
-            self.tttable.horizontalHeader().setSectionResizeMode(
-                len(self.currentheader) - 1, QHeaderView.ResizeMode.Interactive
-            )
-            self.tttable.horizontalHeader().setSectionResizeMode(
-                len(self.currentheader) - 2, QHeaderView.ResizeMode.Interactive
-            )
         self.solveifembedablenumincreaseto1(key, isembedable)
         selectbutton = getsimpleswitch(
             {1: select}, 1, callback=functools.partial(self.accept, key)
@@ -550,11 +585,11 @@ class hookselect(closeashidewindow):
 
         items = [
             QStandardItem(),
+            QStandardItem(),
             QStandardItem("%s %s %x:%x" % (hn, hc, tp.ctx, tp.ctx2)),
             QStandardItem(),
+            QStandardItem(),
         ]
-        if self.embedablenum:
-            items.insert(1, QStandardItem())
         self.ttCombomodelmodel.insertRow(rown, items)
         items[0].setData(key, self.SaveTextThreadRole)
 
@@ -578,6 +613,7 @@ class hookselect(closeashidewindow):
             self.tttable.setCurrentIndex(rown)
 
         self.tttable.setRowHidden(rown, True)
+        self.refreshordercol()
 
     def _check_tp_using(self, key):
         hc, hn, tp = key
@@ -1116,10 +1152,14 @@ class hookselect(closeashidewindow):
             directshowcollect = []
             for key in self.textsource.selectedhook:
                 hc, hn, tp = key
+                _ = self.textsource.QueryThreadHistory(tp, True)
+                if not _:
+                    continue
                 directshowcollect.append(
-                    (key, self.textsource.QueryThreadHistory(tp, True))
+                    (key, _)
                 )
             self.textsource.dispatchtextlines(directshowcollect)
+            self.refreshordercol()
         except:
             print_exc()
 

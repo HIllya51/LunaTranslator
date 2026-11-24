@@ -24,7 +24,7 @@ namespace Host
 	CommonSharedMem *GetCommonSharedMem(DWORD pid);
 	void BroadCastCodePage();
 	TextThread *GetThread(int64_t handle);
-	TextThread &GetThread(ThreadParam tp);
+	TextThread *GetThread(ThreadParam tp);
 	void InfoOutput(HOSTINFO type, const std::wstring &text);
 	void AddConsoleOutput(const std::wstring &text);
 

@@ -420,9 +420,13 @@ namespace Host
 		prs.at(processId).Send<rpc::Id::FindHook>(sp);
 	}
 
-	TextThread &GetThread(ThreadParam tp)
+	TextThread *GetThread(ThreadParam tp)
 	{
-		return textThreadsByParams->at(tp);
+		auto &&_ = textThreadsByParams.Acquire().contents;
+		auto __ = _.find(tp);
+		if(__ == _.end())
+			return nullptr;
+		return &__->second;
 	}
 
 	TextThread *GetThread(int64_t handle)

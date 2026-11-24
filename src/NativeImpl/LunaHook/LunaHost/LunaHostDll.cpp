@@ -117,10 +117,13 @@ C_LUNA_API void Luna_InsertHookCode(DWORD pid, LPCWSTR hookcode)
 }
 C_LUNA_API void Luna_QueryThreadHistory(ThreadParam tp, bool latest, void (*callback)(const wchar_t *))
 {
+    auto _ = Host::GetThread(tp);
+    if (!_)
+        return;
     if (latest)
-        callback(Host::GetThread(tp).GetLatestText().c_str());
+        callback(_->GetLatestText().c_str());
     else
-        callback(Host::GetThread(tp).GetHistoryText().c_str());
+        callback(_->GetHistoryText().c_str());
 }
 C_LUNA_API void Luna_RemoveHook(DWORD pid, uint64_t addr)
 {
@@ -196,11 +199,13 @@ C_LUNA_API void Luna_SyncThread(ThreadParam tp, bool sync)
                 {
     try
     {
-        auto &&t=Host::GetThread(tp);
+        auto t=Host::GetThread(tp);
+        if(!t)
+            return;
         if (sync)
-            TextThread::syncThreads->insert(&t);
+            TextThread::syncThreads->insert(t);
         else
-            TextThread::syncThreads->erase(&t);
+            TextThread::syncThreads->erase(t);
     }
     catch (...)
     {

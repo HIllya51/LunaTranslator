@@ -451,7 +451,7 @@ class texthook(basetext):
     def QueryThreadHistory(self, tp, _latest=False):
         ret = []
         self.Luna_QueryThreadHistory(tp, _latest, QueryHistoryCallback(ret.append))
-        return ret[0]
+        return ret[0] if ret else None
 
     def removeproc(self, pid):
         if pid not in self.pids[self.gameuid]:
