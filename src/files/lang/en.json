@@ -412,6 +412,7 @@
     "可选取的": "Selectable",
     "反转颜色": "Invert Colors",
     "内嵌": "Embedded",
+    "顺序": "Order",
     "自动调整高度": "Auto Adjust Height",
     "文本区": "Text Area",
     "收到翻译时才刷新": "Only Refresh Display on New Translation",

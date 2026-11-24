@@ -563,8 +563,7 @@ class hookselect(closeashidewindow):
         hdr.setSectionResizeMode(1, QHeaderView.ResizeMode.ResizeToContents)
         hdr.setSectionResizeMode(2, QHeaderView.ResizeMode.Interactive)
         hdr.setSectionResizeMode(3, QHeaderView.ResizeMode.Interactive)
-        hdr.setSectionResizeMode(4, QHeaderView.ResizeMode.Fixed)
-        hdr.resizeSection(4, hdr.fontMetrics().horizontalAdvance("顺序") + 12)
+        hdr.setSectionResizeMode(4, QHeaderView.ResizeMode.ResizeToContents)
         self.tttable.setColumnHidden(1, True)
         self.tttable.setColumnHidden(4, True)
         self.saveifembedable = {}
