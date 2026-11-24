@@ -14,9 +14,10 @@ jobs:
     runs-on: windows-latest
     needs: [buildluna]
     permissions:
-      contents: write   
+      contents: write
       pages: write
       id-token: write
+      actions: read
     steps:
       - uses: actions/checkout@v6
       - uses: actions/download-artifact@v8
@@ -29,6 +30,25 @@ jobs:
         with:
           name: exedlls
           path: collect
+
+      - name: Wait for artifact to be listed
+        # SignPath 按 artifact id 在 run 的 artifact 列表里查找；刚上传完的
+        # artifact 有短暂传播延迟，立刻提交会报 "no published artifact"。
+        # 等它出现在列表里再提交（每 3 秒查一次，最多 2 分钟）。
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ARTIFACT_ID: ${{ steps.upload-artifact.outputs.artifact-id }}
+        run: |
+          for ($i = 0; $i -lt 40; $i++) {
+            $ids = @(gh api "repos/$Env:GITHUB_REPOSITORY/actions/runs/$Env:GITHUB_RUN_ID/artifacts" --jq ".artifacts[].id")
+            if ($ids -contains "$Env:ARTIFACT_ID") {
+              Write-Host "artifact $Env:ARTIFACT_ID listed"
+              exit 0
+            }
+            Start-Sleep -Seconds 3
+          }
+          Write-Error "artifact $Env:ARTIFACT_ID not listed after 2 minutes"
+          exit 1
   
       - uses: signpath/github-action-submit-signing-request@v2
         with:
