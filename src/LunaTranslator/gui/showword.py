@@ -159,6 +159,57 @@ def sc_callback(cb, p: QPixmap):
     cb(fname)
 
 
+def migrate_anki_tags():
+    """版本迁移：旧 tags(list) → tags_2{牌组名: tags列表}——所有牌组
+    各复制一份旧 tags，旧键 pop 掉。"""
+    cfg = globalconfig["ankiconnect"]
+    old = cfg.get("tags", None)
+    if isinstance(old, list):
+        cfg.pop("tags")
+        cfg["tags_2"] = {deck: list(old) for deck in cfg["DeckNameS"]}
+
+
+def _anki_deckat(i):
+    decks = globalconfig["ankiconnect"]["DeckNameS"]
+    if decks and 0 <= i < len(decks):
+        return decks[i]
+    return "lunadeck"
+
+
+class decktagsline(listediterline):
+    """标签行（按牌组区分）：显示/编辑当前牌组的 tags_2[牌组]；
+    切换牌组 combo 跟随切换（reflist 重新指向该牌组的列表，弹窗闭包
+    在点击时才取当前值，天然跟随）；编辑弹窗标题带上牌组名。"""
+
+    def __init__(self, combox: QComboBox):
+        migrate_anki_tags()
+        self._tags2 = globalconfig["ankiconnect"].setdefault("tags_2", {})
+        self._combox = combox
+        super().__init__(
+            "标签",
+            self._tags2.setdefault(
+                _anki_deckat(globalconfig["ankiconnect"].get("DeckName_i", 0)), []
+            ),
+        )
+        # 点击改走本类（牌组名进标题、reflist 取点击时刻的当前牌组）
+        self.edit.clicked.disconnect()
+        self.edit.clicked.connect(self._opendialog)
+        self._combox.currentIndexChanged.connect(self._ondeck)
+
+    def _ondeck(self, idx):
+        self.reflist = self._tags2.setdefault(_anki_deckat(idx), [])
+        self.setText("|".join((str(_) for _ in self.reflist)))
+
+    def _opendialog(self):
+        deck = _anki_deckat(self._combox.currentIndex())
+        listediter(
+            self.edit,
+            "标签_-_[[{}]]".format(deck),
+            self.reflist,
+            closecallback=self.callback,
+        )
+
+
 class AnkiWindow(QWidget):
     __ocrsettext = pyqtSignal(str)
     refreshhtml = pyqtSignal()
@@ -916,9 +967,7 @@ class AnkiWindow(QWidget):
                             getboxlayout(
                                 [
                                     LLabel("标签"),
-                                    listediterline(
-                                        "标签", globalconfig["ankiconnect"]["tags"]
-                                    ),
+                                    decktagsline(combox),
                                 ]
                             ),
                         ],
@@ -1105,7 +1154,10 @@ class AnkiWindow(QWidget):
         except:
             DeckName = "lunadeck"
         model_htmlfront, model_htmlback, model_css = self.tryloadankitemplates()
-        tags = globalconfig["ankiconnect"]["tags"]
+        migrate_anki_tags()
+        tags = globalconfig["ankiconnect"].setdefault("tags_2", {}).setdefault(
+            DeckName, []
+        )
         anki.Deck.create(DeckName)
         fields = static_data["model_fileds"]
         if globalconfig.get("usecustomankigen", False):
