@@ -25,3 +25,16 @@ add_custom_command(
     VERBATIM
 )
 add_custom_target(LunaTmpFontLoader ALL DEPENDS "${_lunatmp_dll}")
+
+# managed reflection helper for the Bakin engine (engine32/Bakin.cpp), loaded
+# from the directory of LunaHook32.dll like LunaTmpFontLoader
+set(_bakinclrh_src "${CMAKE_CURRENT_SOURCE_DIR}/../engine32/BakinClrHelper.cs")
+set(_bakinclrh_dll "${binary_out_putpath}/BakinClrHelper.dll")
+add_custom_command(
+    OUTPUT "${_bakinclrh_dll}"
+    COMMAND "${csc}" /nologo /nostdlib /target:library /out:${_bakinclrh_dll} /reference:${mscorlib} BakinClrHelper.cs
+    WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../engine32"
+    DEPENDS "${_bakinclrh_src}"
+    VERBATIM
+)
+add_custom_target(LunaBakinClrHelperDll ALL DEPENDS "${_bakinclrh_dll}")

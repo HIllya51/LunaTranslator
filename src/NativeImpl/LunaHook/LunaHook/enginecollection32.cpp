@@ -225,6 +225,7 @@
 #include "engine32/DAC.h"
 #include "engine32/ACTGS.h"
 #include "engine32/e_Erekiteru.h"
+#include "engine32/Bakin.h"
 #include "NoEngine.h"
 #include "engines/unity/unity.h"
 #include "engines/lua/lua51.h"
@@ -511,5 +512,6 @@ std::vector<ENGINE *> check_engines()
         new AZSystem,
         new RibbonMagic,
         new CODEPINK,
+        new Bakin,
     };
 }
