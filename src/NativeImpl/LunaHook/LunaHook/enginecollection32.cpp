@@ -27,6 +27,7 @@
 #include "engine32/MBSTRUTH.h"
 #include "engine32/ONScripterru.h"
 #include "engine32/ADVSystem.h"
+#include "engine32/AdvSys3.h"
 #include "engine32/Pinpai.h"
 #include "engine32/AbogadoPowers.h"
 #include "engine32/R11.h"
@@ -513,5 +514,6 @@ std::vector<ENGINE *> check_engines()
         new RibbonMagic,
         new CODEPINK,
         new Bakin,
+        new AdvSys3,
     };
 }

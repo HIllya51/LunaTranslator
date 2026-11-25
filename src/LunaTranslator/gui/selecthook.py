@@ -487,7 +487,8 @@ class hookselect(closeashidewindow):
             return
         # 被移除的钩子若之前被选取过，须一并从 selectedhook 摘除，
         # 否则顺序计算（及其长度）仍会把它计入
-        self.textsource.edit_selectedhook_remove(key)
+        if self.textsource:
+            self.textsource.edit_selectedhook_remove(key)
         self.ttCombomodelmodel.removeRow(row)
         self.solveifembedablenumdecreaseto0(key)
         self.refreshordercol()
