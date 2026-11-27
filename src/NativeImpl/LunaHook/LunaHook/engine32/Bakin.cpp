@@ -86,7 +86,7 @@ namespace
       return;
     if (str->length <= 0 || str->length > 4096)
       return;
-    buffer->from(str->chars, str->length);
+    buffer->from(str->chars, str->length * sizeof(wchar_t));
   }
 
   struct BakinClrTarget

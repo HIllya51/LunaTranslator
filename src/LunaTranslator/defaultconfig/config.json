@@ -1468,12 +1468,6 @@
             "color": "#ff0000",
             "name": "谷歌"
         },
-        "ModernMt": {
-            "use": false,
-            "color": "#ff0000",
-            "useproxy": false,
-            "name": "ModernMt"
-        },
         "qqTranSmart": {
             "use": false,
             "color": "#ff0000",
