@@ -703,6 +703,50 @@ namespace
 }
 namespace
 {
+  bool waffle8()
+  {
+    // エデンズリッターグレンツェ外伝
+    const uint8_t bytes[] = {
+        0x55, 0x8d, 0xac, 0x24, XX4, // push ebp; lea ebp,[esp-XX]
+        0x81, 0xec, XX4,             // sub esp,XX
+        0x6a, 0xff,                  // push -1
+        0x68, XX4,                   // push SEH handler
+        0x64, 0xa1, 0, 0, 0, 0,      // mov eax,fs:[0]
+        0x50,                        // push eax
+        0x81, 0xec, XX4,             // sub esp,XX
+        0xa1, XX4,                   // mov eax,[security cookie]
+        0x33, 0xc5,                  // xor eax,ebp
+        0x89, 0x85, XX4,             // mov [ebp+XX],eax
+        0x53, 0x56, 0x57,            // push ebx; push esi; push edi
+        0x50,                        // push eax
+        0x8d, 0x45, XX,              // lea eax,[ebp-XX]
+        0x64, 0xa3, 0, 0, 0, 0,      // mov fs:[0],eax
+        0x8b, 0xd9,                  // mov ebx,ecx
+        0x89, 0x5d, XX,              // mov [ebp-XX],ebx
+        0x8b, 0xb5, XX4,             // mov esi,[ebp+XX]    <- arg1, the text
+        0x33, 0xc0                   // xor eax,eax
+    };
+    auto addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
+    if (!addr)
+      return false;
+    HookParam hp;
+    hp.address = addr;
+    hp.text_fun = [](hook_context *context, HookParam *, TextBuffer *buffer, uintptr_t *)
+    {
+      buffer->from(((TextUnionA *)context->stack[1])->view());
+    };
+    hp.filter_fun = filterline;
+    hp.embed_hook_font = F_TextOutA | F_GetTextExtentPoint32A;
+    hp.type = EMBED_ABLE | FULL_STRING | EMBED_DYNA_SJIS | NO_CONTEXT;
+    hp.embed_fun = [](hook_context *context, TextBuffer buffer, HookParam *)
+    {
+      ((TextUnionA *)context->stack[1])->setText(buffer.viewA());
+    };
+    return NewHook(hp, "waffle8");
+  }
+}
+namespace
+{
   bool silklip()
   {
     // 魔法の少女シルキーリップ～三人の女王候補～
@@ -743,7 +787,7 @@ bool Waffle::attach_function()
   bool b2 = InsertWaffleHookx();
   bool b3 = hh();
   b3 |= waffle3();
-  auto succ = b1 || b2 || embed || b3 || fantacyfhd() || waffle6() || silklip();
+  auto succ = b1 || b2 || embed || b3 || waffle8() || fantacyfhd() || waffle6() || silklip();
   if (!succ)
   {
     succ = waffleoldhook();
